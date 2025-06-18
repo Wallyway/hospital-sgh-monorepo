@@ -1,0 +1,29 @@
+{
+  "name": "hospital-sgh-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "npm run start:dev -ws",
+    "build": "npm run build -ws",
+    "lint": "npm run lint -ws",
+    "test": "npm run test -ws"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wallyway/hospital-sgh-monorepo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Wallyway/hospital-sgh-monorepo/issues"
+  },
+  "homepage": "https://github.com/Wallyway/hospital-sgh-monorepo#readme"
+}
