@@ -52,16 +52,18 @@ This service exposes the following endpoints, which are routed through the API G
 - `POST /login`: User login.
 - `POST /forgot-password`: Initiates the password reset flow.
 - `POST /reset-password`: Completes the password reset flow.
-- `POST /admin/create-user`: **(Admin Only)** Creates a new user with a specified role and initial password.
+- `POST /admin/create-user/:role`: **(Admin Only)** Creates a new user of the specified role (`patient`, `doctor`, `admin`) with an initial password.
 
 ---
 
 ## User Creation Flow
 
-- Only an **administrator** can create new users (patients, doctors, etc.) using the `/auth/admin/create-user` endpoint.
-- The admin assigns an initial password and communicates it securely to the user (e.g., via email or phone).
+- Only an **administrator** can create new users (patients, doctors, etc.) using the `/auth/admin/create-user/:role` endpoint, where `:role` is `patient`, `doctor`, or `admin` (e.g., `/auth/admin/create-user/patient`).
+- The admin assigns an initial password and must communicate it al usuario (en desarrollo, la contraseña se imprime en consola para simular el envío seguro).
 - The user can log in with these credentials and is encouraged to change their password using the password reset flow.
 - **There is no public registration endpoint.**
+
+**Nota:** En desarrollo, los tokens de reseteo de contraseña también se imprimen en consola para simular el envío por email.
 
 ---
 
@@ -93,18 +95,19 @@ ADMIN_TOKEN=$(curl -s -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "admin@example.com", "password": "admin-password"}' | jq -r .accessToken)
 
-# 2. Use the token to create a new user via the Gateway
-curl -X POST http://localhost:3000/auth/admin/create-user \
+# 2. Use the token to create a new user (e.g., a patient) via the Gateway
+curl -X POST http://localhost:3000/auth/admin/create-user/patient \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -d '{
     "email": "patient@example.com",
     "password": "initial-password",
     "name": "Jane Patient",
-    "address": "123 Main St",
-    "roles": "PATIENT"
+    "address": "123 Main St"
   }'
 ```
+
+*La contraseña inicial se imprimirá en la consola del `auth-service` para simular el envío seguro.*
 
 ### 3. Patient Login and Password Change
 - The patient receives their credentials from the admin.

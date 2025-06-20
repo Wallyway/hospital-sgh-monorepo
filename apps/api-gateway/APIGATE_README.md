@@ -18,7 +18,7 @@ This gateway acts as a reverse proxy, enhancing security by hiding the internal 
 
 ### 1. Request Flow
 
--   **Public Routes (`/auth/*`)**: Requests for public endpoints like login, signup, or password reset are immediately forwarded to the `auth-service` without JWT validation. This is handled by a `@Public()` decorator.
+-   **Public Routes (`/auth/*`)**: Requests for public endpoints like login, forgot-password, reset-password, or bootstrap-admin are immediately forwarded to the `auth-service` without JWT validation. In the code, these are handled by a single controller method using a multi-route `@Post([...])` decorator. **Nota:** Si usas varios decoradores `@Post()` en un solo método, solo el último será efectivo; usa un array para agrupar rutas públicas.
 -   **Protected Routes (`*`)**: All other requests are intercepted by a global `JwtAuthGuard`.
     -   If the JWT in the `Authorization` header is **valid**, the gateway decodes its payload. It then forwards the request to the target microservice, adding `X-User-Id`, `X-User-Email`, and `X-User-Roles` headers.
     -   If the JWT is **invalid or missing**, the gateway immediately rejects the request with a `401 Unauthorized` error, and the request never reaches an internal service.
@@ -96,3 +96,7 @@ npm run start:dev
     ```
 4.  The gateway will validate the token, add the user headers, and forward the request.
 5.  Try accessing a protected route without a token; you should receive a `401 Unauthorized` error directly from the gateway.
+
+## Development Notes
+
+- In development, password reset tokens and initial passwords are printed to the console for simulation purposes. There is no real email delivery in this environment.
