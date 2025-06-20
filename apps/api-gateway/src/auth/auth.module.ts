@@ -1,19 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller.js';
-import { AuthService } from './auth.service.js';
-import { UsersModule } from '../users/users.module.js';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy.js';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true, // Makes ConfigService available throughout the app
     }),
-    UsersModule,
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -23,8 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  providers: [JwtStrategy],
+  exports: [PassportModule], // PassportModule is often what you want to export
 })
 export class AuthModule { }
