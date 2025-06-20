@@ -1,13 +1,19 @@
 {
   "name": "common-types",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Shared types and enums for the hospital SGH monorepo",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "types",
+    "enums",
+    "shared"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "module"
 }

@@ -11,11 +11,32 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("USER_DB_URL")
+  url      = "postgresql://wally:wally@localhost:5432/usuarios?schema=usuarios"
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
+  id                 Int                 @id @default(autoincrement())
+  email              String              @unique
+  passwordHash       String // Almacena la contraseña hasheada con bcryptjs
+  name               String
+  address            String
+  roles              UserRole            @default(PATIENT) // Roles del usuario para RBAC usando enum compartido
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  passwordResetToken PasswordResetToken? @relation(name: "UserPasswordResetToken") // Relación con el token de restablecimiento de contraseña
+}
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique // El token de un solo uso
+  userId    Int      @unique // ID del usuario asociado, @unique asegura solo un token activo por usuario
+  expiresAt DateTime // Fecha de expiración del token
+  createdAt DateTime @default(now())
+  user      User     @relation(name: "UserPasswordResetToken", fields: [userId], references: [id], onDelete: Cascade)
 }
