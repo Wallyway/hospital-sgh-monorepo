@@ -1,11 +1,4 @@
-import { UserRole } from 'common-types';
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateUserAdminDto {
   @IsEmail()
@@ -23,8 +16,4 @@ export class CreateUserAdminDto {
   @IsString()
   @IsNotEmpty()
   address!: string;
-
-  @IsEnum(UserRole)
-  @IsNotEmpty()
-  roles!: UserRole;
 }

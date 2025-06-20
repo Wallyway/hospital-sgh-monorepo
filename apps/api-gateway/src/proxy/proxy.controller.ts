@@ -14,10 +14,12 @@ export class ProxyController {
   // == PUBLIC ROUTES ==
   // These routes are explicitly public and do not pass any auth headers.
   @Public()
-  @Post('auth/login')
-  @Post('auth/forgot-password')
-  @Post('auth/reset-password')
-  @Post('auth/dev/bootstrap-admin')
+  @Post([
+    'auth/login',
+    'auth/forgot-password',
+    'auth/reset-password',
+    'auth/dev/bootstrap-admin'
+  ])
   async proxyPublicRoutes(@Req() req: Request, @Res() res: Response) {
     const { method, originalUrl, body, headers } = req;
     const recipientResponse = await this.proxyService.proxyRequest(
@@ -36,6 +38,7 @@ export class ProxyController {
   @UseGuards(JwtAuthGuard)
   @All('*')
   async proxyProtectedRoutes(@Req() req: Request, @Res() res: Response) {
+    console.log('[GATEWAY] Entró a proxyProtectedRoutes:', req.method, req.originalUrl);
     const { method, originalUrl, body, headers, user } = req as any; // 'user' is attached by JwtAuthGuard
 
     const recipientResponse = await this.proxyService.proxyRequest(

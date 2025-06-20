@@ -44,7 +44,9 @@ export class UsersService {
     });
   }
 
-  async createUserByAdmin(data: CreateUserAdminDto): Promise<User> {
+  async createUserByAdmin(
+    data: CreateUserAdminDto & { roles: UserRole }
+  ): Promise<User> {
     const saltOrRounds = 10;
     const passwordHash = await bcryptjs.hash(data.password, saltOrRounds);
 

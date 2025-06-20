@@ -4,6 +4,7 @@ import {
   Body,
   UseGuards,
   BadRequestException,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { LoginDto } from '../../dto/login.dto.js';
@@ -62,8 +63,29 @@ export class AuthController {
 
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @Post('admin/create-user')
-  async createUserByAdmin(@Body() createUserAdminDto: CreateUserAdminDto) {
-    return this.usersService.createUserByAdmin(createUserAdminDto);
+  @Post('admin/create-user/:role')
+  async createUserByAdmin(
+    @Param('role') role: string,
+    @Body() createUserAdminDto: CreateUserAdminDto
+  ) {
+    // Validate and assign role
+    let userRole: UserRole;
+    switch (role.toUpperCase()) {
+      case 'PATIENT':
+        userRole = UserRole.PATIENT;
+        break;
+      case 'DOCTOR':
+        userRole = UserRole.DOCTOR;
+        break;
+      case 'ADMIN':
+        userRole = UserRole.ADMIN;
+        break;
+      default:
+        throw new BadRequestException('Invalid role');
+    }
+    return this.usersService.createUserByAdmin({
+      ...createUserAdminDto,
+      roles: userRole,
+    });
   }
 }

@@ -4,7 +4,5 @@ import { ProxyModule } from './proxy/proxy.module';
 
 @Module({
   imports: [AuthModule, ProxyModule],
-  controllers: [],
-  providers: [],
 })
 export class AppModule { }
