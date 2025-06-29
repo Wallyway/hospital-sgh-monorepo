@@ -1,29 +1,24 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import type { User, AuthState } from "@/types/user";
+import { UserRole } from "@/types/user";
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   hasRole: (role: string) => boolean;
+  hasPermission: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  department?: string;
-  specialization?: string;
-  permissions: string[];
-}
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -36,7 +31,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     user: null,
     isAuthenticated: false,
     isLoading: true,
-  }); 
+  });
 
   // funcion login (se reemplza despues)
   const login = async (email: string, _password: string) => {
@@ -46,14 +41,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         id: "1",
         name: "Dr. Juan Pérez",
         email: email,
-        // role: 'ADMIN',
-        role: 'PATIENT',
+        role: UserRole.ADMIN, // Usar el enum correcto
         department: "Cardiología",
         specialization: "Cardiólogo",
         permissions: [
           "view_patients",
           "edit_medical_records",
           "prescribe_medication",
+          "manage_users",
         ],
       };
 
@@ -82,6 +77,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return authState.user?.role === role;
   };
 
+  // verificar si el usuario tiene un permiso específico
+  const hasPermission = (permission: string): boolean => {
+    return authState.user?.permissions?.includes(permission) || false;
+  };
+
   // Verificar autenticación al cargar la app
   useEffect(() => {
     const checkAuth = async () => {
@@ -106,16 +106,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     logout,
     hasRole,
+    hasPermission,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-// Hook para acceder al contexto de autenticación
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 };
