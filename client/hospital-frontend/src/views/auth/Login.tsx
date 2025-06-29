@@ -37,7 +37,7 @@ export const Login = () => {
           <p>Sistema de Gestión Hospitalaria</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} >
+        <form onSubmit={handleSubmit(onSubmit)} noValidate >
           <div className="form-group">
             <label htmlFor="email">Correo electrónico</label>
             <input
