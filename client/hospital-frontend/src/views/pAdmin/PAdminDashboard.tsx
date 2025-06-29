@@ -27,9 +27,9 @@ const PAdminDashboard = () => {
   const [mensaje, setMensaje] = useState('Home');
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #F0F4FF 0%, #D4F1FF 100%)' }}>
+    <div className="padmin-dashboard-bg">
       <DashboardLayout navProps={{ ...padmin, menuItems: pAdminMenu, onSidebarClick: (text: string) => setMensaje(`Se clickeó el botón ${text}`) }}>
-        <div style={{ minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 500 }}>
+        <div className="dashboard-center-message">
           {mensaje}
         </div>
       </DashboardLayout>

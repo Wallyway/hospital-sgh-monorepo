@@ -10,9 +10,9 @@ const PatientDashboard = () => {
   const [mensaje, setMensaje] = useState('Home');
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #CAE6FF 0%, #D4CDFF 100%)' }}>
+    <div className="patient-dashboard-bg">
       <DashboardLayout navProps={{ ...paciente, onSidebarClick: (text: string) => setMensaje(`Se clickeó el botón ${text}`) }}>
-        <div style={{ minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 500 }}>
+        <div className="dashboard-center-message">
           {mensaje}
         </div>
       </DashboardLayout>
