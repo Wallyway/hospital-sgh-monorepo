@@ -1,13 +1,12 @@
 import React from 'react';
 import NavDesktop from './NavDesktop';
-import HeaderSection from './HeaderSection';
 import LayoutSection from './LayoutSection';
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = ({ children, navProps }: { children: React.ReactNode, navProps: any }) => {
   return (
     <LayoutSection
-      sidebar={<NavDesktop />}
-      header={<HeaderSection />}
+      sidebar={<NavDesktop {...navProps} />}
+      header={null}
     >
       {children}
     </LayoutSection>
