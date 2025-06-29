@@ -2,11 +2,11 @@ import React from 'react';
 
 const LayoutSection = ({ sidebar, header, children }: { sidebar: React.ReactNode; header: React.ReactNode; children: React.ReactNode }) => {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="layout-section">
       {sidebar}
-      <div style={{ flex: 1, marginLeft: 300 }}>
+      <div className="layout-main">
         {header}
-        <main style={{ marginTop: 64, padding: 32 }}>{children}</main>
+        <main className="layout-main-content">{children}</main>
       </div>
     </div>
   );

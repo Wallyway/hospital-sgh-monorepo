@@ -83,84 +83,26 @@ const NavDesktop: React.FC<NavDesktopProps> = ({ avatarUrl, nombre, onSidebarCli
       }}
     >
       <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
-        <Avatar src={avatarUrl} alt={nombre} sx={{ width: 48, height: 48, mb: 1 }} />
+        <Avatar src={avatarUrl} alt={nombre} className="sidebar-avatar" />
       </Box>
       <Divider sx={{ width: '100%', mb: 1 }} />
       <List sx={listSx} style={listStyle}>
         {sortedItems.map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ display: 'flex', justifyContent: 'center' }}>
+          <ListItem key={item.text} disablePadding className="sidebar-list-item">
             <div
-              style={{
-                width: 80,
-                height: 80,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-              }}
+              className="sidebar-item-wrapper"
               onMouseEnter={(e) => handlePopoverOpen(e, item.text)}
               onMouseLeave={handlePopoverClose}
             >
               <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 16,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s',
-                }}
+                className="sidebar-icon-btn"
                 onClick={() => onSidebarClick && onSidebarClick(item.text)}
               >
-                <span style={{ color: '#5B5B7B', fontSize: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.icon}</span>
+                <span>{item.icon}</span>
               </div>
-              {popoverText === item.text && anchorEl && menuItems && (
+              {popoverText === item.text && anchorEl && (
                 <div
-                  style={{
-                    position: 'absolute',
-                    left: 80,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: '#fff',
-                    boxShadow: '0 4px 24px rgba(80, 80, 120, 0.12)',
-                    borderRadius: 16,
-                    padding: '12px 24px',
-                    minWidth: 120,
-                    display: 'flex',
-                    alignItems: 'center',
-                    zIndex: 1300,
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    fontSize: 18,
-                    color: '#2B2B4B',
-                  }}
-                  onClick={() => onSidebarClick && onSidebarClick(item.text)}
-                >
-                  {item.text}
-                </div>
-              )}
-              {popoverText === item.text && anchorEl && !menuItems && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: 72,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: '#fff',
-                    boxShadow: '0 4px 24px rgba(80, 80, 120, 0.12)',
-                    borderRadius: 16,
-                    padding: '12px 24px',
-                    minWidth: 120,
-                    display: 'flex',
-                    alignItems: 'center',
-                    zIndex: 1300,
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    fontSize: 18,
-                    color: '#2B2B4B',
-                  }}
+                  className="sidebar-popover"
                   onClick={() => onSidebarClick && onSidebarClick(item.text)}
                 >
                   {item.text}
