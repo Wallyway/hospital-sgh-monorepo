@@ -9,7 +9,7 @@ import type { LoginFormData } from "@/types/forms";
 import "./auth.scss";
 
 export const Login = () => {
-  const { user, login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const {
