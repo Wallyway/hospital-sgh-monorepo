@@ -27,7 +27,7 @@ const MedicDashboard = () => {
     <div className="medic-dashboard-bg">
       <DashboardLayout navProps={{ ...medico, menuItems: medicMenu, onSidebarClick: (text: string) => setMensaje(`Se clickeó el botón ${text}`) }}>
         <div className="dashboard-center-message">
-          {mensaje}
+          <h1>{mensaje}</h1>
         </div>
       </DashboardLayout>
     </div>
