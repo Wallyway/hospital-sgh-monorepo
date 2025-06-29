@@ -1,3 +1,4 @@
+// flex
 .flex {
   display: flex;
 }
@@ -15,7 +16,11 @@
   align-items: center;
 }
 
-// 
+// dimensions
 .w-100 {
   width: 100%;
+}
+
+.min-h-100vh {
+  min-height: 100vh;
 }
