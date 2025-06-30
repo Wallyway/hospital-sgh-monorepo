@@ -7,14 +7,13 @@ import MedicAgenda from "@views/medic/Agenda.jsx";
 // admin views
 import PAdminDashboard from "@views/pAdmin/PAdminDashboard";
 // patient views
-import PatientBase from "@/views/patient/PatientBase";
-import Agendar from "@/views/patient/Agendar";
+import PatientBase from "@/views/patient/PatientBase.jsx";
+import Agendar from "@/views/patient/Agendar.jsx";
+import CitasPendientes from "@/views/patient/CitasPendientes.jsx";
+import ModificarDatos from "@/views/patient/ModificarDatos.jsx";
+import HistorialClinico from "@/views/patient/HistorialClinico.jsx";
 
-// Componentes de secciones del paciente
-const CitasPendientes = () => <div>Citas pendientes</div>;
-const CancelarCitas = () => <div>Cancelar citas</div>;
-const ModificarDatos = () => <div>Modificar datos</div>;
-const HistorialClinico = () => <div>Historial clínico</div>;
+
 
 // Componentes de secciones del médico (placeholders)
 const ConsultarMedicamentos = () => <div>Consultar medicamentos</div>;
@@ -47,7 +46,6 @@ export const AppRouter = () => {
       <Route path="/patient" element={<PatientBase />}>
         <Route path="agendar" element={<Agendar />} />
         <Route path="citas-pendientes" element={<CitasPendientes />} />
-        <Route path="cancelar-citas" element={<CancelarCitas />} />
         <Route path="modificar-datos" element={<ModificarDatos />} />
         <Route path="historial-clinico" element={<HistorialClinico />} />
         {/* <Route index element={<Agendar />} /> */}

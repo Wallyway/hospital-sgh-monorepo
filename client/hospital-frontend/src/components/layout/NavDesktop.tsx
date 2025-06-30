@@ -7,7 +7,6 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -40,11 +39,6 @@ const patientItems: MenuItem[] = [
     text: "Citas pendientes",
     icon: <PendingActionsIcon />,
     to: "/patient/citas-pendientes",
-  },
-  {
-    text: "Cancelar citas",
-    icon: <CancelIcon />,
-    to: "/patient/cancelar-citas",
   },
   {
     text: "Modificar sus datos",

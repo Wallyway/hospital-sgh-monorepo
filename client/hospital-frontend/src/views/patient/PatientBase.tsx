@@ -19,8 +19,6 @@ const PatientBase = () => {
       return "Agendar cita";
     } else if (path.includes("citas-pendientes")) {
       return "Citas pendientes";
-    } else if (path.includes("cancelar-citas")) {
-      return "Cancelar citas";
     } else if (path.includes("modificar-datos")) {
       return "Modificar datos";
     } else if (path.includes("historial-clinico")) {
