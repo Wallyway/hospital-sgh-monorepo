@@ -4,7 +4,7 @@ import type { User, AuthState } from "@/types/user";
 import { UserRole } from "@/types/user";
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   hasRole: (role: string) => boolean;
   hasPermission: (permission: string) => boolean;
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         id: "1",
         name: "Dr. Juan Pérez",
         email: email,
-        role: UserRole.ADMIN, // Usar el enum correcto
+        role: UserRole.PATIENT, // Usar el enum correcto
         department: "Cardiología",
         specialization: "Cardiólogo",
         permissions: [
@@ -57,9 +57,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         isAuthenticated: true,
         isLoading: false,
       });
+
+      return mockUser;
     } catch (error) {
       console.error("Login error:", error);
-      throw error;
+      throw new Error("Login failed");
     }
   };
 

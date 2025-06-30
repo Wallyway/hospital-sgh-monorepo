@@ -1,3 +1,4 @@
+// DASHBOARD
 // Estilos de fondo para los dashboards
 .patient-dashboard-bg {
   min-height: 100vh;
@@ -15,14 +16,12 @@
 }
 
 .dashboard-center-message {
-  min-height: 200px;
   display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 24px;
   font-weight: 500;
 }
 
+// -- SIDEBAR
 .sidebar-avatar {
   width: 48px;
   height: 48px;
@@ -72,21 +71,6 @@
   margin-left: 8px;
 }
 
-.layout-section {
-  display: flex;
-  min-height: 100vh;
-}
-
-.layout-main {
-  flex: 1;
-  margin-left: 300px;
-}
-
-.layout-main-content {
-  margin-top: 64px;
-  padding: 32px;
-}
-
 .sidebar-item-wrapper {
   width: 80px;
   height: 80px;
@@ -95,6 +79,23 @@
   justify-content: center;
   position: relative;
   overflow: visible;
+}
+
+
+// LAYOUT
+.layout-section {
+  display: flex;
+  min-height: 100vh;
+}
+
+.layout-main {
+  flex: 1;
+  margin-left: 32px;
+}
+
+.layout-main-content {
+  padding: 32px;
+  min-height: 100vh;
 }
 
 // Responsive para dashboard

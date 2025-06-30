@@ -30,7 +30,7 @@ const PAdminDashboard = () => {
     <div className="padmin-dashboard-bg">
       <DashboardLayout navProps={{ ...padmin, menuItems: pAdminMenu, onSidebarClick: (text: string) => setMensaje(`Se clickeó el botón ${text}`) }}>
         <div className="dashboard-center-message">
-          {mensaje}
+          <h1>{mensaje}</h1>
         </div>
       </DashboardLayout>
     </div>
