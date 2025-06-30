@@ -1,32 +1,58 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 // components
 import { Login } from "@views/auth/Login";
-import MedicDashboard from "@views/medic/MedicDashboard";
-import PatientDashboard from "@views/patient/PatientDashboard";
+// medic views
+import MedicBase from "@/views/medic/MedicBase";
+import MedicAgenda from "@views/medic/Agenda.jsx";
+// admin views
 import PAdminDashboard from "@views/pAdmin/PAdminDashboard";
+// patient views
+import PatientBase from "@/views/patient/PatientBase";
+import Agendar from "@/views/patient/Agendar";
 
-// Componentes de secciones del paciente (placeholders)
-const Agenda = () => <div>Agenda de citas</div>;
+// Componentes de secciones del paciente
 const CitasPendientes = () => <div>Citas pendientes</div>;
 const CancelarCitas = () => <div>Cancelar citas</div>;
-const ModificarDatos = () => <div>Modificar sus datos</div>;
-const HistorialClinico = () => <div>Ver historial clínico</div>;
+const ModificarDatos = () => <div>Modificar datos</div>;
+const HistorialClinico = () => <div>Historial clínico</div>;
+
+// Componentes de secciones del médico (placeholders)
+const ConsultarMedicamentos = () => <div>Consultar medicamentos</div>;
+const SolicitarEquipos = () => <div>Solicitar equipos</div>;
+const ConsultarHC = () => <div>Consultar HC</div>;
+const RecetarMedicamentos = () => <div>Recetar medicamentos</div>;
+const DescripcionCita = () => <div>Descripción cita</div>;
 
 export const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/medic/dashboard" element={<MedicDashboard />} />
+
+      {/* Medic routes */}
+      <Route path="/medic" element={<MedicBase />} >
+        <Route path="agenda" element={<MedicAgenda />} />
+        <Route path="medicamentos" element={<ConsultarMedicamentos />} />
+        <Route path="equipos" element={<SolicitarEquipos />} />
+        <Route path="historiales" element={<ConsultarHC />} />
+        <Route path="recetar" element={<RecetarMedicamentos />} />
+        <Route path="citas" element={<DescripcionCita />} />
+        {/* <Route index element={<MedicAgenda />} /> */}
+      </Route>
+
+      {/* Admmin routes */}
       <Route path="/padmin/dashboard" element={<PAdminDashboard />} />
-      <Route path="/patient/dashboard" element={<PatientDashboard />}>
-        <Route path="agenda" element={<Agenda />} />
+
+      {/* Patient routes */}
+      <Route path="/patient" element={<PatientBase />}>
+        <Route path="agendar" element={<Agendar />} />
         <Route path="citas-pendientes" element={<CitasPendientes />} />
         <Route path="cancelar-citas" element={<CancelarCitas />} />
         <Route path="modificar-datos" element={<ModificarDatos />} />
         <Route path="historial-clinico" element={<HistorialClinico />} />
-        <Route index element={<Agenda />} />
+        {/* <Route index element={<Agendar />} /> */}
       </Route>
+
       <Route
         path="*"
         element={

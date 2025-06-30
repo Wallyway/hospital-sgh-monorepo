@@ -1,0 +1,229 @@
+@use "@styles/variables" as *;
+
+.medic-base {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e6f7ff 0%, #d4ffea 100%);
+
+  .main-content-section {
+    flex: 1; // Ocupa el espacio disponible sin desbordar
+    min-height: 270px; 
+    // height: 100%;
+  }
+
+  // Agenda Styles
+  .agenda-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+
+    h2 {
+      margin: 0;
+      color: $primary-color;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .agenda-date {
+      font-size: 1rem;
+      color: #666;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+  }
+
+  .appointments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1; // Ocupa el espacio restante después del header
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    min-height: 0; // Importante para que funcione el overflow
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  .appointment-card {
+    display: grid;
+    grid-template-columns: 120px 1fr 120px 160px;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    border-left: 4px solid $primary-color;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      border-color: $primary-color;
+    }
+
+    &.completed {
+      opacity: 0.7;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-left-color: #28a745; // Cambio: usar border-left-color
+    }
+
+    .appointment-time {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      .time {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: $primary-color;
+        line-height: 1;
+      }
+
+      .duration {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.25rem;
+      }
+    }
+
+    .appointment-details {
+      h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .patient-info {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.9rem;
+        color: #7f8c8d;
+      }
+
+      .appointment-type {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #34495e;
+        font-weight: 500;
+      }
+    }
+
+    .appointment-status {
+      display: flex;
+      justify-content: center;
+
+      .status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &.confirmed {
+          background-color: #d4edda;
+          color: #155724;
+          border: 1px solid #c3e6cb;
+        }
+
+        &.pending {
+          background-color: #fff3cd;
+          color: #856404;
+          border: 1px solid #ffeaa7;
+        }
+
+        &.completed {
+          background-color: #d1ecf1;
+          color: #0c5460;
+          border: 1px solid #bee5eb;
+        }
+      }
+    }
+
+    .appointment-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+
+      .btn-action {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+
+        &.primary {
+          background-color: $primary-color;
+          color: white;
+
+          &:hover {
+            background-color: $primary-color-darken;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.secondary {
+          background-color: white;
+          color: $primary-color;
+          border: 1px solid $primary-color;
+
+          &:hover {
+            background-color: $primary-color;
+            color: white;
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    .appointment-card {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      text-align: center;
+
+      .appointment-time {
+        .time {
+          font-size: 1.2rem;
+        }
+      }
+
+      .appointment-actions {
+        justify-content: center;
+      }
+    }
+
+    .agenda-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import DashboardLayout from '@components/dashboard/layout/DashboardLayout';
+import DashboardLayout from '@components/layout/LayoutSection';
 import PeopleIcon from '@mui/icons-material/People';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';

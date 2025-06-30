@@ -54,3 +54,12 @@
     background-color: $primary-color-darken;
   }
 }
+
+//text
+.title-section {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $primary-color;
+  margin-bottom: 1rem;
+  align-self: flex-start;
+}

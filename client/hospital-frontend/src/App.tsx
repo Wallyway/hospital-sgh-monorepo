@@ -7,6 +7,7 @@ import { AppRouter } from "@components/routing/AppRouter";
 // styles
 import "@styles/main.scss";
 
+
 function App() {
   return (
     <AuthProvider>

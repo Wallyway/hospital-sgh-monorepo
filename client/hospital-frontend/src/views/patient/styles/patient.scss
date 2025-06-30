@@ -1,0 +1,79 @@
+.patient-base {
+  background: linear-gradient(135deg, #cae6ff 0%, #d4cdff 100%);
+  min-height: 100vh;
+
+  .main-content-section {
+    max-width: 900px;
+  }
+
+  .agenda-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .agenda-subtitle {
+    font-size: 22px;
+    color: #444;
+    margin-bottom: 32px;
+  }
+
+  .agenda-form {
+    width: 100%;
+  }
+
+  .agenda-form-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+
+  .agenda-form-group {
+    flex: 1;
+  }
+
+  .agenda-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .agenda-select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  .agenda-calendar-group {
+    margin-bottom: 24px;
+  }
+
+  .agenda-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .agenda-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 36px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .agenda-btn-primary {
+    background: #4f6bed;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(80, 80, 120, 0.08);
+  }
+
+  .agenda-btn-secondary {
+    background: #f7f7fa;
+    color: #222;
+    font-weight: 500;
+  }
+}
