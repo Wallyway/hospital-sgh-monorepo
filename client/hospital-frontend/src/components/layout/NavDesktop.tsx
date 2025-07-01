@@ -44,12 +44,7 @@ const patientItems: MenuItem[] = [
     text: "Modificar sus datos",
     icon: <ManageAccountsIcon />,
     to: "/patient/modificar-datos",
-  },
-  {
-    text: "Ver historial clínico",
-    icon: <AssignmentIcon />,
-    to: "/patient/historial-clinico",
-  },
+  }
 ];
 
 const medicItems: MenuItem[] = [

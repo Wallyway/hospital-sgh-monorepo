@@ -21,9 +21,7 @@ const PatientBase = () => {
       return "Citas pendientes";
     } else if (path.includes("modificar-datos")) {
       return "Modificar datos";
-    } else if (path.includes("historial-clinico")) {
-      return "Historial clínico";
-    }
+    } 
     return "Inicio Paciente";
   };
 

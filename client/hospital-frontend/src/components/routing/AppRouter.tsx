@@ -11,7 +11,7 @@ import PatientBase from "@/views/patient/PatientBase.jsx";
 import Agendar from "@/views/patient/Agendar.jsx";
 import CitasPendientes from "@/views/patient/CitasPendientes.jsx";
 import ModificarDatos from "@/views/patient/ModificarDatos.jsx";
-import HistorialClinico from "@/views/patient/HistorialClinico.jsx";
+
 
 
 
@@ -47,7 +47,6 @@ export const AppRouter = () => {
         <Route path="agendar" element={<Agendar />} />
         <Route path="citas-pendientes" element={<CitasPendientes />} />
         <Route path="modificar-datos" element={<ModificarDatos />} />
-        <Route path="historial-clinico" element={<HistorialClinico />} />
         {/* <Route index element={<Agendar />} /> */}
       </Route>
 
