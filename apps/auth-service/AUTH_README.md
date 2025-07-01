@@ -179,4 +179,21 @@ apps/auth-service/
 6. **Role Validation**: Implement middleware to validate JWT tokens and check role permissions
 7. **Admin Activity Logging**: Log all admin actions for audit trails
 8. **User Creation Validation**: Add validation for email uniqueness and data integrity
-9. **Role Assignment Limits**: Consider implementing role hierarchy and assignment restrictions 
+9. **Role Assignment Limits**: Consider implementing role hierarchy and assignment restrictions
+
+## Notas sobre enums compartidos entre TypeScript y Prisma
+
+En este proyecto, los enums como `UserRole` se definen tanto en TypeScript (en el paquete `common-types`) como en el archivo de esquema de Prisma (`schema.prisma`).
+
+- **Enum en TypeScript:** Se usa en el código de la aplicación para tener referencias tipadas y seguras, con autocompletado y validación en tiempo de compilación.
+- **Enum en Prisma:** Se usa para definir los valores permitidos en la base de datos y que Prisma genere los tipos y validaciones correspondientes.
+
+**¿Por qué tener ambos?**
+- Prisma y TypeScript no comparten enums automáticamente.
+- Es importante mantenerlos sincronizados manualmente o con herramientas de generación.
+- Así se garantiza integridad en la base de datos y seguridad en el código.
+
+**Resumen:**
+- Enum en Prisma: para la base de datos.
+- Enum en TypeScript: para el código de la app.
+- Es correcto y común tener ambos, pero deben estar sincronizados. 

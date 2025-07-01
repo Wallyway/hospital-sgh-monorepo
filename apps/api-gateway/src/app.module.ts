@@ -5,4 +5,4 @@ import { ProxyModule } from './proxy/proxy.module';
 @Module({
   imports: [AuthModule, ProxyModule],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -18,7 +19,7 @@ export class ProxyController {
     'auth/login',
     'auth/forgot-password',
     'auth/reset-password',
-    'auth/dev/bootstrap-admin'
+    'auth/dev/bootstrap-admin',
   ])
   async proxyPublicRoutes(@Req() req: Request, @Res() res: Response) {
     const { method, originalUrl, body, headers } = req;
@@ -38,7 +39,11 @@ export class ProxyController {
   @UseGuards(JwtAuthGuard)
   @All('*')
   async proxyProtectedRoutes(@Req() req: Request, @Res() res: Response) {
-    console.log('[GATEWAY] Entró a proxyProtectedRoutes:', req.method, req.originalUrl);
+    console.log(
+      '[GATEWAY] Entró a proxyProtectedRoutes:',
+      req.method,
+      req.originalUrl,
+    );
     const { method, originalUrl, body, headers, user } = req as any; // 'user' is attached by JwtAuthGuard
 
     const recipientResponse = await this.proxyService.proxyRequest(

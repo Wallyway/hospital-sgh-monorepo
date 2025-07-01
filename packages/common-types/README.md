@@ -79,3 +79,20 @@ packages/common-types/
 2. Exportar desde `src/index.ts`
 3. Actualizar esta documentación
 4. Reconstruir el paquete 
+
+## Notas sobre enums compartidos entre TypeScript y Prisma
+
+En este monorepo, los enums como `UserRole` se definen tanto en TypeScript (en este paquete) como en el archivo de esquema de Prisma (`schema.prisma`).
+
+- **Enum en TypeScript:** Se usa en el código de la aplicación para tener referencias tipadas y seguras, con autocompletado y validación en tiempo de compilación.
+- **Enum en Prisma:** Se usa para definir los valores permitidos en la base de datos y que Prisma genere los tipos y validaciones correspondientes.
+
+**¿Por qué tener ambos?**
+- Prisma y TypeScript no comparten enums automáticamente.
+- Es importante mantenerlos sincronizados manualmente o con herramientas de generación.
+- Así se garantiza integridad en la base de datos y seguridad en el código.
+
+**Resumen:**
+- Enum en Prisma: para la base de datos.
+- Enum en TypeScript: para el código de la app.
+- Es correcto y común tener ambos, pero deben estar sincronizados. 
