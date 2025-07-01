@@ -20,10 +20,10 @@ model User {
   passwordHash       String // Almacena la contraseña hasheada con bcryptjs
   name               String
   address            String
-  roles              UserRole            @default(PATIENT) // Roles del usuario para RBAC usando enum compartido
+  roles              UserRole            @default(PATIENT)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
-  passwordResetToken PasswordResetToken? @relation(name: "UserPasswordResetToken") // Relación con el token de restablecimiento de contraseña
+  passwordResetToken PasswordResetToken? @relation(name: "UserPasswordResetToken")
 }
 
 enum UserRole {
