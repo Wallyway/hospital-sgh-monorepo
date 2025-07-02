@@ -73,3 +73,8 @@ Run `npm add -D sass` to work with `.scss` files.
 
 ## Install React use Form
 Run `npm install react-hook-form` to work with `useForm`
+
+## Other isntalations
+`Npm install -D tailwindcss postcss autoprefixer`
+`Npx tailwindcss init -p`
+`Npx shadcn@latest init`

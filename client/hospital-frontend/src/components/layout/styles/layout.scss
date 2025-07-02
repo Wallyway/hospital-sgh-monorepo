@@ -1,0 +1,110 @@
+// DASHBOARD
+// Estilos de fondo para los dashboards
+.padmin-dashboard-bg {
+  background: linear-gradient(135deg, #f0f4ff 0%, #d4f1ff 100%);
+}
+
+// LAYOUT
+.layout-page {
+  display: flex;
+  .layout-main {
+    width: 100%;
+    .layout-main-content {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      .main-content-section {
+        display: flex;
+        flex-direction: column;
+        border-radius: 1rem;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 4px 4px 10px rgba(79, 79, 110, 0.2);
+      }
+    }
+  }
+}
+
+// -- SIDEBAR
+.layout-sidebar {
+  padding: 2rem 0 2rem 2rem;
+  .sidebar {
+    height: 100%;
+  }
+  .sidebar-item-wrapper {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+
+    .sidebar-icon-btn {
+      padding: 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #5b5b7b;
+
+      &:hover {
+        background: #f3f6fa;
+      }
+    }
+
+    .sidebar-popover {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      box-shadow: 0 4px 24px rgba(80, 80, 120, 0.12);
+      border-radius: 16px;
+      padding: 12px 24px;
+      min-width: 120px;
+      align-items: center;
+      z-index: 1300;
+      font-weight: 600;
+      font-size: 18px;
+      color: #2b2b4b;
+      margin-left: 30px;
+    }
+  }
+}
+
+// Responsive para dashboard
+@media (max-width: 900px) {
+  .layout-page {
+    flex-direction: column;
+
+    .layout-main {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  .layout-sidebar {
+    padding: 2rem 2rem 0 2rem;
+    .sidebar {
+      height: fit-content;
+      width: 100%;
+      .sidebar-list {
+        display: flex;
+        overflow-x: auto;
+      }
+      .sidebar-popover {
+        display: none;
+      }
+      .sidebar-logout {
+        button {
+          width: 40px;
+          height: 40px;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}

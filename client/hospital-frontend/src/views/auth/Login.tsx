@@ -31,7 +31,7 @@ export const Login = () => {
 
       if (userData) {
         // Redirigir al dashboard o a la página principal
-        navigate(`/${userData.role}/dashboard`);
+        navigate(`/${userData.role}`);
       }
     } catch (error) {
       // esto se puede cambiar por los errores de la API (serverErrors)

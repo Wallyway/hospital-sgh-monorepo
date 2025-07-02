@@ -13,15 +13,28 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function Calendar24() {
+interface Calendar24Props {
+  date?: Date;
+  onDateChange?: (date: Date | undefined) => void;
+  showTime?: boolean;
+  time?: string;
+  onTimeChange?: (time: string) => void;
+}
+
+export function Calendar24({ 
+  date, 
+  onDateChange, 
+  showTime = true, 
+  time = "10:30:00", 
+  onTimeChange 
+}: Calendar24Props) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
 
   return (
     <div className="flex gap-4">
       <div className="flex flex-col gap-3">
         <Label htmlFor="date-picker" className="px-1">
-          Date
+          Fecha
         </Label>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -39,26 +52,29 @@ export function Calendar24() {
               mode="single"
               selected={date}
               captionLayout="dropdown"
-              onSelect={(date: Date | undefined) => {
-                setDate(date);
+              onSelect={(selectedDate: Date | undefined) => {
+                onDateChange?.(selectedDate);
                 setOpen(false);
               }}
             />
           </PopoverContent>
         </Popover>
       </div>
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="time-picker" className="px-1">
-          Time
-        </Label>
-        <Input
-          type="time"
-          id="time-picker"
-          step="1"
-          defaultValue="10:30:00"
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-        />
-      </div>
+      {showTime && (
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="time-picker" className="px-1">
+            Hora
+          </Label>
+          <Input
+            type="time"
+            id="time-picker"
+            step="1"
+            value={time}
+            onChange={(e) => onTimeChange?.(e.target.value)}
+            className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          />
+        </div>
+      )}
     </div>
   );
 } 
