@@ -49,23 +49,23 @@ const patientItems: MenuItem[] = [
 
 const medicItems: MenuItem[] = [
   { text: "Agenda", icon: <CalendarMonthIcon />, to: "/medic/agenda" },
-  {
-    text: "Consultar medicamentos",
-    icon: <LocalPharmacyIcon />,
-    to: "/medic/medicamentos",
-  },
+  // {
+  //   text: "Consultar medicamentos",
+  //   icon: <LocalPharmacyIcon />,
+  //   to: "/medic/medicamentos",
+  // },
   {
     text: "Solicitar equipos",
     icon: <MedicalServicesIcon />,
     to: "/medic/equipos",
   },
-  { text: "Consultar HC", icon: <AssignmentIcon />, to: "/medic/historiales" },
-  {
-    text: "Recetar medicamentos",
-    icon: <EditNoteIcon />,
-    to: "/medic/recetar",
-  },
-  { text: "Descripción cita", icon: <DescriptionIcon />, to: "/medic/citas" },
+  // { text: "Consultar HC", icon: <AssignmentIcon />, to: "/medic/historiales" },
+  // {
+  //   text: "Recetar medicamentos",
+  //   icon: <EditNoteIcon />,
+  //   to: "/medic/recetar",
+  // },
+  // { text: "Descripción cita", icon: <DescriptionIcon />, to: "/medic/citas" },
 ];
 
 const NavDesktop: React.FC<NavDesktopProps> = ({

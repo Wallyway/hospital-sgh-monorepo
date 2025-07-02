@@ -1,0 +1,503 @@
+@use "sass:color";
+@use "@styles/variables" as *;
+
+.solicitar-equipos-container {
+  background: #fff;
+  border-radius: 24px;
+  padding: 2rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(80, 120, 200, 0.08);
+  height: calc(100vh - 4rem);
+  max-height: calc(100vh - 4rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .equipos-header {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+    flex-shrink: 0;
+
+    .header-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h1 {
+        color: $primary-color;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .btn-back {
+        padding: 0.5rem 1rem;
+        background-color: #f8f9fa;
+        color: #495057;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #e9ecef;
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+
+  .equipos-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  // Nueva Solicitud Section
+  .nueva-solicitud-section {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 1.2rem;
+    border: 1px solid #e9ecef;
+
+    h2 {
+      color: $primary-color;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::before {
+        content: "➕";
+        font-size: 1.2rem;
+      }
+    }
+
+    .solicitud-form {
+      .form-row {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .form-group {
+          flex: 1;
+
+          .form-label {
+            display: block;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 0.5rem;
+          }
+
+          .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+
+            &:focus {
+              outline: none;
+              border-color: $primary-color;
+              box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+            }
+          }
+
+          .fecha-actual {
+            padding: 0.75rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #495057;
+            font-weight: 500;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+          }
+        }
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
+
+        .btn-primary {
+          padding: 0.6rem 1.3rem;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: none;
+          font-size: 1rem;
+          background: $primary-color;
+          color: white;
+
+          &:hover {
+            transform: translateY(-1px);
+            background: color.adjust($primary-color, $lightness: -10%);
+          }
+        }
+      }
+    }
+  }
+
+  // Solicitudes Existentes Section
+  .solicitudes-existentes-section {
+    flex: 1;
+    min-height: 0;
+
+    .solicitudes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h2 {
+        color: $primary-color;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &::before {
+          content: "📋";
+          font-size: 1.2rem;
+        }
+      }
+
+      .filtros {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .filter-label {
+          font-weight: 600;
+          color: #444;
+        }
+
+        .filter-select {
+          padding: 0.5rem;
+          border: 1px solid #dee2e6;
+          border-radius: 6px;
+          font-size: 0.9rem;
+
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+          }
+        }
+      }
+    }
+
+    .solicitudes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+
+      .no-solicitudes {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #666;
+
+        .no-solicitudes-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          opacity: 0.5;
+        }
+
+        h3 {
+          font-size: 1.3rem;
+          color: #444;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+        }
+
+        p {
+          font-size: 1rem;
+          line-height: 1.6;
+        }
+      }
+
+      .solicitud-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        border-left: 4px solid $primary-color;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .solicitud-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+
+          .solicitud-info {
+            .equipo-nombre {
+              color: #2c3e50;
+              font-size: 1.2rem;
+              font-weight: 600;
+              margin: 0 0 0.25rem 0;
+            }
+
+            .solicitud-id {
+              color: #6c757d;
+              font-size: 0.9rem;
+              font-weight: 500;
+            }
+          }
+
+          .solicitud-estado {
+            .estado-badge {
+              padding: 0.4rem 0.8rem;
+              border-radius: 16px;
+              font-size: 0.8rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+
+              &.estado-en-uso {
+                background: #d1ecf1;
+                color: #0c5460;
+                border: 1px solid #bee5eb;
+              }
+
+              &.estado-devuelto {
+                background: #e2e3e5;
+                color: #383d41;
+                border: 1px solid #d6d8db;
+              }
+            }
+          }
+        }
+
+        .solicitud-content {
+          .solicitud-fechas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+
+            .fecha-item {
+              display: flex;
+              flex-direction: column;
+              gap: 0.25rem;
+
+              .fecha-label {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #6c757d;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              }
+
+              .fecha-valor {
+                font-size: 0.9rem;
+                color: #2c3e50;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+
+        .solicitud-actions {
+          display: flex;
+          gap: 0.5rem;
+          justify-content: flex-end;
+          margin-top: 1rem;
+
+          .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+
+            &:hover {
+              transform: translateY(-1px);
+            }
+
+            &.btn-return {
+              background: #28a745;
+              color: white;
+
+              &:hover {
+                background: color.adjust(#28a745, $lightness: -10%);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    padding: 1rem;
+    height: calc(100vh - 2rem);
+    max-height: calc(100vh - 2rem);
+
+    .equipos-header {
+      .header-title-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .btn-back {
+          align-self: stretch;
+          text-align: center;
+        }
+      }
+    }
+
+    .nueva-solicitud-section {
+      padding: 1.5rem;
+
+      .solicitud-form {
+        .form-row {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .form-actions {
+          flex-direction: column;
+
+          .btn-primary,
+          .btn-secondary {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .solicitudes-existentes-section {
+      .solicitudes-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .solicitudes-list {
+        .solicitud-card {
+          .solicitud-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+          }
+
+          .solicitud-content {
+            .solicitud-fechas {
+              grid-template-columns: 1fr;
+              gap: 0.75rem;
+            }
+          }
+
+          .solicitud-actions {
+            flex-direction: column;
+
+            .btn-action {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .equipos-header {
+      .header-title-row {
+        h1 {
+          font-size: 1.6rem;
+        }
+
+        .btn-back {
+          font-size: 0.9rem;
+          padding: 0.4rem 0.8rem;
+        }
+      }
+    }
+
+    .nueva-solicitud-section {
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .solicitudes-existentes-section {
+      .solicitudes-header {
+        h2 {
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }
+}

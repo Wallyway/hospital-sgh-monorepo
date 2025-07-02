@@ -6,6 +6,7 @@ import MedicBase from "@/views/medic/MedicBase";
 import MedicAgenda from "@views/medic/Agenda.jsx";
 import PatientAppoinment from "@/views/medic/PatientAppoinment";
 import MedicalRecord from "@/views/medic/MedicalRecord";
+import RequestEquipment from "@/views/medic/RequestEquipment";
 // admin views
 import PAdminDashboard from "@views/pAdmin/PAdminDashboard";
 // patient views
@@ -14,16 +15,6 @@ import Agendar from "@/views/patient/Agendar.jsx";
 import CitasPendientes from "@/views/patient/CitasPendientes.jsx";
 import ModificarDatos from "@/views/patient/ModificarDatos.jsx";
 
-
-
-
-// Componentes de secciones del médico (placeholders)
-const ConsultarMedicamentos = () => <div>Consultar medicamentos</div>;
-const SolicitarEquipos = () => <div>Solicitar equipos</div>;
-const ConsultarHC = () => <div>Consultar HC</div>;
-const RecetarMedicamentos = () => <div>Recetar medicamentos</div>;
-const DescripcionCita = () => <div>Descripción cita</div>;
-
 export const AppRouter = () => {
   return (
     <Routes>
@@ -31,16 +22,12 @@ export const AppRouter = () => {
       <Route path="/login" element={<Login />} />
 
       {/* Medic routes */}
-      <Route path="/medic" element={<MedicBase />} >
+      <Route path="/medic" element={<MedicBase />}>
+        <Route index element={<Navigate to="/medic/agenda" replace />} />
         <Route path="agenda" element={<MedicAgenda />} />
         <Route path="cita_paciente" element={<PatientAppoinment />} />
         <Route path="ver-hc" element={<MedicalRecord />} />
-        <Route path="medicamentos" element={<ConsultarMedicamentos />} />
-        <Route path="equipos" element={<SolicitarEquipos />} />
-        <Route path="historiales" element={<ConsultarHC />} />
-        <Route path="recetar" element={<RecetarMedicamentos />} />
-        <Route path="citas" element={<DescripcionCita />} />
-        {/* <Route index element={<MedicAgenda />} /> */}
+        <Route path="equipos" element={<RequestEquipment />} />
       </Route>
 
       {/* Admmin routes */}
@@ -48,6 +35,7 @@ export const AppRouter = () => {
 
       {/* Patient routes */}
       <Route path="/patient" element={<PatientBase />}>
+        <Route index element={<Navigate to="/patient/agendar" replace />} />
         <Route path="agendar" element={<Agendar />} />
         <Route path="citas-pendientes" element={<CitasPendientes />} />
         <Route path="modificar-datos" element={<ModificarDatos />} />
