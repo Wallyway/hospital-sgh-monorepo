@@ -231,7 +231,8 @@
       gap: 1rem;
       max-height: 400px;
       overflow-y: auto;
-      padding-right: 0.5rem;
+      // padding-right: 0.5rem;
+      padding: 0.5rem;
 
       &::-webkit-scrollbar {
         width: 6px;
@@ -285,7 +286,7 @@
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
         }
 
         .solicitud-header {
