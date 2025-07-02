@@ -7,23 +7,17 @@ import { PrismaService } from '../prisma.service.js';
 import { User, Prisma } from '../../generated/prisma/index.js';
 import * as bcryptjs from 'bcryptjs';
 import { CreateUserAdminDto } from '../../dto/create-user-admin.dto.js';
-import { UserRole } from 'common-types';
+import { CreateUserPhoneDto } from '../../dto/create-user-phone.dto.js';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
-    });
-  }
-
-  async findUsersByRole(role: UserRole): Promise<User[]> {
-    return this.prisma.user.findMany({
-      where: { roles: role },
     });
   }
 
@@ -44,29 +38,28 @@ export class UsersService {
     });
   }
 
-  async createUserByAdmin(
-    data: CreateUserAdminDto & { roles: UserRole }
-  ): Promise<User> {
+  async createUserByAdmin(data: CreateUserAdminDto): Promise<User> {
     const saltOrRounds = 10;
     const passwordHash = await bcryptjs.hash(data.password, saltOrRounds);
 
     try {
       const newUser = await this.prisma.user.create({
         data: {
+          idUser: data.idUser,
           name: data.name,
           email: data.email,
           address: data.address,
           passwordHash,
-          roles: data.roles,
+          gender: data.gender,
+          birthDate: new Date(data.birthDate),
         },
       });
 
       // --- SIMULATE SENDING PASSWORD ---
       console.log(
-        `[USER CREATED] A new user has been created by an admin.
-         Email: ${newUser.email}
-         Initial Password: ${data.password}
-         Please communicate this password securely to the user.`,
+        `[USER CREATED] A new user has been created by an admin.\n
+         Email: ${newUser.email}\n
+         Initial Password: ${data.password}\n`,
       );
       // --- END SIMULATION ---
 
@@ -80,6 +73,16 @@ export class UsersService {
       console.error('Error creating user by admin:', error);
       throw new InternalServerErrorException('Error creating user');
     }
+  }
+
+  async addPhoneToUser(data: CreateUserPhoneDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    return await this.prisma.telUser.create({
+      data: {
+        idUser: data.idUser,
+        telephone: BigInt(data.telephone),
+      },
+    });
   }
 
   async updateUser(params: {
@@ -96,6 +99,14 @@ export class UsersService {
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
     return await this.prisma.user.delete({
       where,
+    });
+  }
+
+  // Nuevo método para actualizar la contraseña de un usuario
+  async updatePassword(userId: number, newPasswordHash: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { idUser: userId },
+      data: { passwordHash: newPasswordHash },
     });
   }
 }

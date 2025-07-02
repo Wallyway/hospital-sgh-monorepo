@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
   UnauthorizedException,
@@ -9,8 +12,9 @@ import * as bcryptjs from 'bcryptjs';
 import { User } from '../../generated/prisma';
 import { PrismaService } from '../prisma.service.js';
 import { randomUUID } from 'crypto';
+import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 // TODO: Import from common-types once workspace is properly configured
-import { UserRole } from 'common-types';
 
 @Injectable()
 export class AuthService {
@@ -18,28 +22,67 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-  ) {}
+    private configService: ConfigService,
+  ) { }
 
   async validateUser(
     email: string,
     pass: string,
+    role: string,
   ): Promise<Omit<User, 'passwordHash'>> {
     const user = await this.usersService.user({ email });
 
     if (user && (await bcryptjs.compare(pass, user.passwordHash))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { passwordHash, ...result } = user;
-      return result;
+      const validRoles = ['ADMIN', 'MEDIC', 'PATIENT', 'ROOT'];
+      if (!validRoles.includes(role)) {
+        throw new UnauthorizedException('Invalid role');
+      }
+      // --- SIMULACIÓN O CONSULTA REAL ---
+      const useSimulation =
+        this.configService.get<string>('USE_ROLE_SIMULATION', 'true') ===
+        'true';
+      if (useSimulation) {
+        // Simulación: siempre válido
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { passwordHash, ...result } = user;
+        return result;
+      } else {
+        // Consulta real al microservicio de empleados para validar el rol
+        // Suponiendo que tienes un endpoint como /employees/validate-role
+        //TODO:
+        try {
+          const EMPLOYEE_SERVICE_URL = this.configService.get<string>(
+            'EMPLOYEE_SERVICE_URL',
+            'http://localhost:3003',
+          );
+          const response = await axios.post(
+            `${EMPLOYEE_SERVICE_URL}/employees/validate-role`,
+            {
+              idUser: user.idUser,
+              role,
+            },
+          );
+          if (response.data && response.data.valid === true) {
+            const { passwordHash, ...result } = user;
+            return result;
+          } else {
+            throw new UnauthorizedException(
+              'User does not belong to the specified role',
+            );
+          }
+        } catch (err) {
+          throw new UnauthorizedException('Error validating user role');
+        }
+      }
     }
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  login(user: Omit<User, 'passwordHash'>) {
-    const payload: { email: string; sub: number; roles: UserRole } = {
+  login(user: Omit<User, 'passwordHash'>, role: string) {
+    const payload: { email: string; sub: number; role: string } = {
       email: user.email,
-      sub: user.id,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      roles: user.roles as UserRole,
+      sub: user.idUser,
+      role,
     };
     return {
       accessToken: this.jwtService.sign(payload),
@@ -66,7 +109,7 @@ export class AuthService {
     // Eliminar tokens anteriores del usuario (si existen)
 
     await this.prisma.passwordResetToken.deleteMany({
-      where: { userId: user.id },
+      where: { userId: user.idUser },
     });
 
     // Guardar el nuevo token
@@ -74,7 +117,8 @@ export class AuthService {
     await this.prisma.passwordResetToken.create({
       data: {
         token,
-        userId: user.id,
+
+        userId: user.idUser,
         expiresAt,
       },
     });
@@ -119,7 +163,7 @@ export class AuthService {
 
     // Actualizar la contraseña del usuario
     await this.prisma.user.update({
-      where: { id: resetToken.userId },
+      where: { idUser: resetToken.userId },
       data: { passwordHash: newPasswordHash },
     });
 

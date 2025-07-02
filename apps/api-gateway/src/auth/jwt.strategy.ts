@@ -2,12 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserRole } from 'common-types';
 
 interface JwtPayload {
   sub: number;
   email: string;
-  roles: UserRole;
+  role: string;
 }
 
 @Injectable()
@@ -26,6 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // The token's signature and expiration are already verified by Passport.
     // We just need to return the user information to be attached to the request.
 
-    return { userId: payload.sub, email: payload.email, roles: payload.roles };
+    return { userId: payload.sub, email: payload.email, role: payload.role };
   }
 }

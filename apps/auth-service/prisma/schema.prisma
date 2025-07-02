@@ -15,22 +15,35 @@ datasource db {
 }
 
 model User {
-  id                 Int                 @id @default(autoincrement())
-  email              String              @unique
+  idUser             Int                 @id //TODO: Cambiar por cedula
+  name               String              @db.VarChar(100)
+  email              String              @unique //TODO: Unique no es necesario
   passwordHash       String // Almacena la contraseña hasheada con bcryptjs
-  name               String
-  address            String
-  roles              UserRole            @default(PATIENT) // Roles del usuario para RBAC usando enum compartido
+  gender             String
+  address            String              @db.VarChar(100)
+  birthDate          DateTime
+  telUser            TelUser[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
-  passwordResetToken PasswordResetToken? @relation(name: "UserPasswordResetToken") // Relación con el token de restablecimiento de contraseña
+  passwordResetToken PasswordResetToken? @relation(name: "UserPasswordResetToken")
 }
 
-enum UserRole {
-  PATIENT
-  DOCTOR
-  ADMIN
+model TelUser {
+  idUser    Int
+  telephone BigInt
+  user      User     @relation(fields: [idUser], references: [idUser], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([idUser, telephone])
+  @@map("TelUser")
 }
+
+// enum UserRole {
+//   PATIENT
+//   DOCTOR
+//   ADMIN
+// }
 
 model PasswordResetToken {
   id        String   @id @default(uuid())
@@ -38,5 +51,5 @@ model PasswordResetToken {
   userId    Int      @unique // ID del usuario asociado, @unique asegura solo un token activo por usuario
   expiresAt DateTime // Fecha de expiración del token
   createdAt DateTime @default(now())
-  user      User     @relation(name: "UserPasswordResetToken", fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(name: "UserPasswordResetToken", fields: [userId], references: [idUser], onDelete: Cascade)
 }

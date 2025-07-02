@@ -6,4 +6,4 @@ import { PrismaService } from '../prisma.service.js';
   providers: [UsersService, PrismaService],
   exports: [UsersService, PrismaService],
 })
-export class UsersModule { }
+export class UsersModule {}
