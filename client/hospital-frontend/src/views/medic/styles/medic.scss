@@ -1,0 +1,15 @@
+@use "@styles/variables" as *;
+
+.medic-base {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e6f7ff 0%, #d4ffea 100%);
+  width: 100%;
+
+  .main-content-section {
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    min-height: 270px;
+    box-sizing: border-box;
+  }
+}
