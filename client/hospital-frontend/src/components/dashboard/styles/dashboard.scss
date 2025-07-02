@@ -1,0 +1,168 @@
+// DASHBOARD
+// Estilos de fondo para los dashboards
+.patient-dashboard-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #CAE6FF 0%, #D4CDFF 100%);
+}
+
+.medic-dashboard-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E6F7FF 0%, #D4FFEA 100%);
+}
+
+.padmin-dashboard-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F0F4FF 0%, #D4F1FF 100%);
+}
+
+.dashboard-center-message {
+  display: flex;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+// -- SIDEBAR
+.sidebar-avatar {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.sidebar-list-item {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-icon-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #5B5B7B;
+  font-size: 32px;
+  margin-right: 35px;
+}
+
+.sidebar-icon-btn:hover {
+  background: #f3f6fa;
+}
+
+.sidebar-popover {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(80, 80, 120, 0.12);
+  border-radius: 16px;
+  padding: 12px 24px;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  z-index: 1300;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 18px;
+  color: #2B2B4B;
+  margin-left: 8px;
+}
+
+.sidebar-item-wrapper {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+
+
+// LAYOUT
+.layout-section {
+  display: flex;
+  min-height: 100vh;
+}
+
+.layout-main {
+  flex: 1;
+  margin-left: 32px;
+}
+
+.layout-main-content {
+  padding: 32px;
+  min-height: 100vh;
+}
+
+// Responsive para dashboard
+@media (max-width: 900px) {
+  .layout-section {
+    flex-direction: column;
+  }
+  .layout-main {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sidebar-item-wrapper {
+    width: 56px;
+    height: 56px;
+  }
+  .sidebar-icon-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+  .sidebar-popover {
+    left: 60px;
+    min-width: 80px;
+    font-size: 15px;
+    padding: 8px 14px;
+  }
+  .dashboard-center-message {
+    font-size: 18px;
+    padding: 8px;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  .layout-section {
+    flex-direction: column;
+  }
+  .layout-main {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sidebar-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  .sidebar-item-wrapper {
+    width: 44px;
+    height: 44px;
+  }
+  .sidebar-icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  .sidebar-popover {
+    left: 44px;
+    min-width: 60px;
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  .dashboard-center-message {
+    font-size: 15px;
+    padding: 4px;
+    min-height: 80px;
+  }
+  .layout-main-content {
+    padding: 8px;
+    margin-top: 32px;
+  }
+} 

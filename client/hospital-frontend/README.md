@@ -70,3 +70,6 @@ Run `npm install react-router-dom@latest` to enable navigation.
 
 ## Install Sass
 Run `npm add -D sass` to work with `.scss` files.
+
+## Install React use Form
+Run `npm install react-hook-form` to work with `useForm`

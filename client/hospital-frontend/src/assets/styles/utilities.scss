@@ -1,3 +1,6 @@
+@use "@styles/variables" as *;
+
+// flex
 .flex {
   display: flex;
 }
@@ -15,7 +18,39 @@
   align-items: center;
 }
 
-// 
+// dimensions
 .w-100 {
   width: 100%;
+}
+
+.min-h-100vh {
+  min-height: 100vh;
+}
+
+// inputs
+.inp-clean {
+  border: none;
+  padding: 8px 15px;
+  border-radius: 0.5rem;
+  &:focus {
+    outline: 2px solid $primary-color;
+  }
+}
+.field-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+// buttons
+.btn-primary {
+  background-color: $primary-color;
+  color: $white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  &:hover {
+    background-color: $primary-color-darken;
+  }
 }

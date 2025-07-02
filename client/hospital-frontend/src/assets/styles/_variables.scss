@@ -1,0 +1,13 @@
+@use "sass:color";
+
+$primary-color: #1e71ca;
+$primary-color-darken: color.adjust($primary-color, $lightness: -10%);
+
+$white: #ffffff;
+$tansparent-white-30: rgba(255, 255, 255, 0.3);
+$gray: #cfcfcf;
+$light-gray: #e0e0e0;
+
+// text
+$secondary-text: #666666;
+$third-text: #999999;
