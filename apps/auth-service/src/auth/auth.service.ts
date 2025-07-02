@@ -14,7 +14,6 @@ import { PrismaService } from '../prisma.service.js';
 import { randomUUID } from 'crypto';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
-// TODO: Import from common-types once workspace is properly configured
 
 @Injectable()
 export class AuthService {
@@ -24,7 +23,6 @@ export class AuthService {
     private prisma: PrismaService,
     private configService: ConfigService,
   ) { }
-
   async validateUser(
     email: string,
     pass: string,
