@@ -28,6 +28,8 @@ const MedicBase = () => {
       return "Consulta Médica";
     } else if (path.includes("citas")) {
       return "Descripción cita";
+    } else if (path.includes("ver-hc")) {
+      return "Historia Clínica";
     }
     return "Inicio Médico";
   };
@@ -35,7 +37,7 @@ const MedicBase = () => {
   return (
     <div className="medic-base">
       <LayoutSection navProps={medico}>
-        <h1 className="title-section">{getTitleRoute()}</h1>
+        {/* <h1 className="title-section">{getTitleRoute()}</h1> */}
         <Outlet />
       </LayoutSection>
     </div>

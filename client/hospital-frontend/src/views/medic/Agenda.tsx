@@ -2,6 +2,8 @@ import { Calendar24 } from "@components/ui/Calendar24";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "./styles/agenda.scss"; // Import styles for the agenda
+
 const MedicAgenda = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const navigate = useNavigate();
@@ -87,7 +89,7 @@ const MedicAgenda = () => {
   ];
 
   return (
-    <div className="main-content-section">
+    <div className="main-content-section agenda-section-container">
       <div className="agenda-header">
         <div>
           <h2>Agenda del Día</h2>
@@ -135,7 +137,10 @@ const MedicAgenda = () => {
               </span>
             </div>
             <div className="appointment-actions">
-              <button className="btn-action primary">
+              <button 
+                className="btn-action primary"
+                onClick={() => navigate(`/medic/ver-hc?patientId=${appointment.patientId}`)}
+              >
                 {appointment.status === "completed" ? "Ver Notas" : "Ver HC"}
               </button>
               {appointment.status !== "completed" && (

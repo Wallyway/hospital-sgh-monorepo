@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // styles
-import "./styles/citaPaciente.scss";
+import "./styles/patientAppoinment.scss";
 
 const CitaPaciente = () => {
   const navigate = useNavigate();
