@@ -24,6 +24,8 @@ const MedicBase = () => {
       return "Consultar HC";
     } else if (path.includes("recetar")) {
       return "Recetar medicamentos";
+    } else if (path.includes("cita_paciente")) {
+      return "Consulta Médica";
     } else if (path.includes("citas")) {
       return "Descripción cita";
     }

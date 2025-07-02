@@ -4,6 +4,7 @@ import { Login } from "@views/auth/Login";
 // medic views
 import MedicBase from "@/views/medic/MedicBase";
 import MedicAgenda from "@views/medic/Agenda.jsx";
+import PatientAppoinment from "@/views/medic/PatientAppoinment";
 // admin views
 import PAdminDashboard from "@views/pAdmin/PAdminDashboard";
 // patient views
@@ -31,6 +32,7 @@ export const AppRouter = () => {
       {/* Medic routes */}
       <Route path="/medic" element={<MedicBase />} >
         <Route path="agenda" element={<MedicAgenda />} />
+        <Route path="cita_paciente" element={<PatientAppoinment />} />
         <Route path="medicamentos" element={<ConsultarMedicamentos />} />
         <Route path="equipos" element={<SolicitarEquipos />} />
         <Route path="historiales" element={<ConsultarHC />} />

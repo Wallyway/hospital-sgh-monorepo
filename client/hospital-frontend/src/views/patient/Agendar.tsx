@@ -1,7 +1,7 @@
 import { Calendar24 } from "@components/ui/Calendar24";
 
 const Agendar = () => (
-  <div className="main-content-section">
+  <div className="main-content-section agendar-cita-section">
     <div className="agenda-subtitle">
       <h2>Selecciona los detalles de tu cita</h2>
     </div>

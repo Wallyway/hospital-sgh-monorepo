@@ -1,4 +1,10 @@
+import { Calendar24 } from "@components/ui/Calendar24";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const MedicAgenda = () => {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const navigate = useNavigate();
   // Lista de citas
   const appointments = [
     {
@@ -83,15 +89,26 @@ const MedicAgenda = () => {
   return (
     <div className="main-content-section">
       <div className="agenda-header">
-        <h2>Agenda del Día</h2>
-        <div className="agenda-date">
-          {new Date().toLocaleDateString("es-ES", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+        <div>
+          <h2>Agenda del Día</h2>
+          <div className="agenda-date">
+            {selectedDate.toLocaleDateString("es-ES", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
         </div>
+        <Calendar24 
+          date={selectedDate} 
+          onDateChange={(date) => {
+            if (date) {
+              setSelectedDate(date);
+            }
+          }} 
+          showTime={false}
+        />
       </div>
 
       <div className="appointments-container">
@@ -122,7 +139,12 @@ const MedicAgenda = () => {
                 {appointment.status === "completed" ? "Ver Notas" : "Ver HC"}
               </button>
               {appointment.status !== "completed" && (
-                <button className="btn-action secondary">Iniciar</button>
+                <button 
+                  className="btn-action secondary"
+                  onClick={() => navigate(`/medic/cita_paciente?patientId=${appointment.patientId}&appointmentId=${appointment.id}`)}
+                >
+                  Iniciar
+                </button>
               )}
             </div>
           </div>
