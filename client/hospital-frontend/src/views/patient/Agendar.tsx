@@ -1,4 +1,5 @@
 import { Calendar24 } from "@components/ui/Calendar24";
+import "./styles/agendar.scss";
 
 const Agendar = () => (
   <div className="main-content-section agendar-cita-section">

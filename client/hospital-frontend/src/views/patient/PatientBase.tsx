@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 // components
 import LayoutSection from "@components/layout/LayoutSection";
 // styles
-import "./styles/patient.scss";
+import "./styles/patientBase.scss";
 
 const PatientBase = () => {
   const location = useLocation();
