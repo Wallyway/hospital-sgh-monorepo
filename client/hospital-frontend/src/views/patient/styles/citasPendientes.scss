@@ -1,91 +1,5 @@
 @use "@styles/variables" as *;
 
-.patient-base {
-  background: linear-gradient(135deg, #cae6ff 0%, #d4cdff 100%);
-  min-height: 100vh;
-
-  .main-content-section {
-    max-width: 100%;
-  }
-
-  //---------------------------------------//
-  // Agenda Cita Styles
-  .agendar-cita-section {
-    .agenda-title {
-      font-size: 40px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .agenda-subtitle {
-      font-size: 22px;
-      color: #444;
-      margin-bottom: 32px;
-    }
-
-    .agenda-form {
-      width: 100%;
-    }
-
-    .agenda-form-row {
-      display: flex;
-      gap: 32px;
-      margin-bottom: 24px;
-    }
-
-    .agenda-form-group {
-      flex: 1;
-    }
-
-    .agenda-label {
-      font-weight: 600;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .agenda-select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 18px;
-    }
-
-    .agenda-calendar-group {
-      margin-bottom: 24px;
-    }
-
-    .agenda-actions {
-      display: flex;
-      gap: 16px;
-      margin-top: 32px;
-    }
-
-    .agenda-btn {
-      border: none;
-      border-radius: 10px;
-      padding: 14px 36px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .agenda-btn-primary {
-      background: #4f6bed;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(80, 80, 120, 0.08);
-    }
-
-    .agenda-btn-secondary {
-      background: #f7f7fa;
-      color: #222;
-      font-weight: 500;
-    }
-  }
-}
-
-//---------------------------------------//
-// Citas Pendientes Styles
 .citas-pendientes-section {
   .agenda-header {
     display: flex;
@@ -114,26 +28,23 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    flex: 1; // Ocupa el espacio restante después del header
+    flex: 1;
     overflow-y: auto;
     padding-right: 0.5rem;
-    min-height: 0; // Importante para que funcione el overflow
+    min-height: 0;
     max-height: 60vh;
 
     &::-webkit-scrollbar {
       width: 6px;
     }
-
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 10px;
     }
-
     &::-webkit-scrollbar-thumb {
       background: #c1c1c1;
       border-radius: 10px;
     }
-
     &::-webkit-scrollbar-thumb:hover {
       background: #a8a8a8;
     }
@@ -162,7 +73,7 @@
     &.completed {
       opacity: 0.7;
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border-left-color: #28a745; // Cambio: usar border-left-color
+      border-left-color: #28a745;
     }
 
     .appointment-time {
@@ -170,14 +81,12 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-
       .time {
         font-size: 1.4rem;
         font-weight: 700;
         color: $primary-color;
         line-height: 1;
       }
-
       .duration {
         font-size: 0.85rem;
         color: #666;
@@ -192,25 +101,23 @@
         font-weight: 600;
         color: #2c3e50;
       }
-
       .patient-info {
         margin: 0 0 0.5rem 0;
         font-size: 0.9rem;
         color: #7f8c8d;
       }
+    }
 
-      .appointment-type {
-        margin: 0;
-        font-size: 0.95rem;
-        color: #34495e;
-        font-weight: 500;
-      }
+    .appointment-type {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #34495e;
+      font-weight: 500;
     }
 
     .appointment-status {
       display: flex;
       justify-content: center;
-
       .status {
         padding: 0.5rem 1rem;
         border-radius: 20px;
@@ -219,19 +126,16 @@
         text-align: center;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-
         &.confirmed {
           background-color: #d4edda;
           color: #155724;
           border: 1px solid #c3e6cb;
         }
-
         &.pending {
           background-color: #fff3cd;
           color: #856404;
           border: 1px solid #ffeaa7;
         }
-
         &.completed {
           background-color: #d1ecf1;
           color: #0c5460;
@@ -244,7 +148,6 @@
       display: flex;
       gap: 0.5rem;
       justify-content: flex-end;
-
       .btn-action {
         padding: 0.5rem 1rem;
         border-radius: 6px;
@@ -253,22 +156,18 @@
         cursor: pointer;
         transition: all 0.2s ease;
         border: none;
-
         &.primary {
           background-color: $primary-color;
           color: white;
-
           &:hover {
             background-color: $primary-color-darken;
             transform: translateY(-1px);
           }
         }
-
         &.secondary {
           background-color: white;
           color: $primary-color;
           border: 1px solid $primary-color;
-
           &:hover {
             background-color: $primary-color;
             color: white;
@@ -283,36 +182,30 @@
     background-color: #d4edda;
     border-left-color: #28a745;
   }
-
   .appointment-card.cancelada-status,
   .appointment-card.perdida-status {
     background-color: #f8d7da;
     border-left-color: #dc3545;
   }
-
   .appointment-card.reservada-status {
     background-color: #fff3cd;
     border-left-color: #ffc107;
   }
 
-  // Responsive design
   @media (max-width: 768px) {
     .appointment-card {
       grid-template-columns: 1fr;
       gap: 1rem;
       text-align: center;
-
       .appointment-time {
         .time {
           font-size: 1.2rem;
         }
       }
-
       .appointment-actions {
         justify-content: center;
       }
     }
-
     .agenda-header {
       flex-direction: column;
       align-items: flex-start;
@@ -325,14 +218,12 @@
     color: #155724;
     border: 1px solid #c3e6cb;
   }
-
   .status.cancelada-status,
   .status.perdida-status {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
   }
-
   .status.reservada-status {
     background-color: #fff3cd;
     color: #856404;
@@ -346,7 +237,6 @@
     align-items: center;
     margin-bottom: 0.5rem;
   }
-
   .info-item {
     display: flex;
     align-items: center;
@@ -354,7 +244,6 @@
     white-space: nowrap;
     font-size: 1rem;
   }
-
   .appointment-row-minimal {
     display: flex;
     align-items: center;
@@ -363,7 +252,6 @@
     width: 100%;
     justify-content: flex-start;
   }
-
   .info-item-minimal {
     display: flex;
     align-items: center;
@@ -372,14 +260,12 @@
     color: #222;
     white-space: nowrap;
   }
-
   .appointment-row-actions {
     margin-left: auto;
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .status {
     font-size: 1rem;
     font-weight: 600;
@@ -391,7 +277,6 @@
     display: inline-block;
     white-space: nowrap;
   }
-
   .appointment-card-compact {
     padding: 1.5rem 2.5rem;
     min-height: unset;
@@ -406,7 +291,6 @@
     margin-right: auto;
     box-sizing: border-box;
   }
-
   .appointment-row-compact {
     display: flex;
     align-items: center;
@@ -414,13 +298,11 @@
     width: 100%;
     flex-wrap: wrap;
   }
-
   .info-id {
     font-weight: 600;
     color: #222;
     margin-right: 0.8rem;
   }
-
   .info-icon {
     display: flex;
     align-items: center;
@@ -431,20 +313,17 @@
     border-radius: 6px;
     padding: 0.1em 0.5em;
   }
-
   .info-desc {
     color: #222;
     font-size: 1rem;
     margin-right: 0.8rem;
   }
-
   .appointment-row-actions {
     margin-left: auto;
     display: flex;
     align-items: center;
     gap: 0.8rem;
   }
-
   .info-value {
     color: #2563eb;
     font-weight: 500;
@@ -455,7 +334,6 @@
     display: inline-block;
     vertical-align: middle;
   }
-
   .appointment-card-header {
     display: flex;
     align-items: center;
@@ -463,7 +341,6 @@
     margin-bottom: 0.3rem;
     gap: 1rem;
   }
-
   .btn-cancelar {
     background: #fff;
     color: #dc3545;
@@ -481,13 +358,11 @@
     background: #dc3545;
     color: #fff;
   }
-
   .appointment-actions-bottom {
     margin-top: 0.5rem;
     display: flex;
     align-items: flex-start;
   }
-
   .appointment-card-row-flex {
     display: flex;
     flex-direction: row;
@@ -496,7 +371,6 @@
     gap: 1.5rem;
     width: 100%;
   }
-
   .appointment-card-row-flex-status {
     display: flex;
     flex-direction: row;
@@ -505,13 +379,11 @@
     width: 100%;
     margin-bottom: 0.3rem;
   }
-
   .appointment-info-block-horizontal {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
   }
-
   .info-icon-block {
     display: flex;
     align-items: center;
@@ -519,7 +391,6 @@
     color: #2563eb;
     font-size: 1rem;
   }
-
   .appointment-actions-bottom-full {
     width: 100%;
     position: absolute;
@@ -530,150 +401,7 @@
     align-items: flex-end;
     pointer-events: none;
   }
-
   .appointment-actions-bottom-right {
     pointer-events: all;
   }
-}
-
-// --------- ModificarDatos Styles ---------
-.modificar-datos-container {
-  background: #fff;
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
-  max-width: 1200px;
-  width: 100%;
-  overflow-x: auto;
-  margin: 2rem auto;
-  box-shadow: 0 4px 24px rgba(80, 120, 200, 0.08);
-
-  .modificar-datos-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #183153;
-    margin-bottom: 2rem;
-  }
-
-  .modificar-datos-form .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem 2rem;
-  }
-
-  .form-group label {
-    font-weight: 500;
-    color: #444;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-
-  .form-group input {
-    width: 100%;
-    padding: 1.1rem 1rem;
-    border-radius: 12px;
-    border: 1.5px solid #e0e6f0;
-    font-size: 1.1rem;
-    background: #f8fafc;
-    margin-top: 0.2rem;
-    transition: border 0.2s;
-  }
-
-  .form-group input:focus {
-    border: 1.5px solid #2563eb;
-    outline: none;
-  }
-
-  .form-group input:disabled {
-    background: #f4f6fa;
-    color: #888;
-    font-weight: 600;
-  }
-
-  .form-group input.input-error {
-    border: 1.5px solid #dc3545;
-  }
-
-  .error-message {
-    color: #dc3545;
-    font-size: 0.95rem;
-    margin-top: 0.3em;
-    display: block;
-    font-weight: 500;
-  }
-
-  .form-actions {
-    margin-top: 2rem;
-    text-align: right;
-  }
-
-  .btn-guardar {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 1rem 2.5rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-guardar:hover {
-    background: #183fc1;
-  }
-
-  @media (max-width: 700px) {
-    .modificar-datos-form .form-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .country-dropdown {
-    position: relative;
-    display: inline-block;
-    min-width: 80px;
-  }
-  .country-dropdown-btn {
-    background: #fff;
-    border: 1.5px solid #e0e6f0;
-    border-radius: 8px;
-    padding: 0.7em 1.2em;
-    font-size: 1.05em;
-    font-weight: 600;
-    cursor: pointer;
-    min-width: 70px;
-    transition: border 0.2s;
-  }
-  .country-dropdown-btn:focus {
-    border: 1.5px solid #2563eb;
-    outline: none;
-  }
-  .country-dropdown-list {
-    position: absolute;
-    z-index: 10;
-    left: 0;
-    top: 110%;
-    background: #fff;
-    border: 1.5px solid #e0e6f0;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(80, 120, 200, 0.1);
-    min-width: 180px;
-    padding: 0.3em 0;
-    margin: 0;
-    list-style: none;
-  }
-  .country-dropdown-item {
-    padding: 0.7em 1.2em;
-    cursor: pointer;
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-    transition: background 0.15s;
-  }
-  .country-dropdown-item[aria-selected="true"],
-  .country-dropdown-item:hover {
-    background: #f4f8ff;
-  }
-  .dropdown-arrow {
-    font-size: 0.9em;
-  }
-}
+} 

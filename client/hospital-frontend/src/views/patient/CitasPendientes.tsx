@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./styles/citasPendientes.scss";
 
 // Definir los tipos de estado posibles
 type AppointmentStatus = "asistida" | "cancelada" | "perdida" | "reservada";

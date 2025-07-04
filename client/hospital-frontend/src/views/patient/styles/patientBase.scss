@@ -1,0 +1,10 @@
+@use "@styles/variables" as *;
+
+.patient-base {
+  background: linear-gradient(135deg, #cae6ff 0%, #d4cdff 100%);
+  min-height: 100vh;
+
+  .main-content-section {
+    max-width: 100%;
+  }
+} 

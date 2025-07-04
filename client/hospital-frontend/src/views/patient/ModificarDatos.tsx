@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import "./styles/modificarDatos.scss";
 
 const initialData = {
   nombre: "Juan Pérez",
