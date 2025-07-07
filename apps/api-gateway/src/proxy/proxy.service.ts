@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
@@ -10,8 +11,7 @@ export class ProxyService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) { }
-
+  ) {}
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {

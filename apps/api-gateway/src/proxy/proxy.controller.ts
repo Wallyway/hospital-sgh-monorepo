@@ -18,7 +18,7 @@ import { Public } from '../auth/decorators/public.decorator';
 
 @Controller()
 export class ProxyController {
-  constructor(private readonly proxyService: ProxyService) { }
+  constructor(private readonly proxyService: ProxyService) {}
 
   // == PUBLIC ROUTES ==
   // These routes are explicitly public and do not pass any auth headers.

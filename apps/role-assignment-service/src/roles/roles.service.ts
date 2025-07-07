@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Injectable,
   BadRequestException,
@@ -23,7 +24,7 @@ export class RolesService {
     private dblinkService: DblinkService,
     private eventPublisherService: EventPublisherService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async specializeUserRole(
     userId: number,
@@ -42,30 +43,39 @@ export class RolesService {
 
     // Validación de especialización incompatible y duplicada
     if (role === UserRole.MEDIC || role === UserRole.ADMIN) {
-      const cardiologyUrl = this.configService.get<string>('CARDIOLOGY_SERVICE_URL');
+      const cardiologyUrl = this.configService.get<string>(
+        'CARDIOLOGY_SERVICE_URL',
+      );
       try {
-        const resp = await axios.get(`${cardiologyUrl}/employees/roles/${userId}`);
+        const resp = await axios.get(
+          `${cardiologyUrl}/employees/roles/${userId}`,
+        );
         const roles = resp.data.roles as string[];
         if (
           (role === UserRole.MEDIC && roles.includes('ADMIN')) ||
           (role === UserRole.ADMIN && roles.includes('MEDIC'))
         ) {
           throw new BadRequestException(
-            'No se puede especializar como MEDIC y ADMIN a la vez.'
+            'No se puede especializar como MEDIC y ADMIN a la vez.',
           );
         }
         // Nueva validación: ya tiene el rol solicitado
         if (roles.includes(role)) {
           throw new BadRequestException(
-            `El usuario ya está especializado como ${role}.`
+            `El usuario ya está especializado como ${role}.`,
           );
         }
       } catch (err) {
         if (err instanceof BadRequestException) {
           throw err;
         }
-        this.logger.error('Error consultando roles en cardiology-service:', err?.message);
-        throw new BadRequestException('No se pudo validar la especialización en cardiology-service.');
+        this.logger.error(
+          'Error consultando roles en cardiology-service:',
+          err?.message,
+        );
+        throw new BadRequestException(
+          'No se pudo validar la especialización en cardiology-service.',
+        );
       }
     }
 

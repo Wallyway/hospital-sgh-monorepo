@@ -9,4 +9,4 @@ import { EmployeesController } from './employees/employees.controller';
   controllers: [EmployeesController],
   providers: [PrismaService, EmployeesService, EventSubscriberService],
 })
-export class AppModule { }
+export class AppModule {}
