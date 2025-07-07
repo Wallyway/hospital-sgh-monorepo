@@ -35,7 +35,7 @@ Esto instalará todas las dependencias de todos los servicios y paquetes.
 
 Desde la raíz, usa el CLI de NestJS (debe estar instalado globalmente o como devDependency):
 ```bash
-npx nest new apps/nombre-del-servicio
+npx nest new apps/nombre-servicio --skip-git
 ```
 - Elige "npm" como gestor de paquetes.
 - Elimina el `node_modules` y `package-lock.json` que se creen dentro del nuevo servicio.
