@@ -36,6 +36,14 @@ export class RolesService {
         'Only MEDIC, ADMIN and PATIENT roles are supported for now.',
       );
     }
+
+    // TODO: Cuando los microservicios de dominio estén disponibles,
+    // consultar si el usuario ya tiene una especialización incompatible.
+    // Ejemplo (pseudocódigo):
+    // if (role === UserRole.MEDIC && await isAdminInDomain(userId)) {
+    //   throw new BadRequestException('Un usuario no puede ser MEDIC y ADMIN a la vez.');
+    // }
+
     let eventType = '';
     if (role === UserRole.MEDIC) eventType = 'DoctorSpecializationRequested';
     if (role === UserRole.ADMIN) eventType = 'AdminSpecializationRequested';

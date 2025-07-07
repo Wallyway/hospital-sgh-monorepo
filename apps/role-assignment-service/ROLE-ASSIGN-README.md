@@ -105,4 +105,7 @@ Content-Type: application/json
 
 ## Notas
 - No se debe devolver ningún valor `bigint` puro en las respuestas JSON; siempre convertir a `string` o `number`.
-- El servicio está preparado para ser extendido a otros roles y eventos en el futuro. 
+- El servicio está preparado para ser extendido a otros roles y eventos en el futuro.
+- **Validación de combinaciones de roles incompatibles:**
+  - La lógica para evitar combinaciones de roles no permitidas (por ejemplo, que un usuario no pueda ser MEDIC y ADMIN a la vez) debe implementarse en los microservicios de dominio, que son los que conocen el estado real de las especializaciones.
+  - El role-assignment-service ya está preparado para consultar estos servicios y rechazar solicitudes inválidas en el futuro (ver bloque TODO en `roles.service.ts`). 
