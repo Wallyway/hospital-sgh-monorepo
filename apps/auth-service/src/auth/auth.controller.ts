@@ -32,7 +32,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
@@ -62,7 +62,7 @@ export class AuthController {
         'Super usuario generado y guardado en la base de datos (o ya existente). Credenciales impresas en consola.',
       email: user.email,
       password: dto.password,
-      idUser: user.idUser,
+      idUser: user.idUser.toString(),
     };
   }
 
@@ -247,8 +247,15 @@ export class AuthController {
       throw new BadRequestException('Invalid role');
     }
     const user = await this.usersService.createUserByAdmin(createUserAdminDto);
-    await this.rolesService.assignRoleToUser(user.idUser, upperRole);
-    return user;
+    await this.rolesService.assignRoleToUser(
+      Number(user.idUser),
+      upperRole,
+      createUserAdminDto,
+    );
+    return {
+      ...user,
+      idUser: user.idUser.toString(),
+    };
   }
 
   @ApiOperation({ summary: 'Obtener todos los usuarios (solo ROOT)' })

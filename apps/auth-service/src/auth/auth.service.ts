@@ -22,7 +22,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) { }
+  ) {}
   async validateUser(
     email: string,
     pass: string,
@@ -79,7 +79,7 @@ export class AuthService {
   login(user: Omit<User, 'passwordHash'>, role: string) {
     const payload: { email: string; sub: number; role: string } = {
       email: user.email,
-      sub: user.idUser,
+      sub: Number(user.idUser),
       role,
     };
     return {
