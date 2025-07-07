@@ -37,6 +37,7 @@ Este microservicio orquesta la especialización de usuarios en roles específico
   "role": "MEDIC|ADMIN|PATIENT",
   "timestamp": "2025-07-07T04:14:01.888Z",
   // ...otros datos generales del usuario
+  "sueldo": 3500000 // Obligatorio para MEDIC y ADMIN, opcional para PATIENT
 }
 ```
 
@@ -97,9 +98,13 @@ Content-Type: application/json
   "address": "Calle 123",
   "gender": "M",
   "birthDate": "1990-01-01",
-  "idUser": 10001831789
+  "idUser": 10001831789,
+  "sueldo": 3500000
 }
 ```
+
+- Para los roles MEDIC y ADMIN, el campo `sueldo` es **obligatorio** en el body. Para PATIENT es opcional y será ignorado si se envía.
+- El campo `sueldo` **no se almacena en la base de datos de Auth Service**, solo se pasa a los microservicios de dominio para su almacenamiento en las tablas especializadas.
 
 ---
 

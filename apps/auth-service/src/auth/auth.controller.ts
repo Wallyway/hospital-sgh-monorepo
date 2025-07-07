@@ -24,6 +24,7 @@ import {
   ApiResponse,
   ApiBody,
 } from '@nestjs/swagger';
+import axios from 'axios';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -32,7 +33,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
@@ -246,11 +247,37 @@ export class AuthController {
     if (!validRoles.includes(upperRole)) {
       throw new BadRequestException('Invalid role');
     }
+    // Si el rol es MEDIC o ADMIN, sueldo es obligatorio
+    if ((upperRole === 'MEDIC' || upperRole === 'ADMIN') &&
+      (typeof createUserAdminDto['sueldo'] !== 'number' || createUserAdminDto['sueldo'] <= 0)) {
+      throw new BadRequestException('El campo sueldo es obligatorio y debe ser un número positivo para MEDIC o ADMIN.');
+    }
+    // Validación de especialización incompatible antes de crear el usuario
+    if (upperRole === 'MEDIC' || upperRole === 'ADMIN') {
+      try {
+        const cardiologyUrl = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+        const resp = await axios.get(`${cardiologyUrl}/employees/roles/${createUserAdminDto.idUser}`);
+        const roles = resp.data.roles as string[];
+        if (
+          (upperRole === 'MEDIC' && roles.includes('ADMIN')) ||
+          (upperRole === 'ADMIN' && roles.includes('MEDIC'))
+        ) {
+          throw new BadRequestException('No se puede especializar como MEDIC y ADMIN a la vez.');
+        }
+      } catch (err) {
+        throw new BadRequestException('No se pudo validar la especialización en cardiology-service.');
+      }
+    }
     const user = await this.usersService.createUserByAdmin(createUserAdminDto);
+    // Solo pasa el sueldo al role-assignment-service, no lo guarda en la base de datos de auth
+    const rolePayload = { ...createUserAdminDto };
+    if (upperRole !== 'MEDIC' && upperRole !== 'ADMIN') {
+      delete rolePayload['sueldo'];
+    }
     await this.rolesService.assignRoleToUser(
       Number(user.idUser),
       upperRole,
-      createUserAdminDto,
+      rolePayload,
     );
     return {
       ...user,

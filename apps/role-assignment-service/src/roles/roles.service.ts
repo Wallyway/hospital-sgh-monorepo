@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { EventPublisherService } from '../events/event.publisher';
 import { DblinkService } from '../dblink/dblink.service';
+import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 export enum UserRole {
   MEDIC = 'MEDIC',
@@ -20,7 +22,8 @@ export class RolesService {
   constructor(
     private dblinkService: DblinkService,
     private eventPublisherService: EventPublisherService,
-  ) {}
+    private configService: ConfigService,
+  ) { }
 
   async specializeUserRole(
     userId: number,
@@ -37,12 +40,34 @@ export class RolesService {
       );
     }
 
-    // TODO: Cuando los microservicios de dominio estén disponibles,
-    // consultar si el usuario ya tiene una especialización incompatible.
-    // Ejemplo (pseudocódigo):
-    // if (role === UserRole.MEDIC && await isAdminInDomain(userId)) {
-    //   throw new BadRequestException('Un usuario no puede ser MEDIC y ADMIN a la vez.');
-    // }
+    // Validación de especialización incompatible y duplicada
+    if (role === UserRole.MEDIC || role === UserRole.ADMIN) {
+      const cardiologyUrl = this.configService.get<string>('CARDIOLOGY_SERVICE_URL');
+      try {
+        const resp = await axios.get(`${cardiologyUrl}/employees/roles/${userId}`);
+        const roles = resp.data.roles as string[];
+        if (
+          (role === UserRole.MEDIC && roles.includes('ADMIN')) ||
+          (role === UserRole.ADMIN && roles.includes('MEDIC'))
+        ) {
+          throw new BadRequestException(
+            'No se puede especializar como MEDIC y ADMIN a la vez.'
+          );
+        }
+        // Nueva validación: ya tiene el rol solicitado
+        if (roles.includes(role)) {
+          throw new BadRequestException(
+            `El usuario ya está especializado como ${role}.`
+          );
+        }
+      } catch (err) {
+        if (err instanceof BadRequestException) {
+          throw err;
+        }
+        this.logger.error('Error consultando roles en cardiology-service:', err?.message);
+        throw new BadRequestException('No se pudo validar la especialización en cardiology-service.');
+      }
+    }
 
     let eventType = '';
     if (role === UserRole.MEDIC) eventType = 'DoctorSpecializationRequested';

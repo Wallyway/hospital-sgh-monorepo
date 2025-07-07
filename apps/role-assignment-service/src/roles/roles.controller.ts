@@ -18,7 +18,7 @@ import {
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {
-  constructor(private rolesService: RolesService) {}
+  constructor(private rolesService: RolesService) { }
 
   @ApiOperation({ summary: 'Solicitar especialización de rol para un usuario' })
   @ApiParam({
@@ -41,7 +41,22 @@ export class RolesController {
         gender: 'M',
         birthDate: '1990-01-01',
         idUser: 123456789,
+        sueldo: 3500000,
       },
+      properties: {
+        email: { type: 'string' },
+        password: { type: 'string' },
+        name: { type: 'string' },
+        address: { type: 'string' },
+        gender: { type: 'string' },
+        birthDate: { type: 'string', format: 'date' },
+        idUser: { type: 'integer' },
+        sueldo: {
+          type: 'integer',
+          description: 'Obligatorio para MEDIC y ADMIN. Opcional para PATIENT.',
+        },
+      },
+      required: ['email', 'password', 'name', 'address', 'gender', 'birthDate', 'idUser'],
     },
   })
   @ApiResponse({

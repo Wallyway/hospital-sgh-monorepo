@@ -1,16 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ProxyService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) { }
+
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {
-      return process.env.AUTH_SERVICE_URL || 'http://localhost:3001';
+      return this.configService.get<string>(
+        'AUTH_SERVICE_URL',
+        'http://127.0.0.1:3001',
+      );
+    }
+
+    if (path.startsWith('/roles')) {
+      return this.configService.get<string>(
+        'ROLES_SERVICE_URL',
+        'http://localhost:3002',
+      );
     }
     // Add other services here
     // if (path.startsWith('/patients')) {
@@ -28,15 +43,21 @@ export class ProxyService {
     const serviceUrl = this.getServiceUrl(path);
     const url = `${serviceUrl}${path}`;
 
-    const config: AxiosRequestConfig = {
-      method: method as any,
-      url,
-      data,
-      headers,
-      validateStatus: () => true, // Forward all status codes
-    };
+    try {
+      const config: AxiosRequestConfig = {
+        method: method as any,
+        url,
+        data,
+        headers,
+        validateStatus: () => true, // Forward all status codes
+        timeout: 10000, // 10 segundos
+      };
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return firstValueFrom(this.httpService.request(config));
+      const response = await firstValueFrom(this.httpService.request(config));
+      return response;
+    } catch (error) {
+      console.error('[ProxyService] Error forwarding request:', error.message);
+      throw error;
+    }
   }
 }
