@@ -1,0 +1,230 @@
+@use "@styles/variables" as *;
+
+.agregar-pacientes-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .agregar-pacientes-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+
+    .header-title-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+
+      h1 {
+        margin: 0;
+        color: $primary-color;
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .agregar-pacientes-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    .form-section {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+      
+      @media (max-width: 768px) {
+        padding: 1rem;
+      }
+      
+      // Custom scrollbar
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+        
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+    }
+  }
+
+    .patient-form {
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .form-group {
+        &.full-width {
+          grid-column: 1 / -1;
+        }
+        
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          color: #374151;
+          font-weight: 500;
+          font-size: clamp(0.875rem, 2vw, 1rem);
+          
+          &:has-text('*') {
+            position: relative;
+            
+            &::after {
+              content: '*';
+              color: #ef4444;
+              margin-left: 0.25rem;
+            }
+          }
+        }
+        
+        .form-input, .form-select, .form-textarea {
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e0e6ed;
+          border-radius: 8px;
+          font-size: clamp(0.875rem, 2vw, 1rem);
+          transition: border-color 0.2s;
+          box-sizing: border-box;
+          
+          &:focus {
+            outline: none;
+            border-color: #3b82f6;
+          }
+          
+          &::placeholder {
+            color: #9ca3af;
+          }
+        }
+        
+        .form-textarea {
+          resize: vertical;
+          min-height: 80px;
+          font-family: inherit;
+        }
+        
+        .form-select {
+          cursor: pointer;
+        }
+        
+        &.error {
+          border-color: #dc3545;
+          background-color: #fff5f5;
+        }
+      }
+      
+      .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
+      
+      button {
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        
+        @media (max-width: 768px) {
+          width: 100%;
+        }
+      }
+      
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+        
+        &:hover {
+          background: #2563eb;
+          transform: translateY(-1px);
+        }
+      }
+      
+      .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+        
+        &:hover {
+          background: #e5e7eb;
+        }
+      }
+    }
+  }
+
+  // Validation styles
+  .form-input:invalid, .form-select:invalid {
+    border-color: #ef4444;
+  }
+
+  .form-input:valid, .form-select:valid {
+    border-color: #22c55e;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    
+    .agregar-pacientes-header {
+      margin-bottom: 1rem;
+      
+      .header-title-row h1 {
+        font-size: 1.25rem;
+      }
+    }
+    
+    .form-section {
+      padding: 1rem;
+    }
+    
+    .form-grid {
+      gap: 0.75rem;
+    }
+    
+    .form-actions button {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+}

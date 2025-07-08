@@ -19,6 +19,10 @@ import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DescriptionIcon from "@mui/icons-material/Description";
+import PeopleIcon from "@mui/icons-material/People";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 interface MenuItem {
   text: string;
@@ -49,23 +53,20 @@ const patientItems: MenuItem[] = [
 
 const medicItems: MenuItem[] = [
   { text: "Agenda", icon: <CalendarMonthIcon />, to: "/medic/agenda" },
-  // {
-  //   text: "Consultar medicamentos",
-  //   icon: <LocalPharmacyIcon />,
-  //   to: "/medic/medicamentos",
-  // },
   {
     text: "Solicitar equipos",
     icon: <MedicalServicesIcon />,
     to: "/medic/equipos",
   },
-  // { text: "Consultar HC", icon: <AssignmentIcon />, to: "/medic/historiales" },
-  // {
-  //   text: "Recetar medicamentos",
-  //   icon: <EditNoteIcon />,
-  //   to: "/medic/recetar",
-  // },
-  // { text: "Descripción cita", icon: <DescriptionIcon />, to: "/medic/citas" },
+];
+
+const pAdminItems: MenuItem[] = [
+  { text: "Consultar médicos", icon: <PeopleIcon />, to: "/padmin/consultar-medicos" },
+  { text: "Consultar agenda médicos", icon: <CalendarMonthIcon />, to: "/padmin/consultar-agenda-medicos" },
+  { text: "Gestionar citas pacientes", icon: <EventAvailableIcon />, to: "/padmin/gestionar-citas-pacientes" },
+  { text: "Agregar pacientes", icon: <GroupAddIcon />, to: "/padmin/agregar-pacientes" },
+  { text: "Consultar pacientes", icon: <ListAltIcon />, to: "/padmin/consultar-pacientes" },
+  { text: "Modificar datos pacientes", icon: <EditNoteIcon />, to: "/padmin/modificar-datos-pacientes" },
 ];
 
 const NavDesktop: React.FC<NavDesktopProps> = ({
@@ -88,7 +89,7 @@ const NavDesktop: React.FC<NavDesktopProps> = ({
     items = medicItems;
   }
   if (path.includes("padmin")) {
-    // Items for admin
+    items = pAdminItems;
   }
 
   let sortedItems = items;
