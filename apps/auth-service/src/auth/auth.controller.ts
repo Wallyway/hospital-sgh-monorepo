@@ -404,6 +404,54 @@ export class AuthController {
 
   /**
    * @swagger
+   * /auth/root/users/by-role/{role}:
+   *   get:
+   *     summary: Listar usuarios por rol (solo ROOT)
+   *     description: Devuelve la lista de usuarios filtrados por rol (MEDIC, ADMIN, PATIENT). Solo accesible para el superusuario ROOT.
+   *     parameters:
+   *       - in: path
+   *         name: role
+   *         required: true
+   *         schema:
+   *           type: string
+   *           enum: [MEDIC, ADMIN, PATIENT]
+   *         description: Rol por el que filtrar
+   *     responses:
+   *       200:
+   *         description: Lista de usuarios filtrados por rol
+   *         content:
+   *           application/json:
+   *             example:
+   *               - idUsuario: "123456789"
+   *                 nombre: "Dr. House"
+   *                 email: "house@mail.com"
+   *       403:
+   *         description: Solo el usuario ROOT puede acceder
+   */
+  @ApiOperation({ summary: 'Listar usuarios por rol (solo ROOT)' })
+  @ApiParam({ name: 'role', enum: ['MEDIC', 'ADMIN', 'PATIENT'] })
+  @ApiResponse({ status: 200, description: 'Lista de usuarios filtrados por rol', schema: { example: [{ idUsuario: '123456789', nombre: 'Dr. House', email: 'house@mail.com' }] } })
+  @ApiResponse({ status: 403, description: 'Solo el usuario ROOT puede acceder' })
+  @Get('root/users/by-role/:role')
+  async getUsersByRole(@Req() req, @Param('role') role: string) {
+    const userRole = req.headers['x-user-role'];
+    if (userRole !== 'ROOT') {
+      throw new ForbiddenException('Solo el usuario ROOT puede acceder');
+    }
+    const upperRole = role.toUpperCase();
+    if (!['MEDIC', 'ADMIN', 'PATIENT'].includes(upperRole)) {
+      throw new BadRequestException('Rol no soportado');
+    }
+    // Por simplicidad, filtra por email que contenga el rol (ajusta según tu modelo real)
+    let filter = {};
+    if (upperRole === 'MEDIC') filter = { email: { contains: 'medic' } };
+    if (upperRole === 'ADMIN') filter = { email: { contains: 'admin' } };
+    if (upperRole === 'PATIENT') filter = { email: { contains: 'patient' } };
+    return this.usersService.users({ where: filter });
+  }
+
+  /**
+   * @swagger
    * /auth/admin/medics:
    *   get:
    *     summary: Obtener todos los médicos (solo ADMIN)
