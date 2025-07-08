@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 // components
-import { Login } from "@views/auth/Login";
+import { MultiLogin } from "@views/auth/MultiLogin";
 // medic views
 import MedicBase from "@/views/medic/MedicBase";
 import MedicAgenda from "@views/medic/Agenda.jsx";
@@ -28,7 +28,7 @@ export const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<MultiLogin />} />
 
       {/* Medic routes */}
       <Route path="/medic" element={<MedicBase />}>
