@@ -1,4 +1,7 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -37,7 +40,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
@@ -293,7 +296,9 @@ export class AuthController {
     const validRoles = ['MEDIC', 'ADMIN'];
     const upperRole = role.toUpperCase();
     if (!validRoles.includes(upperRole)) {
-      throw new BadRequestException('Solo se permite crear usuarios con rol MEDIC o ADMIN');
+      throw new BadRequestException(
+        'Solo se permite crear usuarios con rol MEDIC o ADMIN',
+      );
     }
     // Si el rol es MEDIC o ADMIN, sueldo es obligatorio
     if (
@@ -308,17 +313,27 @@ export class AuthController {
     // Si el rol es MEDIC o ADMIN, idDepartamento es obligatorio
     if (
       (upperRole === 'MEDIC' || upperRole === 'ADMIN') &&
-      (createUserAdminDto.idDepartamento === undefined || createUserAdminDto.idDepartamento === null)
+      (createUserAdminDto.idDepartamento === undefined ||
+        createUserAdminDto.idDepartamento === null)
     ) {
-      throw new BadRequestException('El campo idDepartamento es obligatorio para crear un usuario MEDIC o ADMIN.');
+      throw new BadRequestException(
+        'El campo idDepartamento es obligatorio para crear un usuario MEDIC o ADMIN.',
+      );
     }
     // Validar que el idDepartamento existe en department-service
-    const DEPARTMENT_SERVICE_URL = process.env.DEPARTMENT_SERVICE_URL || 'http://localhost:3005';
+    const DEPARTMENT_SERVICE_URL =
+      process.env.DEPARTMENT_SERVICE_URL || 'http://localhost:3005';
     let departamento;
     try {
-      const depResp = await axios.get(`${DEPARTMENT_SERVICE_URL}/departments/${createUserAdminDto.idDepartamento}`);
+      const depResp = await axios.get(
+        `${DEPARTMENT_SERVICE_URL}/departments/${createUserAdminDto.idDepartamento}`,
+      );
       departamento = depResp.data;
-      if (!departamento || departamento.idDepartamento === undefined || departamento.idDepartamento === null) {
+      if (
+        !departamento ||
+        departamento.idDepartamento === undefined ||
+        departamento.idDepartamento === null
+      ) {
         throw new Error();
       }
     } catch (e) {
@@ -350,7 +365,10 @@ export class AuthController {
     const user = await this.usersService.createUserByAdmin(createUserAdminDto);
     try {
       // Solo pasa el sueldo al role-assignment-service, no lo guarda en la base de datos de auth
-      const rolePayload = { ...createUserAdminDto, idDepartamento: departamento.idDepartamento };
+      const rolePayload = {
+        ...createUserAdminDto,
+        idDepartamento: departamento.idDepartamento,
+      };
       if (upperRole !== 'MEDIC' && upperRole !== 'ADMIN') {
         delete rolePayload['sueldo'];
       }
@@ -419,14 +437,21 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Paciente creado y rol asignado' })
   @ApiBody({ type: CreateUserAdminDto })
   @Post('admin/create-patient')
-  async createPatientByAdmin(@Body() createUserAdminDto: CreateUserAdminDto, @Req() req) {
+  async createPatientByAdmin(
+    @Body() createUserAdminDto: CreateUserAdminDto,
+    @Req() req,
+  ) {
     // Log para depuración
+    console.log('===> Entrando a /auth/admin/create-patient');
     console.log('Headers recibidos:', req.headers);
+    console.log('Body recibido:', createUserAdminDto);
     let idUsuario: string | undefined = req.user?.idUsuario || req.user?.sub;
     if (!idUsuario && req.headers['authorization']) {
       const token = req.headers['authorization'].split(' ')[1];
       try {
-        const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        const decoded = JSON.parse(
+          Buffer.from(token.split('.')[1], 'base64').toString(),
+        );
         console.log('Payload JWT decodificado:', decoded);
         idUsuario = decoded.sub;
       } catch (e) {
@@ -441,35 +466,57 @@ export class AuthController {
     if (Array.isArray(empleado)) {
       empleado = empleado[0];
     }
-    if (!empleado || typeof empleado !== 'object' || !('idEmpleado' in empleado) || !('idDepartamento' in empleado)) {
-      throw new BadRequestException('El admin no tiene empleado o departamento asignado');
+    if (
+      !empleado ||
+      typeof empleado !== 'object' ||
+      !('idEmpleado' in empleado) ||
+      !('idDepartamento' in empleado)
+    ) {
+      throw new BadRequestException(
+        'El admin no tiene empleado o departamento asignado',
+      );
     }
     const idEmpleado = empleado.idEmpleado;
     const idDepartamento = empleado.idDepartamento;
     // Log para depuración del idEmpleado
     console.log('Buscando idPAdministrativo para idEmpleado:', idEmpleado);
     // 2. Buscar idPAdministrativo por idEmpleado
-    const CARDIOLOGY_SERVICE_URL = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+    const CARDIOLOGY_SERVICE_URL =
+      process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
     let idPAdministrativo: number | undefined;
     try {
-      const padmResp = await axios.get(`${CARDIOLOGY_SERVICE_URL}/employees/padministrativo/by-employee/${idEmpleado}`);
+      const padmResp = await axios.get(
+        `${CARDIOLOGY_SERVICE_URL}/employees/padministrativo/by-employee/${idEmpleado}`,
+      );
       console.log('Respuesta de padministrativo/by-employee:', padmResp.data);
       idPAdministrativo = padmResp.data.idPAdministrativo;
     } catch (e) {
-      console.error('Error al obtener idPAdministrativo:', e?.response?.data || e);
-      throw new BadRequestException('No se pudo obtener el idPAdministrativo del admin');
+      console.error(
+        'Error al obtener idPAdministrativo:',
+        e?.response?.data || e,
+      );
+      throw new BadRequestException(
+        'No se pudo obtener el idPAdministrativo del admin',
+      );
     }
     if (!idPAdministrativo) {
-      throw new BadRequestException('El admin no tiene idPAdministrativo asignado');
+      throw new BadRequestException(
+        'El admin no tiene idPAdministrativo asignado',
+      );
     }
     // 3. Consultar el nombre del departamento desde department-service
-    const DEPARTMENT_SERVICE_URL = process.env.DEPARTMENT_SERVICE_URL || 'http://localhost:3005';
+    const DEPARTMENT_SERVICE_URL =
+      process.env.DEPARTMENT_SERVICE_URL || 'http://localhost:3005';
     let baseDepartamento: string;
     try {
-      const depResp = await axios.get(`${DEPARTMENT_SERVICE_URL}/departments/${idDepartamento}`);
+      const depResp = await axios.get(
+        `${DEPARTMENT_SERVICE_URL}/departments/${idDepartamento}`,
+      );
       baseDepartamento = depResp.data.Nombre;
     } catch (e) {
-      throw new BadRequestException('No se pudo obtener el nombre del departamento');
+      throw new BadRequestException(
+        'No se pudo obtener el nombre del departamento',
+      );
     }
     // Validación de especialización incompatible antes de crear el usuario
     try {
@@ -481,7 +528,9 @@ export class AuthController {
         throw new BadRequestException('El usuario ya es paciente.');
       }
     } catch (err) {
-      throw new BadRequestException('No se pudo validar la especialización en cardiology-service.');
+      throw new BadRequestException(
+        'No se pudo validar la especialización en cardiology-service.',
+      );
     }
     // Llama al AuthService, que maneja la transacción y rollback
     return this.authService.createPatientByAdmin({

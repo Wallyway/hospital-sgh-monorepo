@@ -76,6 +76,28 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('auth/admin/create-patient')
+  async proxyAdminCreatePatient(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only an ADMIN can create a patient');
+    }
+    // Reenviar Authorization y Content-Type
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
   // == PROTECTED CATCH-ALL ROUTE ==
   // All other routes are caught by this handler and are protected by the JWT guard.
   @UseGuards(JwtAuthGuard)
@@ -86,17 +108,24 @@ export class ProxyController {
     // Copiar todos los headers originales, excluyendo 'host'
     const forwardedHeaders = { ...headers };
     delete forwardedHeaders['host'];
+    // Si es /auth/admin/create-patient, NO reenviar Authorization
+    if (originalUrl.startsWith('/auth/admin/create-patient')) {
+      delete forwardedHeaders['authorization'];
+    }
     // Sobrescribir/agregar los headers de usuario autenticado
     forwardedHeaders['X-User-Id'] = user?.userId;
     forwardedHeaders['X-User-Email'] = user?.email;
     forwardedHeaders['X-User-Role'] = user?.role;
 
+    // Log para depuración
+    console.log('Proxying request to:', method, originalUrl);
     const recipientResponse = await this.proxyService.proxyRequest(
       method,
       originalUrl,
       body,
       forwardedHeaders,
     );
+    console.log('Received response from service:', recipientResponse.status);
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 }

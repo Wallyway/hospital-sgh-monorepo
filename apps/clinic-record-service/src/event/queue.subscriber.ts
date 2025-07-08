@@ -10,7 +10,7 @@ export class QueueSubscriberService implements OnModuleInit {
   private readonly logger = new Logger(QueueSubscriberService.name);
   private readonly queueName = process.env.QUEUE_NAME || 'hospital_events';
 
-  constructor(private patientService: PatientService) { }
+  constructor(private patientService: PatientService) {}
 
   onModuleInit() {
     QueueT.initialize(this.queueName, {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -22,7 +23,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) { }
+  ) {}
   async validateUser(
     email: string,
     pass: string,
@@ -41,7 +42,7 @@ export class AuthService {
         'true';
       if (useSimulation) {
         // Simulación: siempre válido
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         const { passwordHash, ...result } = user;
         return result;
       } else {
@@ -150,19 +151,21 @@ export class AuthService {
     // Aquí puedes emitir un evento, llamar a un servicio, o hacer una petición HTTP
     // Por ejemplo, usando axios para llamar al servicio de pacientes:
     try {
-      const CLINIC_SERVICE_URL = this.configService.get<string>('CLINIC_SERVICE_URL', 'http://localhost:3004');
-      await axios.post(
-        `${CLINIC_SERVICE_URL}/patients`,
-        {
-          userId: newUser.idUsuario,
-          idPAdministrativo: data.idPAdministrativo,
-          baseDepartamento: data.baseDepartamento || 'Cardiología',
-        },
+      const CLINIC_SERVICE_URL = this.configService.get<string>(
+        'CLINIC_SERVICE_URL',
+        'http://localhost:3004',
       );
+      await axios.post(`${CLINIC_SERVICE_URL}/patients`, {
+        userId: newUser.idUsuario,
+        idPAdministrativo: data.idPAdministrativo,
+        baseDepartamento: data.baseDepartamento || 'Cardiología',
+      });
     } catch (err) {
       // Rollback manual: si falla la creación del paciente, elimina el usuario creado
       await this.usersService.deleteUser({ idUsuario: newUser.idUsuario });
-      throw new BadRequestException('Error creando el paciente en el microservicio de clínica');
+      throw new BadRequestException(
+        'Error creando el paciente en el microservicio de clínica',
+      );
     }
     return newUser;
   }

@@ -3,7 +3,7 @@ import { EmployeesService } from './employees.service';
 
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) { }
+  constructor(private readonly employeesService: EmployeesService) {}
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -32,7 +32,9 @@ export class EmployeesController {
       where: { idEmpleado: Number(idEmpleado) },
     });
     if (!result) {
-      throw new NotFoundException('No existe PAdministrativo para ese empleado');
+      throw new NotFoundException(
+        'No existe PAdministrativo para ese empleado',
+      );
     }
     return result;
   }

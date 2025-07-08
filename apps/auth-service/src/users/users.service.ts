@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import {
   Injectable,
   ConflictException,
@@ -12,7 +13,7 @@ import axios from 'axios';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async user(
     userWhereUniqueInput: Prisma.UsuarioWhereUniqueInput,
@@ -112,10 +113,15 @@ export class UsersService {
     });
   }
 
-  async getEmpleadoByIdUsuario(idUsuario: string | number): Promise<unknown | null> {
-    const CARDIOLOGY_SERVICE_URL = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+  async getEmpleadoByIdUsuario(
+    idUsuario: string | number,
+  ): Promise<unknown | null> {
+    const CARDIOLOGY_SERVICE_URL =
+      process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
     try {
-      const resp = await axios.get(`${CARDIOLOGY_SERVICE_URL}/employees/by-user/${idUsuario}`);
+      const resp = await axios.get(
+        `${CARDIOLOGY_SERVICE_URL}/employees/by-user/${idUsuario}`,
+      );
       return resp.data;
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.status === 404) {

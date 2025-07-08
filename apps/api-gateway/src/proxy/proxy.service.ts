@@ -11,7 +11,7 @@ export class ProxyService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {
