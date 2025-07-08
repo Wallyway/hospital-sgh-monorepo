@@ -24,7 +24,7 @@ export class RolesService {
     private dblinkService: DblinkService,
     private eventPublisherService: EventPublisherService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async specializeUserRole(
     userId: number,
@@ -75,6 +75,28 @@ export class RolesService {
         );
         throw new BadRequestException(
           'No se pudo validar la especialización en cardiology-service.',
+        );
+      }
+    }
+
+    // Validación de duplicidad para PATIENT
+    if (role === UserRole.PATIENT) {
+      const clinicRecordUrl = this.configService.get<string>('CLINIC_RECORD_SERVICE_URL');
+      try {
+        const resp = await axios.get(`${clinicRecordUrl}/patients/roles/${userId}`);
+        const roles = resp.data.roles as string[];
+        if (roles.includes('PATIENT')) {
+          throw new BadRequestException(
+            `El usuario ya está especializado como PATIENT.`,
+          );
+        }
+      } catch (err) {
+        this.logger.error(
+          'Error consultando roles en clinic-record-service:',
+          err?.message,
+        );
+        throw new BadRequestException(
+          'No se pudo validar la especialización en clinic-record-service.',
         );
       }
     }
