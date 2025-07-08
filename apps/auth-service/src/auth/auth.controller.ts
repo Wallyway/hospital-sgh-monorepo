@@ -238,6 +238,49 @@ export class AuthController {
     );
   }
 
+  /**
+   * @swagger
+   * /auth/root/create-user/:role:
+   *   post:
+   *     summary: Crear usuario por rol (solo ROOT)
+   *     description: Crea un usuario con rol MEDIC o ADMIN. Valida que el idDepartamento exista en department-service y que el sueldo sea positivo. Si el departamento no existe, retorna un error. Si la especialización falla, hace rollback.
+   *     parameters:
+   *       - in: path
+   *         name: role
+   *         required: true
+   *         schema:
+   *           type: string
+   *           enum: [MEDIC, ADMIN]
+   *         description: Rol del usuario a crear
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/CreateUserAdminDto'
+   *           example:
+   *             idUsuario: 123456789
+   *             nombre: "Dr. House"
+   *             email: "house@mail.com"
+   *             password: "password123"
+   *             genero: "M"
+   *             direccion: "Calle 123"
+   *             fechaNacimiento: "1970-01-01"
+   *             sueldo: 5000000
+   *             idDepartamento: 1
+   *     responses:
+   *       201:
+   *         description: Usuario creado y rol asignado
+   *         content:
+   *           application/json:
+   *             example:
+   *               idUsuario: "123456789"
+   *               nombre: "Dr. House"
+   *               email: "house@mail.com"
+   *               departamento: "Cardiologia"
+   *       400:
+   *         description: Error de validación o departamento inexistente
+   */
   @ApiOperation({ summary: 'Crear usuario por rol (root)' })
   @ApiParam({ name: 'role', enum: ['MEDIC', 'ADMIN'] })
   @ApiResponse({ status: 201, description: 'Usuario creado y rol asignado' })
@@ -261,6 +304,25 @@ export class AuthController {
       throw new BadRequestException(
         'El campo sueldo es obligatorio y debe ser un número positivo para MEDIC o ADMIN.',
       );
+    }
+    // Si el rol es MEDIC o ADMIN, idDepartamento es obligatorio
+    if (
+      (upperRole === 'MEDIC' || upperRole === 'ADMIN') &&
+      (createUserAdminDto.idDepartamento === undefined || createUserAdminDto.idDepartamento === null)
+    ) {
+      throw new BadRequestException('El campo idDepartamento es obligatorio para crear un usuario MEDIC o ADMIN.');
+    }
+    // Validar que el idDepartamento existe en department-service
+    const DEPARTMENT_SERVICE_URL = process.env.DEPARTMENT_SERVICE_URL || 'http://localhost:3005';
+    let departamento;
+    try {
+      const depResp = await axios.get(`${DEPARTMENT_SERVICE_URL}/departments/${createUserAdminDto.idDepartamento}`);
+      departamento = depResp.data;
+      if (!departamento || departamento.idDepartamento === undefined || departamento.idDepartamento === null) {
+        throw new Error();
+      }
+    } catch (e) {
+      throw new BadRequestException('Este departamento no existe');
     }
     // Validación de especialización incompatible antes de crear el usuario
     if (upperRole === 'MEDIC' || upperRole === 'ADMIN') {
@@ -288,7 +350,7 @@ export class AuthController {
     const user = await this.usersService.createUserByAdmin(createUserAdminDto);
     try {
       // Solo pasa el sueldo al role-assignment-service, no lo guarda en la base de datos de auth
-      const rolePayload = { ...createUserAdminDto };
+      const rolePayload = { ...createUserAdminDto, idDepartamento: departamento.idDepartamento };
       if (upperRole !== 'MEDIC' && upperRole !== 'ADMIN') {
         delete rolePayload['sueldo'];
       }
@@ -300,6 +362,7 @@ export class AuthController {
       return {
         ...user,
         idUsuario: user.idUsuario.toString(),
+        departamento: departamento.Nombre,
       };
     } catch (err) {
       // Rollback manual: si falla la especialización, elimina el usuario creado
@@ -319,6 +382,39 @@ export class AuthController {
     return this.usersService.users({});
   }
 
+  /**
+   * @swagger
+   * /auth/admin/create-patient:
+   *   post:
+   *     summary: Crear paciente por ADMIN
+   *     description: Permite a un usuario ADMIN crear un paciente. El idPAdministrativo y el nombre del departamento se obtienen automáticamente del token y de los microservicios. Si la especialización falla, hace rollback.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/CreateUserAdminDto'
+   *           example:
+   *             email: "patient@mail.com"
+   *             password: "password123"
+   *             nombre: "Juan"
+   *             direccion: "Calle 123"
+   *             genero: "M"
+   *             fechaNacimiento: "1990-01-01"
+   *             idUsuario: 1234567890
+   *     responses:
+   *       201:
+   *         description: Paciente creado y rol asignado
+   *         content:
+   *           application/json:
+   *             example:
+   *               idUsuario: "1234567890"
+   *               nombre: "Juan"
+   *               email: "patient@mail.com"
+   *               baseDepartamento: "Cardiologia"
+   *       400:
+   *         description: Error de validación, especialización o permisos
+   */
   @ApiOperation({ summary: 'Crear paciente por ADMIN' })
   @ApiResponse({ status: 201, description: 'Paciente creado y rol asignado' })
   @ApiBody({ type: CreateUserAdminDto })
@@ -349,7 +445,7 @@ export class AuthController {
       throw new BadRequestException('El admin no tiene empleado o departamento asignado');
     }
     const idEmpleado = empleado.idEmpleado;
-    const baseDepartamento = empleado.idDepartamento;
+    const idDepartamento = empleado.idDepartamento;
     // Log para depuración del idEmpleado
     console.log('Buscando idPAdministrativo para idEmpleado:', idEmpleado);
     // 2. Buscar idPAdministrativo por idEmpleado
@@ -365,6 +461,15 @@ export class AuthController {
     }
     if (!idPAdministrativo) {
       throw new BadRequestException('El admin no tiene idPAdministrativo asignado');
+    }
+    // 3. Consultar el nombre del departamento desde department-service
+    const DEPARTMENT_SERVICE_URL = process.env.DEPARTMENT_SERVICE_URL || 'http://localhost:3005';
+    let baseDepartamento: string;
+    try {
+      const depResp = await axios.get(`${DEPARTMENT_SERVICE_URL}/departments/${idDepartamento}`);
+      baseDepartamento = depResp.data.Nombre;
+    } catch (e) {
+      throw new BadRequestException('No se pudo obtener el nombre del departamento');
     }
     // Validación de especialización incompatible antes de crear el usuario
     try {

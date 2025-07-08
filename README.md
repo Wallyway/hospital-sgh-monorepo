@@ -133,4 +133,73 @@ npx prisma generate
 
 ---
 
+## Endpoints principales (AuthService)
+
+### Crear usuario MEDIC o ADMIN (solo ROOT)
+
+`POST /auth/root/create-user/:role`
+
+- **Descripción:** Crea un usuario con rol MEDIC o ADMIN. Valida que el idDepartamento exista en department-service y que el sueldo sea positivo. Si el departamento no existe, retorna un error. Si la especialización falla, hace rollback.
+- **Body ejemplo:**
+  ```json
+  {
+    "idUsuario": 123456789,
+    "nombre": "Dr. House",
+    "email": "house@mail.com",
+    "password": "password123",
+    "genero": "M",
+    "direccion": "Calle 123",
+    "fechaNacimiento": "1970-01-01",
+    "sueldo": 5000000,
+    "idDepartamento": 1
+  }
+  ```
+- **Response ejemplo:**
+  ```json
+  {
+    "idUsuario": "123456789",
+    "nombre": "Dr. House",
+    "email": "house@mail.com",
+    "departamento": "Cardiologia"
+  }
+  ```
+- **Errores comunes:**
+  - `400`: "El campo idDepartamento es obligatorio para crear un usuario MEDIC o ADMIN."
+  - `400`: "Este departamento no existe"
+  - `400`: "El campo sueldo es obligatorio y debe ser un número positivo para MEDIC o ADMIN."
+
+### Crear paciente por ADMIN
+
+`POST /auth/admin/create-patient`
+
+- **Descripción:** Permite a un usuario ADMIN crear un paciente. El idPAdministrativo y el nombre del departamento se obtienen automáticamente del token y de los microservicios. Si la especialización falla, hace rollback.
+- **Body ejemplo:**
+  ```json
+  {
+    "email": "patient@mail.com",
+    "password": "password123",
+    "nombre": "Juan",
+    "direccion": "Calle 123",
+    "genero": "M",
+    "fechaNacimiento": "1990-01-01",
+    "idUsuario": 1234567890
+  }
+  ```
+- **Response ejemplo:**
+  ```json
+  {
+    "idUsuario": "1234567890",
+    "nombre": "Juan",
+    "email": "patient@mail.com",
+    "baseDepartamento": "Cardiologia"
+  }
+  ```
+- **Errores comunes:**
+  - `400`: "No se encontró el idUsuario en el token"
+  - `400`: "El admin no tiene empleado o departamento asignado"
+  - `400`: "El usuario ya es paciente."
+  - `400`: "No se pudo obtener el nombre del departamento"
+
+---
+
 ¡Feliz desarrollo con SGH Monorepo!

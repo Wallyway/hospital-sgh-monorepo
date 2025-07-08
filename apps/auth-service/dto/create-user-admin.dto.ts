@@ -45,4 +45,7 @@ export class CreateUserAdminDto {
 
   @ApiProperty({ example: '5', required: false })
   idPAdministrativo?: string;
+
+  @ApiProperty({ example: '1', required: false })
+  idDepartamento?: string;
 }
