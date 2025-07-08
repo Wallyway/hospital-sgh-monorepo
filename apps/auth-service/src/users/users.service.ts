@@ -8,10 +8,11 @@ import { Usuario, Prisma } from '../../generated/prisma/index.js';
 import * as bcryptjs from 'bcryptjs';
 import { CreateUserAdminDto } from '../../dto/create-user-admin.dto.js';
 import { CreateUserPhoneDto } from '../../dto/create-user-phone.dto.js';
+import axios from 'axios';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async user(
     userWhereUniqueInput: Prisma.UsuarioWhereUniqueInput,
@@ -109,5 +110,18 @@ export class UsersService {
       where: { idUsuario: BigInt(userId) },
       data: { passwordHash: newPasswordHash },
     });
+  }
+
+  async getEmpleadoByIdUsuario(idUsuario: string | number): Promise<unknown | null> {
+    const CARDIOLOGY_SERVICE_URL = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+    try {
+      const resp = await axios.get(`${CARDIOLOGY_SERVICE_URL}/employees/by-user/${idUsuario}`);
+      return resp.data;
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
+        return null;
+      }
+      throw err;
+    }
   }
 }

@@ -239,7 +239,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Crear usuario por rol (root)' })
-  @ApiParam({ name: 'role', enum: ['PATIENT', 'MEDIC', 'ADMIN'] })
+  @ApiParam({ name: 'role', enum: ['MEDIC', 'ADMIN'] })
   @ApiResponse({ status: 201, description: 'Usuario creado y rol asignado' })
   @ApiBody({ type: CreateUserAdminDto })
   @Post('root/create-user/:role')
@@ -247,10 +247,10 @@ export class AuthController {
     @Param('role') role: string,
     @Body() createUserAdminDto: CreateUserAdminDto,
   ) {
-    const validRoles = ['PATIENT', 'MEDIC', 'ADMIN'];
+    const validRoles = ['MEDIC', 'ADMIN'];
     const upperRole = role.toUpperCase();
     if (!validRoles.includes(upperRole)) {
-      throw new BadRequestException('Invalid role');
+      throw new BadRequestException('Solo se permite crear usuarios con rol MEDIC o ADMIN');
     }
     // Si el rol es MEDIC o ADMIN, sueldo es obligatorio
     if (
@@ -323,16 +323,53 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Paciente creado y rol asignado' })
   @ApiBody({ type: CreateUserAdminDto })
   @Post('admin/create-patient')
-  async createPatientByAdmin(@Body() createUserAdminDto: CreateUserAdminDto) {
-    // Validación de campos obligatorios
-    if (!createUserAdminDto.idPAdministrativo) {
-      throw new BadRequestException('idPAdministrativo es obligatorio');
+  async createPatientByAdmin(@Body() createUserAdminDto: CreateUserAdminDto, @Req() req) {
+    // Log para depuración
+    console.log('Headers recibidos:', req.headers);
+    let idUsuario: string | undefined = req.user?.idUsuario || req.user?.sub;
+    if (!idUsuario && req.headers['authorization']) {
+      const token = req.headers['authorization'].split(' ')[1];
+      try {
+        const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        console.log('Payload JWT decodificado:', decoded);
+        idUsuario = decoded.sub;
+      } catch (e) {
+        console.log('No se pudo decodificar el JWT:', e);
+      }
+    }
+    if (!idUsuario) {
+      throw new BadRequestException('No se encontró el idUsuario en el token');
+    }
+    // 1. Buscar empleado por idUsuario
+    let empleado = await this.usersService.getEmpleadoByIdUsuario(idUsuario);
+    if (Array.isArray(empleado)) {
+      empleado = empleado[0];
+    }
+    if (!empleado || typeof empleado !== 'object' || !('idEmpleado' in empleado) || !('idDepartamento' in empleado)) {
+      throw new BadRequestException('El admin no tiene empleado o departamento asignado');
+    }
+    const idEmpleado = empleado.idEmpleado;
+    const baseDepartamento = empleado.idDepartamento;
+    // Log para depuración del idEmpleado
+    console.log('Buscando idPAdministrativo para idEmpleado:', idEmpleado);
+    // 2. Buscar idPAdministrativo por idEmpleado
+    const CARDIOLOGY_SERVICE_URL = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+    let idPAdministrativo: number | undefined;
+    try {
+      const padmResp = await axios.get(`${CARDIOLOGY_SERVICE_URL}/employees/padministrativo/by-employee/${idEmpleado}`);
+      console.log('Respuesta de padministrativo/by-employee:', padmResp.data);
+      idPAdministrativo = padmResp.data.idPAdministrativo;
+    } catch (e) {
+      console.error('Error al obtener idPAdministrativo:', e?.response?.data || e);
+      throw new BadRequestException('No se pudo obtener el idPAdministrativo del admin');
+    }
+    if (!idPAdministrativo) {
+      throw new BadRequestException('El admin no tiene idPAdministrativo asignado');
     }
     // Validación de especialización incompatible antes de crear el usuario
     try {
-      const cardiologyUrl = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
       const resp = await axios.get(
-        `${cardiologyUrl}/employees/roles/${createUserAdminDto.idUsuario}`,
+        `${CARDIOLOGY_SERVICE_URL}/employees/roles/${createUserAdminDto.idUsuario}`,
       );
       const roles = resp.data.roles as string[];
       if (roles.includes('PATIENT')) {
@@ -341,19 +378,11 @@ export class AuthController {
     } catch (err) {
       throw new BadRequestException('No se pudo validar la especialización en cardiology-service.');
     }
-    const user = await this.usersService.createUserByAdmin(createUserAdminDto);
-    try {
-      // Lógica para especializar como paciente (puedes emitir evento o llamar a microservicio)
-      // Aquí solo se simula la especialización
-      // await this.rolesService.assignRoleToUser(user.idUsuario.toString(), 'PATIENT', createUserAdminDto);
-      return {
-        ...user,
-        idUsuario: user.idUsuario.toString(),
-      };
-    } catch (err) {
-      // Rollback manual: si falla la especialización, elimina el usuario creado
-      await this.usersService.deleteUser({ idUsuario: user.idUsuario });
-      throw err;
-    }
+    // Llama al AuthService, que maneja la transacción y rollback
+    return this.authService.createPatientByAdmin({
+      ...createUserAdminDto,
+      idPAdministrativo,
+      baseDepartamento,
+    });
   }
 }
