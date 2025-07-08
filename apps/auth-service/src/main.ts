@@ -1,3 +1,7 @@
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module.js';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';

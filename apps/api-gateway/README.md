@@ -282,3 +282,11 @@ npm run start:dev
 ## Notas de Desarrollo
 
 - En desarrollo, los tokens de reseteo de contraseña y las contraseñas iniciales se imprimen en consola para propósitos de simulación. No hay envío real de emails en este entorno.
+
+## Consistencia y Rollback en la Creación de Usuarios
+
+- Cuando se crea un usuario (por ejemplo, MEDIC, ADMIN o PATIENT), el Auth Service primero crea el usuario en su base de datos.
+- Luego, intenta especializar al usuario llamando al microservicio correspondiente (roles-service, cardiology-service, etc.).
+- **Si ocurre un error durante la especialización** (por ejemplo, si el microservicio de roles/pacientes no está implementado, no responde, o devuelve error), el Auth Service elimina automáticamente el usuario recién creado (rollback manual).
+- Esto asegura que **no queden usuarios huérfanos** si la especialización falla, manteniendo la base de datos consistente.
+- Este mecanismo aplica para cualquier rol, incluyendo futuros microservicios como `PATIENT`.

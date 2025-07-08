@@ -21,12 +21,12 @@ model Empleado {
 
 model Medico {
     idEmpleado Int      @id
-    sueldo     Int
+    sueldo     BigInt
     empleado   Empleado @relation(fields: [idEmpleado], references: [idEmpleado])
 }
 
 model PAdministrativo {
     idEmpleado Int      @id
-    sueldo     Int
+    sueldo     BigInt
     empleado   Empleado @relation(fields: [idEmpleado], references: [idEmpleado])
 }

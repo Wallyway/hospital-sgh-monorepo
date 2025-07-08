@@ -34,7 +34,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
@@ -282,20 +282,26 @@ export class AuthController {
       }
     }
     const user = await this.usersService.createUserByAdmin(createUserAdminDto);
-    // Solo pasa el sueldo al role-assignment-service, no lo guarda en la base de datos de auth
-    const rolePayload = { ...createUserAdminDto };
-    if (upperRole !== 'MEDIC' && upperRole !== 'ADMIN') {
-      delete rolePayload['sueldo'];
+    try {
+      // Solo pasa el sueldo al role-assignment-service, no lo guarda en la base de datos de auth
+      const rolePayload = { ...createUserAdminDto };
+      if (upperRole !== 'MEDIC' && upperRole !== 'ADMIN') {
+        delete rolePayload['sueldo'];
+      }
+      await this.rolesService.assignRoleToUser(
+        Number(user.idUser),
+        upperRole,
+        rolePayload,
+      );
+      return {
+        ...user,
+        idUser: user.idUser.toString(),
+      };
+    } catch (err) {
+      // Rollback manual: si falla la especialización, elimina el usuario creado
+      await this.usersService.deleteUser({ idUser: user.idUser });
+      throw err;
     }
-    await this.rolesService.assignRoleToUser(
-      Number(user.idUser),
-      upperRole,
-      rolePayload,
-    );
-    return {
-      ...user,
-      idUser: user.idUser.toString(),
-    };
   }
 
   @ApiOperation({ summary: 'Obtener todos los usuarios (solo ROOT)' })
