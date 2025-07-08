@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -189,6 +190,7 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
+  // eslint-disable-next-line prettier/prettier
   @UseGuards(JwtAuthGuard)
   @Get('auth/patient/medical-records')
   async proxyPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
