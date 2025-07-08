@@ -155,7 +155,7 @@ const SolicitarEquipos = () => {
   };
 
   return (
-    <div className="solicitar-equipos-container">
+    <div className="main-content-section solicitar-equipos-container">
       <div className="equipos-header">
         <div className="header-title-row">
           <h1>Solicitar Equipos</h1>

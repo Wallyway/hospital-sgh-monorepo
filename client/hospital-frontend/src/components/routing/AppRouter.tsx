@@ -8,7 +8,16 @@ import PatientAppoinment from "@/views/medic/PatientAppoinment";
 import MedicalRecord from "@/views/medic/MedicalRecord";
 import RequestEquipment from "@/views/medic/RequestEquipment";
 // admin views
-import PAdminDashboard from "@views/pAdmin/PAdminDashboard";
+import {
+  PAdminBase,
+  PAdminDashboard,
+  ConsultarMedicos,
+  ConsultarAgendaMedicos,
+  GestionarCitasPacientes,
+  AgregarPacientes,
+  ConsultarPacientes,
+  ModificarDatosPacientes
+} from "@views/pAdmin";
 // patient views
 import PatientBase from "@/views/patient/PatientBase.jsx";
 import Agendar from "@/views/patient/Agendar.jsx";
@@ -30,8 +39,17 @@ export const AppRouter = () => {
         <Route path="equipos" element={<RequestEquipment />} />
       </Route>
 
-      {/* Admmin routes */}
-      <Route path="/padmin/dashboard" element={<PAdminDashboard />} />
+      {/* Admin routes */}
+      <Route path="/padmin" element={<PAdminBase />}>
+        <Route index element={<PAdminDashboard />} />
+        <Route path="dashboard" element={<PAdminDashboard />} />
+        <Route path="consultar-medicos" element={<ConsultarMedicos />} />
+        <Route path="consultar-agenda-medicos" element={<ConsultarAgendaMedicos />} />
+        <Route path="gestionar-citas-pacientes" element={<GestionarCitasPacientes />} />
+        <Route path="agregar-pacientes" element={<AgregarPacientes />} />
+        <Route path="consultar-pacientes" element={<ConsultarPacientes />} />
+        <Route path="modificar-datos-pacientes" element={<ModificarDatosPacientes />} />
+      </Route>
 
       {/* Patient routes */}
       <Route path="/patient" element={<PatientBase />}>

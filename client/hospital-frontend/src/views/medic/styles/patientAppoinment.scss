@@ -1,12 +1,7 @@
 @use "@styles/variables" as *;
 
 .cita-container {
-  // Cita Paciente Styles
-  display: flex;
-  flex-direction: column;
   gap: 1.5rem;
-  height: 100%;
-  max-width: 100%;
   overflow-x: hidden;
 
   .cita-header {

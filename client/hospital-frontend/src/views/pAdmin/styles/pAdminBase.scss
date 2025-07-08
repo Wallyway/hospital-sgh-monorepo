@@ -1,0 +1,18 @@
+@use "@styles/variables" as *;
+
+.padmin-base {
+  background: linear-gradient(135deg, #f0f4ff 0%, #d4f1ff 100%);
+  min-height: 100vh;
+
+  .main-content-section {
+    max-width: 100%;
+  }
+
+  .title-section {
+    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+}
