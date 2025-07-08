@@ -9,7 +9,7 @@ import {
 import { UsersService } from '../users/users.service.js';
 import { JwtService } from '@nestjs/jwt';
 import * as bcryptjs from 'bcryptjs';
-import { User } from '../../generated/prisma';
+import { Usuario } from '../../generated/prisma';
 import { PrismaService } from '../prisma.service.js';
 import { randomUUID } from 'crypto';
 import axios from 'axios';
@@ -22,12 +22,12 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) {}
+  ) { }
   async validateUser(
     email: string,
     pass: string,
     role: string,
-  ): Promise<Omit<User, 'passwordHash'>> {
+  ): Promise<Omit<Usuario, 'passwordHash'>> {
     const user = await this.usersService.user({ email });
 
     if (user && (await bcryptjs.compare(pass, user.passwordHash))) {
@@ -56,7 +56,7 @@ export class AuthService {
           const response = await axios.post(
             `${EMPLOYEE_SERVICE_URL}/employees/validate-role`,
             {
-              idUser: user.idUser,
+              idUsuario: user.idUsuario.toString(),
               role,
             },
           );
@@ -76,10 +76,10 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  login(user: Omit<User, 'passwordHash'>, role: string) {
-    const payload: { email: string; sub: number; role: string } = {
+  login(user: Omit<Usuario, 'passwordHash'>, role: string) {
+    const payload: { email: string; sub: string; role: string } = {
       email: user.email,
-      sub: Number(user.idUser),
+      sub: user.idUsuario.toString(),
       role,
     };
     return {
@@ -88,43 +88,26 @@ export class AuthService {
   }
 
   async forgotPassword(email: string): Promise<{ message: string }> {
-    // Verificar que el usuario existe
     const user = await this.usersService.user({ email });
     if (!user) {
-      // Por seguridad, no revelamos si el email existe o no
       return {
         message: 'If the email exists, a password reset link has been sent.',
       };
     }
-
-    // Generar token único
     const token = randomUUID();
-
-    // Calcular fecha de expiración (30 minutos)
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 30);
-
-    // Eliminar tokens anteriores del usuario (si existen)
-
     await this.prisma.passwordResetToken.deleteMany({
-      where: { userId: user.idUser },
+      where: { usuarioId: user.idUsuario },
     });
-
-    // Guardar el nuevo token
-
     await this.prisma.passwordResetToken.create({
       data: {
         token,
-
-        userId: user.idUser,
+        usuarioId: user.idUsuario,
         expiresAt,
       },
     });
-
-    // TODO: Enviar email con el token
-    // Por ahora, solo retornamos un mensaje de éxito
     console.log(`Password reset token for ${email}: ${token}`);
-
     return {
       message: 'If the email exists, a password reset link has been sent.',
     };
@@ -134,43 +117,53 @@ export class AuthService {
     token: string,
     newPassword: string,
   ): Promise<{ message: string }> {
-    // Buscar el token en la base de datos
-
     const resetToken = await this.prisma.passwordResetToken.findUnique({
       where: { token },
-      include: { user: true },
+      include: { usuario: true },
     });
-
     if (!resetToken) {
       throw new BadRequestException('Invalid or expired reset token');
     }
-
-    // Verificar que no ha expirado
     if (resetToken.expiresAt < new Date()) {
-      // Eliminar token expirado
-
       await this.prisma.passwordResetToken.delete({
         where: { id: resetToken.id },
       });
       throw new BadRequestException('Reset token has expired');
     }
-
-    // Hashear la nueva contraseña
     const saltOrRounds = 10;
     const newPasswordHash = await bcryptjs.hash(newPassword, saltOrRounds);
-
-    // Actualizar la contraseña del usuario
-    await this.prisma.user.update({
-      where: { idUser: resetToken.userId },
+    await this.prisma.usuario.update({
+      where: { idUsuario: resetToken.usuarioId },
       data: { passwordHash: newPasswordHash },
     });
-
-    // Eliminar el token usado
-
     await this.prisma.passwordResetToken.delete({
       where: { id: resetToken.id },
     });
-
     return { message: 'Password has been reset successfully' };
+  }
+
+  async createPatientByAdmin(data: any) {
+    // 1. Crea el usuario (reutiliza la lógica de createUserByAdmin)
+    const newUser = await this.usersService.createUserByAdmin(data);
+
+    // 2. Lógica para crear el paciente (emitir evento, llamar a microservicio, etc.)
+    // Aquí puedes emitir un evento, llamar a un servicio, o hacer una petición HTTP
+    // Por ejemplo, usando axios para llamar al servicio de pacientes:
+    try {
+      const CLINIC_SERVICE_URL = this.configService.get<string>('CLINIC_SERVICE_URL', 'http://localhost:3004');
+      await axios.post(
+        `${CLINIC_SERVICE_URL}/patients`,
+        {
+          userId: newUser.idUsuario,
+          idPAdministrativo: data.idPAdministrativo,
+          baseDepartamento: data.baseDepartamento || 'Cardiología',
+        },
+      );
+    } catch (err) {
+      // Rollback manual: si falla la creación del paciente, elimina el usuario creado
+      await this.usersService.deleteUser({ idUsuario: newUser.idUsuario });
+      throw new BadRequestException('Error creando el paciente en el microservicio de clínica');
+    }
+    return newUser;
   }
 }

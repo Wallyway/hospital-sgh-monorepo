@@ -34,18 +34,18 @@ export class DblinkService implements OnModuleDestroy {
       );
   }
 
-  async userExistsInAuthDb(userId: number): Promise<boolean> {
+  async userExistsInAuthDb(usuarioId: number): Promise<boolean> {
     try {
       const query = `
         SELECT EXISTS (
-          SELECT 1 FROM "User" WHERE "idUser" = $1
+          SELECT 1 FROM "Usuario" WHERE "idUsuario" = $1
         ) as "exists";
       `;
-      const res = await this.authDbPool.query(query, [userId]);
+      const res = await this.authDbPool.query(query, [usuarioId]);
       return res.rows[0]?.exists ?? false;
     } catch (error) {
       this.logger.error(
-        `DBLINK error checking user ${userId}: ${error.message}`,
+        `DBLINK error checking user ${usuarioId}: ${error.message}`,
       );
       throw new InternalServerErrorException(
         'Failed to verify user existence.',

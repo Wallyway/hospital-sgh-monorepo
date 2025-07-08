@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Equipamiento {
+  idEquipamiento Int      @id @default(autoincrement())
+  idDepartamento Int
+  nombre         String
+  estado         String   @default("D") // Validar 'D' o 'P' en BD
+  FContratacion  DateTime @default(now())
+
+  medicoEquipo Medico_Equipo[]
+
+  // @@check("estado IN ('D', 'P')") // Solo en BD
+}
+
+model Empleado {
+  idEmpleado     Int      @id @default(autoincrement())
+  idUsuario      BigInt
+  idDepartamento Int
+  FContratacion  DateTime @default(now())
+  estado         String   @default("V") // Validar en BD
+
+  pAdministrativo PAdministrativo[]
+  medico          Medico[]
+
+  // @@unique([idDepartamento, idEmpleado]) // Prisma solo permite un @id
+  // @@check("estado IN ('V', 'D')") // Solo en BD
+}
+
+model PAdministrativo {
+  idPAdministrativo Int    @id @default(autoincrement())
+  idEmpleado        Int
+  sueldo            BigInt
+
+  empleado                 Empleado                   @relation(fields: [idEmpleado], references: [idEmpleado])
+  PAdmin_Modifica_Paciente PAdmin_Modifica_Paciente[]
+  PAdmin_Gestiona_Cita     PAdmin_Gestiona_Cita[]
+}
+
+model Medico {
+  idMedico   Int    @id @default(autoincrement())
+  idEmpleado Int
+  sueldo     BigInt
+
+  empleado                        Empleado                          @relation(fields: [idEmpleado], references: [idEmpleado])
+  medicoEquipo                    Medico_Equipo[]
+  Cita                            Cita[]
+  Actualizaciones_HistoriaClinica Actualizaciones_HistoriaClinica[]
+  Medico_Preescribe_Medicamento   Medico_Preescribe_Medicamento[]
+  Registro_Consulta_Medicamento   Registro_Consulta_Medicamento[]
+}
+
+model Medico_Equipo {
+  idMedico       Int
+  idEquipamiento Int
+  FPrestamo      DateTime
+  FDevolucion    DateTime
+
+  medico       Medico       @relation(fields: [idMedico], references: [idMedico])
+  equipamiento Equipamiento @relation(fields: [idEquipamiento], references: [idEquipamiento])
+
+  @@id([idMedico, idEquipamiento])
+}
+
+model Cita {
+  idCita     Int      @id @default(autoincrement())
+  idPaciente Int
+  idMedico   Int
+  fechaYHora DateTime
+  estado     String   @default("R") // Validar en BD
+  resumen    String
+
+  medico Medico @relation(fields: [idMedico], references: [idMedico])
+  // paciente: relación con paciente está en otra base
+
+  // @@check("estado IN ('R', 'A', 'P', 'C')") // Solo en BD
+  Actualizaciones_HistoriaClinica Actualizaciones_HistoriaClinica[]
+  Medico_Preescribe_Medicamento   Medico_Preescribe_Medicamento[]
+  PAdmin_Gestiona_Cita            PAdmin_Gestiona_Cita[]
+}
+
+model PAdmin_Modifica_Paciente {
+  idPAdministrativo Int
+  idPaciente        Int
+  FModificacion     DateTime @default(now())
+  descripcion       String
+
+  pAdministrativo PAdministrativo @relation(fields: [idPAdministrativo], references: [idPAdministrativo])
+
+  @@id([idPAdministrativo, idPaciente])
+}
+
+model Actualizaciones_HistoriaClinica {
+  idMedico          Int
+  idCita            Int
+  idHistoriaClinica Int
+  FActualizacion    DateTime @default(now())
+
+  medico Medico @relation(fields: [idMedico], references: [idMedico])
+  cita   Cita   @relation(fields: [idCita], references: [idCita])
+
+  @@id([idMedico, idCita, idHistoriaClinica])
+}
+
+model Medico_Preescribe_Medicamento {
+  idMedico      Int
+  idCita        Int
+  idMedicamento Int
+  idPaciente    Int
+  posologia     String
+  particular    String @default("N") // Validar en BD
+
+  medico Medico @relation(fields: [idMedico], references: [idMedico])
+  cita   Cita   @relation(fields: [idCita], references: [idCita])
+
+  @@id([idMedico, idCita, idMedicamento, idPaciente])
+}
+
+model Registro_Consulta_Medicamento {
+  idMedico      Int
+  idMedicamento Int
+  FConsulta     DateTime @default(now())
+
+  medico Medico @relation(fields: [idMedico], references: [idMedico])
+
+  @@id([idMedico, idMedicamento])
+}
+
+model PAdmin_Gestiona_Cita {
+  idPAdministrativo Int
+  idCita            Int
+  accion            String   @default("A") // Validar en BD
+  FAccion           DateTime @default(now())
+
+  pAdministrativo PAdministrativo @relation(fields: [idPAdministrativo], references: [idPAdministrativo])
+  cita            Cita            @relation(fields: [idCita], references: [idCita])
+
+  @@id([idPAdministrativo, idCita])
+}

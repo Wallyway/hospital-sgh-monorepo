@@ -19,7 +19,7 @@ export class RolesService {
     );
   }
 
-  async assignRoleToUser(idUser: number, role: string, userData: any) {
+  async assignRoleToUser(idUser: string, role: string, userData: any) {
     try {
       const url = `${this.rolesServiceUrl}/${idUser}/${role}`;
       // LOG para depuración

@@ -1,0 +1,34 @@
+// Modelo fiel a la estructura de BD_GUIDE/azure.sql
+// Las validaciones de existencia de usuario y administrativo se hacen por triggers externos (dblink)
+// La validación de Estado ('A', 'I') debe implementarse a nivel de base de datos o aplicación
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Paciente {
+    idUsuario         BigInt
+    idPAdministrativo Int
+    baseDepartamento  String
+    idPaciente        Int              @id @default(autoincrement())
+    idHistoriaClinica Int?             @unique // Se asigna por trigger
+    FAfiliacion       DateTime         @default(now())
+    Estado            String           @default("A") // Validar 'A' o 'I' en BD o app
+    HistoriaClinica   HistoriaClinica?
+
+    @@unique([idUsuario, idPaciente])
+}
+
+model HistoriaClinica {
+    idHistoriaClinica Int      @id @default(autoincrement())
+    idPaciente        Int      @unique
+    FInicio           DateTime @default(now())
+
+    paciente Paciente @relation(fields: [idPaciente], references: [idPaciente])
+}

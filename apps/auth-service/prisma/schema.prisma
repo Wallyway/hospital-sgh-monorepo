@@ -14,29 +14,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  idUser             BigInt              @id @map("idUser") // La cédula como ID principal
-  name               String              @db.VarChar(100)
+model Usuario {
+  idUsuario          BigInt              @id @map("idUsuario") // La cédula como ID principal
+  nombre             String              @db.VarChar(100)
   email              String              @unique
   passwordHash       String // Almacena la contraseña hasheada con bcryptjs
-  gender             String
-  address            String              @db.VarChar(100)
-  birthDate          DateTime
-  telUser            TelUser[]
+  genero             String
+  direccion          String              @db.VarChar(100)
+  fechaNacimiento    DateTime
+  telUsuario         TelUsuario[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   passwordResetToken PasswordResetToken? @relation(name: "UserPasswordResetToken")
 }
 
-model TelUser {
-  idUser    BigInt
-  telephone BigInt
-  user      User     @relation(fields: [idUser], references: [idUser], onDelete: Cascade)
+model TelUsuario {
+  idUsuario BigInt
+  telefono  BigInt
+  usuario   Usuario  @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([idUser, telephone])
-  @@map("TelUser")
+  @@id([idUsuario, telefono])
+  @@map("TelUsuario")
 }
 
 // enum UserRole {
@@ -48,8 +48,8 @@ model TelUser {
 model PasswordResetToken {
   id        String   @id @default(uuid())
   token     String   @unique // El token de un solo uso
-  userId    BigInt   @unique // ID del usuario asociado, @unique asegura solo un token activo por usuario
+  usuarioId BigInt   @unique // ID del usuario asociado, @unique asegura solo un token activo por usuario
   expiresAt DateTime // Fecha de expiración del token
   createdAt DateTime @default(now())
-  user      User     @relation(name: "UserPasswordResetToken", fields: [userId], references: [idUser], onDelete: Cascade)
+  usuario   Usuario  @relation(name: "UserPasswordResetToken", fields: [usuarioId], references: [idUsuario], onDelete: Cascade)
 }

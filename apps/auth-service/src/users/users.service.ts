@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma.service.js';
-import { User, Prisma } from '../../generated/prisma/index.js';
+import { Usuario, Prisma } from '../../generated/prisma/index.js';
 import * as bcryptjs from 'bcryptjs';
 import { CreateUserAdminDto } from '../../dto/create-user-admin.dto.js';
 import { CreateUserPhoneDto } from '../../dto/create-user-phone.dto.js';
@@ -14,9 +14,9 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return await this.prisma.user.findUnique({
+    userWhereUniqueInput: Prisma.UsuarioWhereUniqueInput,
+  ): Promise<Usuario | null> {
+    return await this.prisma.usuario.findUnique({
       where: userWhereUniqueInput,
     });
   }
@@ -24,12 +24,12 @@ export class UsersService {
   async users(params: {
     skip?: number;
     take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
+    cursor?: Prisma.UsuarioWhereUniqueInput;
+    where?: Prisma.UsuarioWhereInput;
+    orderBy?: Prisma.UsuarioOrderByWithRelationInput;
+  }): Promise<Usuario[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return await this.prisma.user.findMany({
+    return await this.prisma.usuario.findMany({
       skip,
       take,
       cursor,
@@ -38,20 +38,20 @@ export class UsersService {
     });
   }
 
-  async createUserByAdmin(data: CreateUserAdminDto): Promise<User> {
+  async createUserByAdmin(data: CreateUserAdminDto): Promise<Usuario> {
     const saltOrRounds = 10;
     const passwordHash = await bcryptjs.hash(data.password, saltOrRounds);
 
     try {
-      const newUser = await this.prisma.user.create({
+      const newUser = await this.prisma.usuario.create({
         data: {
-          idUser: data.idUser,
-          name: data.name,
+          idUsuario: BigInt(data.idUsuario),
+          nombre: data.nombre,
           email: data.email,
-          address: data.address,
           passwordHash,
-          gender: data.gender,
-          birthDate: new Date(data.birthDate),
+          genero: data.genero,
+          direccion: data.direccion,
+          fechaNacimiento: new Date(data.fechaNacimiento),
         },
       });
 
@@ -76,36 +76,37 @@ export class UsersService {
   }
 
   async addPhoneToUser(data: CreateUserPhoneDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return await this.prisma.telUser.create({
+    return await this.prisma.telUsuario.create({
       data: {
-        idUser: data.idUser,
-        telephone: BigInt(data.telephone),
+        idUsuario: BigInt(data.idUsuario),
+        telefono: BigInt(data.telefono),
       },
     });
   }
 
   async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
+    where: Prisma.UsuarioWhereUniqueInput;
+    data: Prisma.UsuarioUpdateInput;
+  }): Promise<Usuario> {
     const { where, data } = params;
-    return await this.prisma.user.update({
+    return await this.prisma.usuario.update({
       data,
       where,
     });
   }
 
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return await this.prisma.user.delete({
+  async deleteUser(where: Prisma.UsuarioWhereUniqueInput): Promise<Usuario> {
+    return await this.prisma.usuario.delete({
       where,
     });
   }
 
-  // Nuevo método para actualizar la contraseña de un usuario
-  async updatePassword(userId: number, newPasswordHash: string): Promise<User> {
-    return this.prisma.user.update({
-      where: { idUser: userId },
+  async updatePassword(
+    userId: string,
+    newPasswordHash: string,
+  ): Promise<Usuario> {
+    return this.prisma.usuario.update({
+      where: { idUsuario: BigInt(userId) },
       data: { passwordHash: newPasswordHash },
     });
   }

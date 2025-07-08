@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -10,6 +11,8 @@ import {
   Get,
   ForbiddenException,
   Req,
+  UseGuards,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { LoginDto } from '../../dto/login.dto.js';
@@ -47,13 +50,14 @@ export class AuthController {
     // Verifica si ya existe el usuario
     let user = await this.usersService.user({ email: dto.email });
     if (!user) {
-      // Si no se especifica idUser, genera uno aleatorio (simulando cédula)
-      const idUser =
-        dto.idUser || Math.floor(100000000 + Math.random() * 900000000);
+      // Si no se especifica idUsuario, genera uno aleatorio (simulando cédula)
+      const idUsuario =
+        dto.idUsuario ||
+        Math.floor(100000000 + Math.random() * 900000000).toString();
       // Crea el usuario en la base de datos
       user = await this.usersService.createUserByAdmin({
         ...dto,
-        idUser,
+        idUsuario: idUsuario.toString(),
       });
     }
     console.log('SUPER USER GENERATED:');
@@ -64,7 +68,7 @@ export class AuthController {
         'Super usuario generado y guardado en la base de datos (o ya existente). Credenciales impresas en consola.',
       email: user.email,
       password: dto.password,
-      idUser: user.idUser.toString(),
+      idUsuario: user.idUsuario.toString(),
     };
   }
 
@@ -264,7 +268,7 @@ export class AuthController {
         const cardiologyUrl =
           process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
         const resp = await axios.get(
-          `${cardiologyUrl}/employees/roles/${createUserAdminDto.idUser}`,
+          `${cardiologyUrl}/employees/roles/${createUserAdminDto.idUsuario}`,
         );
         const roles = resp.data.roles as string[];
         if (
@@ -289,17 +293,17 @@ export class AuthController {
         delete rolePayload['sueldo'];
       }
       await this.rolesService.assignRoleToUser(
-        Number(user.idUser),
+        user.idUsuario.toString(),
         upperRole,
         rolePayload,
       );
       return {
         ...user,
-        idUser: user.idUser.toString(),
+        idUsuario: user.idUsuario.toString(),
       };
     } catch (err) {
       // Rollback manual: si falla la especialización, elimina el usuario creado
-      await this.usersService.deleteUser({ idUser: user.idUser });
+      await this.usersService.deleteUser({ idUsuario: user.idUsuario });
       throw err;
     }
   }
@@ -313,5 +317,43 @@ export class AuthController {
       throw new ForbiddenException('Solo el usuario ROOT puede acceder');
     }
     return this.usersService.users({});
+  }
+
+  @ApiOperation({ summary: 'Crear paciente por ADMIN' })
+  @ApiResponse({ status: 201, description: 'Paciente creado y rol asignado' })
+  @ApiBody({ type: CreateUserAdminDto })
+  @Post('admin/create-patient')
+  async createPatientByAdmin(@Body() createUserAdminDto: CreateUserAdminDto) {
+    // Validación de campos obligatorios
+    if (!createUserAdminDto.idPAdministrativo) {
+      throw new BadRequestException('idPAdministrativo es obligatorio');
+    }
+    // Validación de especialización incompatible antes de crear el usuario
+    try {
+      const cardiologyUrl = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+      const resp = await axios.get(
+        `${cardiologyUrl}/employees/roles/${createUserAdminDto.idUsuario}`,
+      );
+      const roles = resp.data.roles as string[];
+      if (roles.includes('PATIENT')) {
+        throw new BadRequestException('El usuario ya es paciente.');
+      }
+    } catch (err) {
+      throw new BadRequestException('No se pudo validar la especialización en cardiology-service.');
+    }
+    const user = await this.usersService.createUserByAdmin(createUserAdminDto);
+    try {
+      // Lógica para especializar como paciente (puedes emitir evento o llamar a microservicio)
+      // Aquí solo se simula la especialización
+      // await this.rolesService.assignRoleToUser(user.idUsuario.toString(), 'PATIENT', createUserAdminDto);
+      return {
+        ...user,
+        idUsuario: user.idUsuario.toString(),
+      };
+    } catch (err) {
+      // Rollback manual: si falla la especialización, elimina el usuario creado
+      await this.usersService.deleteUser({ idUsuario: user.idUsuario });
+      throw err;
+    }
   }
 }

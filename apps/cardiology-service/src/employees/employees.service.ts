@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -7,22 +8,22 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async specializeEmployee(payload: any, eventType: string) {
     const { userId, idUser, role, ...rest } = payload;
-    const idUsuario = userId || idUser;
+    const idUsuario = BigInt(userId || idUser);
 
     // 1. Verifica si ya existe un empleado con ese idUsuario
     let empleado = await this.prisma.empleado.findFirst({
-      where: { idUsuario: BigInt(idUsuario) },
+      where: { idUsuario },
     });
 
     if (!empleado) {
       // Crea el empleado
       empleado = await this.prisma.empleado.create({
         data: {
-          idUsuario: BigInt(idUsuario),
+          idUsuario,
           idDepartamento: 1, // Ajusta según lógica de negocio
           // Otros campos si los tienes
         },
@@ -30,10 +31,10 @@ export class EmployeesService {
     }
 
     // 2. Valida especialización incompatible
-    const medico = await this.prisma.medico.findUnique({
+    const medico = await this.prisma.medico.findFirst({
       where: { idEmpleado: empleado.idEmpleado },
     });
-    const admin = await this.prisma.pAdministrativo.findUnique({
+    const admin = await this.prisma.pAdministrativo.findFirst({
       where: { idEmpleado: empleado.idEmpleado },
     });
 
@@ -79,8 +80,8 @@ export class EmployeesService {
       include: { medico: true, pAdministrativo: true },
     });
     const roles: string[] = [];
-    if (empleado?.medico) roles.push('MEDIC');
-    if (empleado?.pAdministrativo) roles.push('ADMIN');
+    if (empleado?.medico?.length) roles.push('MEDIC');
+    if (empleado?.pAdministrativo?.length) roles.push('ADMIN');
     return roles;
   }
 }

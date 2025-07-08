@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsString,
   MinLength,
+  IsNumberString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -20,24 +21,28 @@ export class CreateUserAdminDto {
   @ApiProperty({ example: 'Juan' })
   @IsString()
   @IsNotEmpty()
-  name!: string;
+  nombre!: string;
 
   @ApiProperty({ example: 'Calle 123' })
   @IsString()
   @IsNotEmpty()
-  address!: string;
+  direccion!: string;
 
   @ApiProperty({ example: 'M' })
   @IsString()
   @IsNotEmpty()
-  gender!: string;
+  genero!: string;
 
   @ApiProperty({ example: '1990-01-01' })
   @IsString()
   @IsNotEmpty()
-  birthDate!: string;
+  fechaNacimiento!: string;
 
-  @ApiProperty({ example: 123456789 })
+  @ApiProperty({ example: '123456789012345678' })
   @IsNotEmpty()
-  idUser!: number;
+  @IsNumberString()
+  idUsuario!: string;
+
+  @ApiProperty({ example: '5', required: false })
+  idPAdministrativo?: string;
 }
