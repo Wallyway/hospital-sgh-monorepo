@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Req, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PatientService } from './patient.service';
 
 @Controller('patients')
 export class PatientController {
-  constructor(private readonly patientService: PatientService) {}
+  constructor(private readonly patientService: PatientService) { }
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -21,5 +21,18 @@ export class PatientController {
         typeof value === 'bigint' ? value.toString() : value,
       ),
     );
+  }
+
+  @Get('medical-records')
+  async getMedicalRecords(@Req() req) {
+    const userId = req.headers['x-user-id'];
+    if (!userId) {
+      throw new ForbiddenException('Solo el paciente autenticado puede consultar sus historias clínicas');
+    }
+    const records = await this.patientService.getMedicalRecordsByUserId(userId);
+    if (!records || records.length === 0) {
+      throw new NotFoundException('No se encontraron historias clínicas');
+    }
+    return records;
   }
 }

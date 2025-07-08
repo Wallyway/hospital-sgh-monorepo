@@ -58,4 +58,21 @@ export class PatientService {
     if (paciente) roles.push('PATIENT');
     return roles;
   }
+
+  async getMedicalRecordsByUserId(idUsuario: bigint | string) {
+    // Busca todos los pacientes de este usuario
+    const pacientes = await this.prisma.paciente.findMany({
+      where: { idUsuario: BigInt(idUsuario) },
+      select: { idPaciente: true },
+    });
+    if (!pacientes.length) return [];
+    // Busca todas las historias clínicas asociadas a esos pacientes
+    const historias = await this.prisma.historiaClinica.findMany({
+      where: {
+        idPaciente: { in: pacientes.map(p => p.idPaciente) },
+      },
+      orderBy: { FInicio: 'asc' },
+    });
+    return historias;
+  }
 }

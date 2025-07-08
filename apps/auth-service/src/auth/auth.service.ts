@@ -23,7 +23,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) {}
+  ) { }
   async validateUser(
     email: string,
     pass: string,
@@ -151,11 +151,11 @@ export class AuthService {
     // Aquí puedes emitir un evento, llamar a un servicio, o hacer una petición HTTP
     // Por ejemplo, usando axios para llamar al servicio de pacientes:
     try {
-      const CLINIC_SERVICE_URL = this.configService.get<string>(
-        'CLINIC_SERVICE_URL',
+      const CLINIC_RECORD_SERVICE_URL = this.configService.get<string>(
+        'CLINIC_RECORD_SERVICE_URL',
         'http://localhost:3004',
       );
-      await axios.post(`${CLINIC_SERVICE_URL}/patients`, {
+      await axios.post(`${CLINIC_RECORD_SERVICE_URL}/patients`, {
         userId: newUser.idUsuario,
         idPAdministrativo: data.idPAdministrativo,
         baseDepartamento: data.baseDepartamento || 'Cardiología',

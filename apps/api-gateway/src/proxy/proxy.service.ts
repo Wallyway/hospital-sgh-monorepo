@@ -11,7 +11,7 @@ export class ProxyService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {
@@ -57,6 +57,34 @@ export class ProxyService {
       return response;
     } catch (error) {
       console.error('[ProxyService] Error forwarding request:', error.message);
+      throw error;
+    }
+  }
+
+  async proxyRequestToClinicRecord(
+    method: string,
+    path: string,
+    data: any,
+    headers: any,
+  ): Promise<AxiosResponse<any>> {
+    const serviceUrl = this.configService.get<string>(
+      'CLINIC_RECORD_SERVICE_URL',
+      'http://localhost:3003',
+    );
+    const url = `${serviceUrl}${path}`;
+    try {
+      const config: AxiosRequestConfig = {
+        method: method as any,
+        url,
+        data,
+        headers,
+        validateStatus: () => true,
+        timeout: 10000,
+      };
+      const response = await firstValueFrom(this.httpService.request(config));
+      return response;
+    } catch (error) {
+      console.error('[ProxyService] Error forwarding request to clinic-record-service:', error.message);
       throw error;
     }
   }

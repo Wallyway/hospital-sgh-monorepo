@@ -386,3 +386,22 @@ npm run start:dev
 - **Errores:**
   - 403 Forbidden: Solo el usuario PATIENT puede acceder.
   - 404 Not Found: Paciente no encontrado.
+
+### GET /clinic-record/patient/medical-records
+
+- **Descripción:** Devuelve todas las historias clínicas asociadas al paciente autenticado. Solo accesible para usuarios con rol PATIENT.
+- **Headers requeridos:**
+  - Authorization: Bearer <token>
+- **Respuesta exitosa (200):**
+```json
+[
+  {
+    "idHistoriaClinica": 1,
+    "idPaciente": 123,
+    "FInicio": "2024-07-08T12:00:00Z"
+  }
+]
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario PATIENT puede acceder.
+  - 404 Not Found: No se encontraron historias clínicas.

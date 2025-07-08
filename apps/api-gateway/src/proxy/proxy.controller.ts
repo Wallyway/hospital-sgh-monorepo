@@ -189,6 +189,52 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('auth/patient/medical-records')
+  async proxyPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'PATIENT') {
+      throw new ForbiddenException('Only a PATIENT can get their medical records');
+    }
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+      'x-user-id': user?.userId || user?.sub,
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('clinic-record/patient/medical-records')
+  async proxyClinicRecordPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'PATIENT') {
+      throw new ForbiddenException('Only a PATIENT can get their medical records');
+    }
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+      'x-user-id': user?.userId || user?.sub,
+    };
+    // Redirigir al microservicio clinic-record-service
+    const recipientResponse = await this.proxyService.proxyRequestToClinicRecord(
+      req.method,
+      '/patients/medical-records',
+      req.body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
   // == PROTECTED CATCH-ALL ROUTE ==
   // All other routes are caught by this handler and are protected by the JWT guard.
   @UseGuards(JwtAuthGuard)
