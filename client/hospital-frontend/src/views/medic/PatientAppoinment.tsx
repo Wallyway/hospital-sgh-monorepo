@@ -142,8 +142,7 @@ const CitaPaciente = () => {
   };
 
   return (
-    <div className="main-content-section">
-      <div className="cita-container">
+      <div className="main-content-section cita-container">
         {/* Header de la cita */}
         <div className="cita-header">
           <div className="cita-info">
@@ -371,7 +370,6 @@ const CitaPaciente = () => {
           </button>
         </div>
       </div>
-    </div>
   );
 };
 

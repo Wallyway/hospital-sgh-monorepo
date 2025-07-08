@@ -1,38 +1,60 @@
-import React, { useState } from 'react';
-import DashboardLayout from '@components/layout/LayoutSection';
-import PeopleIcon from '@mui/icons-material/People';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-
-const pAdminMenu = [
-  { text: 'Consultar médicos', icon: <PeopleIcon /> },
-  { text: 'Consultar agenda médicos', icon: <CalendarMonthIcon /> },
-  { text: 'Gestionar citas pacientes (cancelar, reagendar, cambiar de médico)', icon: <EventAvailableIcon /> },
-  { text: 'Asignar citas de pacientes a médicos', icon: <AssignmentIndIcon /> },
-  { text: 'Consultar agenda pacientes', icon: <CalendarMonthIcon /> },
-  { text: 'Agregar pacientes', icon: <GroupAddIcon /> },
-  { text: 'Consultar pacientes', icon: <ListAltIcon /> },
-  { text: 'Modificar datos pacientes', icon: <EditNoteIcon /> },
-];
+import './styles/pAdminDashboard.scss';
 
 const PAdminDashboard = () => {
-  const padmin = {
-    nombre: "Admin Principal",
-    avatarUrl: "https://randomuser.me/api/portraits/men/2.jpg"
-  };
-  const [mensaje, setMensaje] = useState('Home');
-
   return (
-    <div className="padmin-dashboard-bg">
-      <DashboardLayout navProps={{ ...padmin, menuItems: pAdminMenu, onSidebarClick: (text: string) => setMensaje(`Se clickeó el botón ${text}`) }}>
-        <div className="dashboard-center-message">
-          <h1>{mensaje}</h1>
+    <div className="main-content-section dashboard-container">
+      <div className="dashboard-header">
+        <div className="header-title-row">
+          <h1>Panel de Administración Principal</h1>
         </div>
-      </DashboardLayout>
+      </div>
+
+      <div className="dashboard-content">
+        <div className="welcome-section">
+          <h2>Bienvenido al Panel de Administración Principal</h2>
+          <p>Desde aquí puedes gestionar todas las operaciones del hospital relacionadas con médicos y pacientes.</p>
+        </div>
+      
+      <div className="stats-grid">
+        <div className="stat-card">
+          <h3>Médicos Activos</h3>
+          <div className="stat-number">24</div>
+        </div>
+        
+        <div className="stat-card">
+          <h3>Pacientes Registrados</h3>
+          <div className="stat-number">1,247</div>
+        </div>
+        
+        <div className="stat-card">
+          <h3>Citas Hoy</h3>
+          <div className="stat-number">67</div>
+        </div>
+        
+        <div className="stat-card">
+          <h3>Citas Pendientes</h3>
+          <div className="stat-number">142</div>
+        </div>
+      </div>
+      
+      <div className="recent-activity">
+        <h3>Actividad Reciente</h3>
+        <div className="activity-list">
+          <div className="activity-item">
+            <span className="activity-time">10:30</span>
+            <span className="activity-description">Nueva cita asignada a Dr. Juan Pérez</span>
+          </div>
+          <div className="activity-item">
+            <span className="activity-time">09:15</span>
+            <span className="activity-description">Paciente Ana López agregado al sistema</span>
+          </div>
+          <div className="activity-item">
+            <span className="activity-time">08:45</span>
+            <span className="activity-description">Cita reagendada para Carlos Martínez</span>
+          </div>
+        </div>
+      </div>
+      </div>
     </div>
   );
 };

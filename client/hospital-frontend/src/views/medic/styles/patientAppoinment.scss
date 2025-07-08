@@ -1,12 +1,7 @@
 @use "@styles/variables" as *;
 
 .cita-container {
-  // Cita Paciente Styles
-  display: flex;
-  flex-direction: column;
   gap: 1.5rem;
-  height: 100%;
-  max-width: 100%;
   overflow-x: hidden;
 
   .cita-header {
@@ -344,7 +339,7 @@
 
           .btn-remove-medicamento {
             padding: 0.5rem 0.75rem;
-            background-color: #dc3545;
+            background-color: #f56565;
             color: white;
             border: none;
             border-radius: 6px;
@@ -355,7 +350,7 @@
             white-space: nowrap;
 
             &:hover {
-              background-color: #c82333;
+              background-color: #e03243;
               transform: translateY(-1px);
             }
           }

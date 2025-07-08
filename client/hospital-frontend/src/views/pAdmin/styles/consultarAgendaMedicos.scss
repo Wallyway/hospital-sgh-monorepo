@@ -1,0 +1,220 @@
+@use "@styles/variables" as *;
+
+.consultar-agenda-medicos-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .agenda-header {
+    flex-shrink: 0;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+
+    h2 {
+      margin: 0 0 0.5rem 0;
+      color: $primary-color;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 600;
+    }
+
+    .section-description {
+      margin: 0;
+      color: #666;
+      font-size: clamp(0.875rem, 2vw, 1rem);
+    }
+  }
+
+  .agenda-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    .filters-section {
+      flex-shrink: 0;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+      
+      .medico-select, .date-input {
+        padding: 0.75rem;
+        border: 2px solid #e0e6ed;
+        border-radius: 8px;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+        }
+      }
+      
+      .medico-select {
+        min-width: 250px;
+        
+        @media (max-width: 768px) {
+          min-width: auto;
+          width: 100%;
+        }
+      }
+      
+      .filter-btn {
+        padding: 0.75rem 1.5rem;
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        
+        @media (max-width: 768px) {
+          width: 100%;
+        }
+        
+        &:hover {
+          background: darken($primary-color, 10%);
+        }
+      }
+    }
+
+    .agenda-container {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid $primary-color;
+      overflow-y: auto;
+      min-height: 0;
+      
+      @media (max-width: 768px) {
+        padding: 1rem;
+      }
+      
+      // Custom scrollbar
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+        
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+    }
+
+    .time-slots {
+      h3 {
+        margin: 0 0 1.5rem 0;
+        color: #1f2937;
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        text-align: center;
+      }
+      
+      .slot {
+        display: grid;
+        grid-template-columns: 150px 1fr 120px;
+        gap: 1rem;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+        align-items: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+        
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+          gap: 0.5rem;
+          text-align: center;
+          padding: 0.75rem;
+        }
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        &.occupied {
+          background: #fef2f2;
+          border-left: 4px solid #ef4444;
+        }
+        
+        &.available {
+          background: #f0fdf4;
+          border-left: 4px solid #22c55e;
+        }
+        
+        .time {
+          font-weight: 600;
+          color: #374151;
+          font-size: clamp(0.875rem, 2vw, 1rem);
+        }
+        
+        .patient {
+          color: #6b7280;
+          font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+          
+          @media (max-width: 768px) {
+            margin: 0.25rem 0;
+          }
+        }
+        
+        .status {
+          padding: 0.25rem 0.75rem;
+          border-radius: 20px;
+          font-size: clamp(0.75rem, 1.6vw, 0.875rem);
+          font-weight: 500;
+          text-align: center;
+          white-space: nowrap;
+          
+          &.ocupado {
+            background: #ef4444;
+            color: white;
+          }
+          
+          &.disponible {
+            background: #22c55e;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    
+    .agenda-header {
+      margin-bottom: 1rem;
+    }
+    
+    .agenda-container {
+      padding: 0.75rem;
+    }
+    
+    .slot {
+      padding: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+  }
+}
