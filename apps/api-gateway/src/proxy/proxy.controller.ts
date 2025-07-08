@@ -11,6 +11,7 @@ import {
   UseGuards,
   ForbiddenException,
   Get,
+  Patch,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ProxyService } from './proxy.service';
@@ -132,6 +133,51 @@ export class ProxyController {
       'Content-Type': req.headers['content-type'],
       Authorization: req.headers['authorization'],
       'x-user-role': user?.role,
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('auth/admin/patients/:id')
+  async proxyAdminUpdatePatient(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only an ADMIN can update a patient');
+    }
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('auth/patient/profile')
+  async proxyPatientUpdateProfile(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'PATIENT') {
+      throw new ForbiddenException('Only a PATIENT can update their profile');
+    }
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+      'x-user-id': user?.userId || user?.sub,
     };
     const { method, originalUrl, body } = req;
     const recipientResponse = await this.proxyService.proxyRequest(

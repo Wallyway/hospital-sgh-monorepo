@@ -338,3 +338,51 @@ npm run start:dev
 ```
 - **Errores:**
   - 403 Forbidden: Solo el usuario ADMIN puede acceder.
+
+### PATCH /auth/admin/patients/:id
+
+- **Descripción:** Modifica los datos de un paciente existente. Solo accesible para usuarios con rol ADMIN.
+- **Headers requeridos:**
+  - Authorization: Bearer <token>
+- **Body de ejemplo:**
+```json
+{
+  "nombre": "Nuevo Nombre",
+  "direccion": "Nueva dirección"
+}
+```
+- **Respuesta exitosa (200):**
+```json
+{
+  "idUsuario": "1234567890",
+  "nombre": "Nuevo Nombre",
+  "direccion": "Nueva dirección"
+}
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario ADMIN puede acceder.
+  - 404 Not Found: Paciente no encontrado.
+
+### PATCH /auth/patient/profile
+
+- **Descripción:** Modifica los datos personales del paciente autenticado. Solo accesible para usuarios con rol PATIENT.
+- **Headers requeridos:**
+  - Authorization: Bearer <token>
+- **Body de ejemplo:**
+```json
+{
+  "nombre": "Nuevo Nombre",
+  "direccion": "Nueva dirección"
+}
+```
+- **Respuesta exitosa (200):**
+```json
+{
+  "idUsuario": "1234567890",
+  "nombre": "Nuevo Nombre",
+  "direccion": "Nueva dirección"
+}
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario PATIENT puede acceder.
+  - 404 Not Found: Paciente no encontrado.

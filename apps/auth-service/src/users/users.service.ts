@@ -13,7 +13,7 @@ import axios from 'axios';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async user(
     userWhereUniqueInput: Prisma.UsuarioWhereUniqueInput,
@@ -89,8 +89,12 @@ export class UsersService {
   async updateUser(params: {
     where: Prisma.UsuarioWhereUniqueInput;
     data: Prisma.UsuarioUpdateInput;
-  }): Promise<Usuario> {
+  }): Promise<Usuario | null> {
     const { where, data } = params;
+    const exists = await this.prisma.usuario.findUnique({ where });
+    if (!exists) {
+      return null;
+    }
     return await this.prisma.usuario.update({
       data,
       where,

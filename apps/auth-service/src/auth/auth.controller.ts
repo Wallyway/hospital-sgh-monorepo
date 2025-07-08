@@ -16,6 +16,8 @@ import {
   Req,
   UseGuards,
   Res,
+  Patch,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { LoginDto } from '../../dto/login.dto.js';
@@ -623,5 +625,119 @@ export class AuthController {
       idPAdministrativo,
       baseDepartamento,
     });
+  }
+
+  /**
+   * @swagger
+   * /auth/admin/patients/{id}:
+   *   patch:
+   *     summary: Modificar datos de un paciente (solo ADMIN)
+   *     description: Permite a un usuario ADMIN modificar los datos de un paciente existente. El rol se valida mediante el header x-user-role reenviado por el API Gateway.
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: ID del paciente a modificar
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           example:
+   *             nombre: "Nuevo Nombre"
+   *             direccion: "Nueva dirección"
+   *     responses:
+   *       200:
+   *         description: Paciente actualizado
+   *         content:
+   *           application/json:
+   *             example:
+   *               idUsuario: "1234567890"
+   *               nombre: "Nuevo Nombre"
+   *               direccion: "Nueva dirección"
+   *       403:
+   *         description: Solo el usuario ADMIN puede acceder
+   *       404:
+   *         description: Paciente no encontrado
+   */
+  @ApiOperation({ summary: 'Modificar datos de un paciente (solo ADMIN)' })
+  @ApiResponse({ status: 200, description: 'Paciente actualizado', schema: { example: { idUsuario: '1234567890', nombre: 'Nuevo Nombre', direccion: 'Nueva dirección' } } })
+  @ApiResponse({ status: 403, description: 'Solo el usuario ADMIN puede acceder' })
+  @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
+  @Patch('admin/patients/:id')
+  async updatePatientByAdmin(@Req() req, @Param('id') id: string, @Body() body: any) {
+    const userRole = req.headers['x-user-role'];
+    if (userRole !== 'ADMIN') {
+      throw new ForbiddenException('Solo el usuario ADMIN puede acceder');
+    }
+    // Actualizar el usuario (paciente)
+    const updated = await this.usersService.updateUser({
+      where: { idUsuario: BigInt(id) },
+      data: body,
+    });
+    if (!updated) {
+      throw new NotFoundException('Paciente no encontrado');
+    }
+    return updated;
+  }
+
+  /**
+   * @swagger
+   * /auth/patient/profile:
+   *   patch:
+   *     summary: Modificar datos personales del paciente (solo PATIENT)
+   *     description: Permite a un usuario con rol PATIENT modificar únicamente sus propios datos personales. El id se obtiene del token (header x-user-id).
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           example:
+   *             nombre: "Nuevo Nombre"
+   *             direccion: "Nueva dirección"
+   *     responses:
+   *       200:
+   *         description: Perfil actualizado
+   *         content:
+   *           application/json:
+   *             example:
+   *               idUsuario: "1234567890"
+   *               nombre: "Nuevo Nombre"
+   *               direccion: "Nueva dirección"
+   *       403:
+   *         description: Solo el usuario PATIENT puede acceder
+   *       404:
+   *         description: Paciente no encontrado
+   */
+  @ApiOperation({ summary: 'Modificar datos personales del paciente (solo PATIENT)' })
+  @ApiResponse({ status: 200, description: 'Perfil actualizado', schema: { example: { idUsuario: '1234567890', nombre: 'Nuevo Nombre', direccion: 'Nueva dirección' } } })
+  @ApiResponse({ status: 403, description: 'Solo el usuario PATIENT puede acceder' })
+  @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
+  @Patch('patient/profile')
+  async updatePatientProfile(@Req() req, @Body() body: any) {
+    const userRole = req.headers['x-user-role'];
+    const userId = req.headers['x-user-id'];
+    if (userRole !== 'PATIENT' || !userId) {
+      throw new ForbiddenException('Solo el usuario PATIENT puede acceder');
+    }
+    // Actualizar solo los datos personales permitidos
+    const allowedFields = ['nombre', 'direccion', 'genero', 'fechaNacimiento'];
+    const updateData: any = {};
+    for (const key of allowedFields) {
+      if (body[key] !== undefined) {
+        updateData[key] = body[key];
+      }
+    }
+    if (Object.keys(updateData).length === 0) {
+      throw new ForbiddenException('No se enviaron datos válidos para actualizar');
+    }
+    const updated = await this.usersService.updateUser({
+      where: { idUsuario: BigInt(userId) },
+      data: updateData,
+    });
+    if (!updated) {
+      throw new NotFoundException('Paciente no encontrado');
+    }
+    return updated;
   }
 }
