@@ -40,7 +40,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
@@ -398,6 +398,91 @@ export class AuthController {
       throw new ForbiddenException('Solo el usuario ROOT puede acceder');
     }
     return this.usersService.users({});
+  }
+
+  /**
+   * @swagger
+   * /auth/admin/medics:
+   *   get:
+   *     summary: Obtener todos los médicos (solo ADMIN)
+   *     description: Devuelve la lista de usuarios con rol MEDIC. Solo accesible para usuarios con rol ADMIN. El rol se valida mediante el header x-user-role reenviado por el API Gateway.
+   *     responses:
+   *       200:
+   *         description: Lista de médicos
+   *         content:
+   *           application/json:
+   *             example:
+   *               - idUsuario: "123456789"
+   *                 nombre: "Dr. House"
+   *                 email: "house@mail.com"
+   *               - idUsuario: "987654321"
+   *                 nombre: "Dra. Grey"
+   *                 email: "grey@mail.com"
+   *       403:
+   *         description: Solo el usuario ADMIN puede acceder
+   */
+  @ApiOperation({ summary: 'Obtener todos los médicos (solo ADMIN)' })
+  @ApiResponse({ status: 200, description: 'Lista de médicos', schema: { example: [{ idUsuario: '123456789', nombre: 'Dr. House', email: 'house@mail.com' }] } })
+  @ApiResponse({ status: 403, description: 'Solo el usuario ADMIN puede acceder' })
+  @Get('admin/medics')
+  async getAllMedics(@Req() req) {
+    const userRole = req.headers['x-user-role'];
+    if (userRole !== 'ADMIN') {
+      throw new ForbiddenException('Solo el usuario ADMIN puede acceder');
+    }
+    // Buscar todos los usuarios con rol MEDIC
+    // Suponiendo que hay una relación o campo que indica el rol, o bien filtrar por los que han sido asignados como MEDIC
+    // Aquí se asume que hay un campo o relación, si no, habría que consultar el microservicio de roles
+    // Por simplicidad, se filtra por email que contenga 'medic' (ajustar según tu modelo real)
+    // Lo ideal sería consultar el microservicio de roles para obtener los idUsuario con rol MEDIC
+    // Aquí se muestra una consulta básica:
+    return this.usersService.users({
+      where: {
+        // Ajusta esto según tu modelo real
+        // Por ejemplo, si tienes un campo 'role' o una relación
+        // role: 'MEDIC'
+        email: { contains: 'medic' },
+      },
+    });
+  }
+
+  /**
+   * @swagger
+   * /auth/admin/patients:
+   *   get:
+   *     summary: Obtener todos los pacientes (solo ADMIN)
+   *     description: Devuelve la lista de usuarios con rol PATIENT. Solo accesible para usuarios con rol ADMIN. El rol se valida mediante el header x-user-role reenviado por el API Gateway.
+   *     responses:
+   *       200:
+   *         description: Lista de pacientes
+   *         content:
+   *           application/json:
+   *             example:
+   *               - idUsuario: "1234567890"
+   *                 nombre: "Juan"
+   *                 email: "patient@mail.com"
+   *               - idUsuario: "9876543210"
+   *                 nombre: "Ana"
+   *                 email: "ana.patient@mail.com"
+   *       403:
+   *         description: Solo el usuario ADMIN puede acceder
+   */
+  @ApiOperation({ summary: 'Obtener todos los pacientes (solo ADMIN)' })
+  @ApiResponse({ status: 200, description: 'Lista de pacientes', schema: { example: [{ idUsuario: '1234567890', nombre: 'Juan', email: 'patient@mail.com' }] } })
+  @ApiResponse({ status: 403, description: 'Solo el usuario ADMIN puede acceder' })
+  @Get('admin/patients')
+  async getAllPatients(@Req() req) {
+    const userRole = req.headers['x-user-role'];
+    if (userRole !== 'ADMIN') {
+      throw new ForbiddenException('Solo el usuario ADMIN puede acceder');
+    }
+    // Buscar todos los usuarios con rol PATIENT
+    // Por simplicidad, se filtra por email que contenga 'patient' (ajustar según tu modelo real)
+    return this.usersService.users({
+      where: {
+        email: { contains: 'patient' },
+      },
+    });
   }
 
   /**

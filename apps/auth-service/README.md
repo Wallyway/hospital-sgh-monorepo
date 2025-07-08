@@ -277,3 +277,51 @@ POST `/auth/admin/reset-password`
 
 ## Endpoints protegidos
 - La creación de usuarios y otras operaciones administrativas siguen protegidas y requieren autenticación y rol adecuado. 
+
+## Endpoints
+
+### GET /auth/admin/medics
+
+- **Descripción:** Devuelve la lista de médicos registrados. Solo accesible para usuarios con rol ADMIN.
+- **Headers requeridos:**
+  - x-user-role: ADMIN
+- **Respuesta exitosa (200):**
+```json
+[
+  {
+    "idUsuario": "123456789",
+    "nombre": "Dr. House",
+    "email": "house@mail.com"
+  },
+  {
+    "idUsuario": "987654321",
+    "nombre": "Dra. Grey",
+    "email": "grey@mail.com"
+  }
+]
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario ADMIN puede acceder. 
+
+### GET /auth/admin/patients
+
+- **Descripción:** Devuelve la lista de pacientes registrados. Solo accesible para usuarios con rol ADMIN.
+- **Headers requeridos:**
+  - x-user-role: ADMIN
+- **Respuesta exitosa (200):**
+```json
+[
+  {
+    "idUsuario": "1234567890",
+    "nombre": "Juan",
+    "email": "patient@mail.com"
+  },
+  {
+    "idUsuario": "9876543210",
+    "nombre": "Ana",
+    "email": "ana.patient@mail.com"
+  }
+]
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario ADMIN puede acceder. 

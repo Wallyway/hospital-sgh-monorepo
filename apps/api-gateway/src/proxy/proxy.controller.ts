@@ -10,6 +10,7 @@ import {
   Res,
   UseGuards,
   ForbiddenException,
+  Get,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ProxyService } from './proxy.service';
@@ -18,7 +19,7 @@ import { Public } from '../auth/decorators/public.decorator';
 
 @Controller()
 export class ProxyController {
-  constructor(private readonly proxyService: ProxyService) {}
+  constructor(private readonly proxyService: ProxyService) { }
 
   // == PUBLIC ROUTES ==
   // These routes are explicitly public and do not pass any auth headers.
@@ -87,6 +88,50 @@ export class ProxyController {
     const forwardedHeaders = {
       'Content-Type': req.headers['content-type'],
       Authorization: req.headers['authorization'],
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('auth/admin/medics')
+  async proxyAdminGetMedics(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only an ADMIN can get the list of medics');
+    }
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('auth/admin/patients')
+  async proxyAdminGetPatients(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only an ADMIN can get the list of patients');
+    }
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
     };
     const { method, originalUrl, body } = req;
     const recipientResponse = await this.proxyService.proxyRequest(

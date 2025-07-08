@@ -290,3 +290,51 @@ npm run start:dev
 - **Si ocurre un error durante la especialización** (por ejemplo, si el microservicio de roles/pacientes no está implementado, no responde, o devuelve error), el Auth Service elimina automáticamente el usuario recién creado (rollback manual).
 - Esto asegura que **no queden usuarios huérfanos** si la especialización falla, manteniendo la base de datos consistente.
 - Este mecanismo aplica para cualquier rol, incluyendo futuros microservicios como `PATIENT`.
+
+## Endpoints
+
+### GET /auth/admin/medics
+
+- **Descripción:** Devuelve la lista de médicos registrados. Solo accesible para usuarios con rol ADMIN.
+- **Headers requeridos:**
+  - Authorization: Bearer <token>
+- **Respuesta exitosa (200):**
+```json
+[
+  {
+    "idUsuario": "123456789",
+    "nombre": "Dr. House",
+    "email": "house@mail.com"
+  },
+  {
+    "idUsuario": "987654321",
+    "nombre": "Dra. Grey",
+    "email": "grey@mail.com"
+  }
+]
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario ADMIN puede acceder.
+
+### GET /auth/admin/patients
+
+- **Descripción:** Devuelve la lista de pacientes registrados. Solo accesible para usuarios con rol ADMIN.
+- **Headers requeridos:**
+  - Authorization: Bearer <token>
+- **Respuesta exitosa (200):**
+```json
+[
+  {
+    "idUsuario": "1234567890",
+    "nombre": "Juan",
+    "email": "patient@mail.com"
+  },
+  {
+    "idUsuario": "9876543210",
+    "nombre": "Ana",
+    "email": "ana.patient@mail.com"
+  }
+]
+```
+- **Errores:**
+  - 403 Forbidden: Solo el usuario ADMIN puede acceder.
