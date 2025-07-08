@@ -11,13 +11,13 @@ export class ProxyService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {
       return this.configService.get<string>(
         'AUTH_SERVICE_URL',
-        'http://127.0.0.1:3001',
+        'http://localhost:3001',
       );
     }
 

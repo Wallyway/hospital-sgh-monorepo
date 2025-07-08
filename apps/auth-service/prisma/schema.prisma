@@ -17,7 +17,7 @@ datasource db {
 model User {
   idUser             BigInt              @id @map("idUser") // La cédula como ID principal
   name               String              @db.VarChar(100)
-  email              String              @unique //TODO: Unique no es necesario
+  email              String              @unique
   passwordHash       String // Almacena la contraseña hasheada con bcryptjs
   gender             String
   address            String              @db.VarChar(100)
