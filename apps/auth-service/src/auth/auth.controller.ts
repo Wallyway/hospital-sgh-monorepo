@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
@@ -24,6 +25,7 @@ import {
   ApiResponse,
   ApiBody,
 } from '@nestjs/swagger';
+import axios from 'axios';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -62,7 +64,7 @@ export class AuthController {
         'Super usuario generado y guardado en la base de datos (o ya existente). Credenciales impresas en consola.',
       email: user.email,
       password: dto.password,
-      idUser: user.idUser,
+      idUser: user.idUser.toString(),
     };
   }
 
@@ -246,9 +248,60 @@ export class AuthController {
     if (!validRoles.includes(upperRole)) {
       throw new BadRequestException('Invalid role');
     }
+    // Si el rol es MEDIC o ADMIN, sueldo es obligatorio
+    if (
+      (upperRole === 'MEDIC' || upperRole === 'ADMIN') &&
+      (typeof createUserAdminDto['sueldo'] !== 'number' ||
+        createUserAdminDto['sueldo'] <= 0)
+    ) {
+      throw new BadRequestException(
+        'El campo sueldo es obligatorio y debe ser un número positivo para MEDIC o ADMIN.',
+      );
+    }
+    // Validación de especialización incompatible antes de crear el usuario
+    if (upperRole === 'MEDIC' || upperRole === 'ADMIN') {
+      try {
+        const cardiologyUrl =
+          process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+        const resp = await axios.get(
+          `${cardiologyUrl}/employees/roles/${createUserAdminDto.idUser}`,
+        );
+        const roles = resp.data.roles as string[];
+        if (
+          (upperRole === 'MEDIC' && roles.includes('ADMIN')) ||
+          (upperRole === 'ADMIN' && roles.includes('MEDIC'))
+        ) {
+          throw new BadRequestException(
+            'No se puede especializar como MEDIC y ADMIN a la vez.',
+          );
+        }
+      } catch (err) {
+        throw new BadRequestException(
+          'No se pudo validar la especialización en cardiology-service.',
+        );
+      }
+    }
     const user = await this.usersService.createUserByAdmin(createUserAdminDto);
-    await this.rolesService.assignRoleToUser(user.idUser, upperRole);
-    return user;
+    try {
+      // Solo pasa el sueldo al role-assignment-service, no lo guarda en la base de datos de auth
+      const rolePayload = { ...createUserAdminDto };
+      if (upperRole !== 'MEDIC' && upperRole !== 'ADMIN') {
+        delete rolePayload['sueldo'];
+      }
+      await this.rolesService.assignRoleToUser(
+        Number(user.idUser),
+        upperRole,
+        rolePayload,
+      );
+      return {
+        ...user,
+        idUser: user.idUser.toString(),
+      };
+    } catch (err) {
+      // Rollback manual: si falla la especialización, elimina el usuario creado
+      await this.usersService.deleteUser({ idUser: user.idUser });
+      throw err;
+    }
   }
 
   @ApiOperation({ summary: 'Obtener todos los usuarios (solo ROOT)' })

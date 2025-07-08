@@ -1,0 +1,32 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Empleado {
+    idEmpleado      Int              @id @default(autoincrement())
+    idUsuario       BigInt
+    idDepartamento  Int
+    FContratacion   DateTime         @default(now())
+    estado          String           @default("V")
+    medico          Medico?
+    pAdministrativo PAdministrativo?
+
+    @@unique([idDepartamento, idEmpleado])
+}
+
+model Medico {
+    idEmpleado Int      @id
+    sueldo     BigInt
+    empleado   Empleado @relation(fields: [idEmpleado], references: [idEmpleado])
+}
+
+model PAdministrativo {
+    idEmpleado Int      @id
+    sueldo     BigInt
+    empleado   Empleado @relation(fields: [idEmpleado], references: [idEmpleado])
+}

@@ -32,86 +32,154 @@ El API Gateway es el punto de entrada único para el sistema SGH. Se encarga de:
 
 ---
 
-## Cambios recientes
-- Los endpoints públicos de autenticación ahora son específicos por rol:
-  - `/auth/medic/login`
-  - `/auth/patient/login`
-  - `/auth/admin/login`
-  - `/auth/root/login`
-  - `/auth/medic/forgot-password`
-  - `/auth/patient/forgot-password`
-  - `/auth/admin/forgot-password`
-  - `/auth/root/forgot-password`
-  - `/auth/medic/reset-password`
-  - `/auth/patient/reset-password`
-  - `/auth/admin/reset-password`
-  - `/auth/root/reset-password`
-- El campo `role` ya **no** se envía en el body, sino que se infiere de la URL.
+## Endpoints Disponibles
 
-## Ejemplo de forwarding
+### Endpoints Públicos (sin autenticación)
+- **Login por rol:**
+  - `POST /auth/medic/login`
+  - `POST /auth/patient/login`
+  - `POST /auth/admin/login`
+  - `POST /auth/root/login`
+- **Recuperación de contraseña:**
+  - `POST /auth/medic/forgot-password`
+  - `POST /auth/patient/forgot-password`
+  - `POST /auth/admin/forgot-password`
+  - `POST /auth/root/forgot-password`
+- **Reset de contraseña:**
+  - `POST /auth/medic/reset-password`
+  - `POST /auth/patient/reset-password`
+  - `POST /auth/admin/reset-password`
+  - `POST /auth/root/reset-password`
+- **Desarrollo:**
+  - `POST /auth/dev/bootstrap-superuser`
 
-El gateway reenvía las rutas públicas de autenticación directamente al microservicio auth-service. Ejemplo:
+### Endpoints Protegidos (requieren autenticación JWT)
 
+#### Creación de Usuarios (solo ROOT)
+- `POST /auth/root/create-user/:role` - Crear usuario con rol específico
+  - **Roles válidos:** `medic`, `admin`, `patient`
+  - **Requiere:** Token JWT con rol `ROOT`
+  - **Body:** Datos del usuario (email, password, name, address, gender, birthDate, idUser, sueldo*)
+  - **Nota:** El campo `sueldo` es obligatorio para roles `medic` y `admin`
+
+#### Especialización de Roles (solo ROOT)
+- `POST /roles/:idUser/:role` - Asignar rol adicional a usuario existente
+  - **Requiere:** Token JWT con rol `ROOT`
+  - **Body:** Datos específicos del rol (sueldo para MEDIC/ADMIN)
+
+#### Otras Rutas Protegidas
+- Todas las demás rutas se manejan por el catch-all `@All('*')`
+
+---
+
+## Configuración de Variables de Entorno
+
+```env
+# Puerto para el API Gateway
+PORT=3000
+
+# El mismo secreto usado por el auth-service para firmar tokens
+JWT_SECRET="your-super-secret-and-long-jwt-key"
+
+# URLs para microservicios internos
+AUTH_SERVICE_URL="http://localhost:3001"
+ROLES_SERVICE_URL="http://localhost:3002"
+CARDIOLOGY_SERVICE_URL="http://localhost:3003"
 ```
-POST /auth/medic/login
-{
-  "email": "medico@mail.com",
-  "password": "password123"
+
+---
+
+## Arquitectura de Handlers
+
+### Orden Crítico de Handlers
+El orden de los handlers en el `ProxyController` es **crítico** para el funcionamiento correcto:
+
+1. **Public Routes** - Endpoints sin autenticación
+2. **Specific Protected Routes** - Endpoints específicos con lógica especial
+3. **Catch-all Route** - `@All('*')` para todas las demás rutas
+
+**⚠️ Importante:** Los handlers específicos deben ir **antes** que el catch-all para evitar que sean interceptados incorrectamente.
+
+### Ejemplo de Estructura Correcta
+```typescript
+@Controller()
+export class ProxyController {
+  // 1. Public routes
+  @Public()
+  @Post([...])
+  async proxyPublicRoutes(...) { ... }
+
+  // 2. Specific protected routes (ANTES del catch-all)
+  @UseGuards(JwtAuthGuard)
+  @Post('auth/root/create-user/:role')
+  async proxyRootCreateUser(...) { ... }
+
+  // 3. Catch-all (DESPUÉS de las rutas específicas)
+  @UseGuards(JwtAuthGuard)
+  @All('*')
+  async proxyProtectedRoutes(...) { ... }
 }
 ```
 
-## Headers propagados
-- El gateway sigue propagando los headers `X-User-Id`, `X-User-Email`, `X-User-Role` a los microservicios protegidos.
+---
 
-## Notas
-- Los endpoints antiguos `/auth/login`, `/auth/forgot-password`, `/auth/reset-password` han sido eliminados.
-- El frontend debe apuntar a la ruta correspondiente según el tipo de usuario.
+## Headers y Propagación
+
+### Headers Propagados a Microservicios
+- **Todos los headers originales** (excepto `host`)
+- **Headers de usuario autenticado:**
+  - `X-User-Id`: ID del usuario desde JWT
+  - `X-User-Email`: Email del usuario desde JWT
+  - `X-User-Role`: Rol del usuario desde JWT
+
+### Headers Especiales para Creación de Usuarios
+El endpoint `POST /auth/root/create-user/:role` **solo envía** el header `Content-Type` al Auth Service para evitar conflictos de autenticación.
 
 ---
 
-## Autenticación y roles
+## Flujo de Creación de Usuarios
 
-- El JWT emitido por el `auth-service` ahora contiene el campo `role` (singular), con valores posibles: `ADMIN`, `MEDIC`, `PATIENT`, `ROOT`.
-- El API Gateway extrae el campo `role` del JWT y lo adjunta como `user.role` en la request.
-- El header propagado a los microservicios es `X-User-Role`.
-- La autorización para rutas críticas (como `/auth/root/create-user/:role`) se basa en que `user.role === 'ROOT'`.
-
----
-
-## Propagación de headers
-
-- Todos los headers originales (excepto `host`) se propagan a los microservicios destino.
-- Se sobrescriben/agregan los headers:
-  - `X-User-Id`
-  - `X-User-Email`
-  - `X-User-Role`
-
-Esto asegura trazabilidad, auditoría y autorización correcta en los microservicios.
-
----
-
-## Flujo de autenticación y autorización
-
-1. El usuario se autentica en `/auth/login` y recibe un JWT con el campo `role`.
-2. El frontend incluye el JWT en el header `Authorization` en cada request protegida.
-3. El API Gateway valida el JWT y extrae el `role`.
-4. El header `X-User-Role` se propaga a los microservicios para autorización y lógica de negocio.
-5. Solo el super usuario (`role: ROOT`) puede acceder a rutas críticas como `/auth/root/create-user/:role`.
+1. **Cliente** envía petición a `POST /auth/root/create-user/medic` con token ROOT
+2. **API Gateway** valida el token y verifica que el usuario tenga rol `ROOT`
+3. **API Gateway** reenvía la petición al Auth Service con solo `Content-Type`
+4. **Auth Service** crea el usuario y valida especialización con Cardiology Service
+5. **Auth Service** llama al Role Assignment Service para asignar el rol
+6. **Respuesta** se devuelve al cliente a través del API Gateway
 
 ---
 
 ## Seguridad
 
-- No hay endpoints críticos públicos.
-- El rol se valida antes de permitir acciones críticas.
-- El forwarding de headers es robusto y seguro.
+- **Autenticación JWT** para todas las rutas protegidas
+- **Autorización por rol** para endpoints críticos
+- **Validación de superusuario** para creación de usuarios
+- **Headers mínimos** para evitar conflictos de autenticación
+- **Timeout de 10 segundos** para evitar cuelgues
 
 ---
 
-## Notas
+## Troubleshooting
 
-- Si en el futuro necesitas roles múltiples, deberás cambiar a un array de roles y ajustar el JWT y los headers.
-- El flujo actual es compatible con la lógica de especialización por tablas en los microservicios de dominio.
+### Problema: Endpoint se cuelga indefinidamente
+**Causa:** Handler específico interceptado por catch-all
+**Solución:** Verificar que el handler específico esté **antes** del catch-all
+
+### Problema: Error 500 en creación de usuarios
+**Causa:** Headers de autenticación enviados al Auth Service
+**Solución:** El handler específico solo debe enviar `Content-Type`
+
+### Problema: Timeout en peticiones
+**Causa:** Microservicio destino no responde
+**Solución:** Verificar que todos los microservicios estén corriendo
+
+---
+
+## Notas de Desarrollo
+
+- Los logs de debug han sido removidos para producción
+- El timeout está configurado en 10 segundos
+- Las variables de entorno deben estar correctamente definidas
+- El orden de los handlers es crítico para el funcionamiento
 
 ---
 
@@ -149,10 +217,10 @@ El `ProxyService` contiene la lógica de enrutamiento. Usa la ruta de la solicit
 ```typescript
 // Ejemplo de proxy.service.ts
 if (path.startsWith('/auth')) {
-  return process.env.AUTH_SERVICE_URL;
+  return this.configService.get<string>('AUTH_SERVICE_URL', 'http://localhost:3001');
 }
-if (path.startsWith('/patients')) {
-  return process.env.PATIENTS_SERVICE_URL;
+if (path.startsWith('/roles')) {
+  return this.configService.get<string>('ROLES_SERVICE_URL', 'http://localhost:3002');
 }
 ```
 
@@ -171,8 +239,8 @@ JWT_SECRET="your-super-secret-and-long-jwt-key"
 
 # URLs para microservicios internos
 AUTH_SERVICE_URL="http://localhost:3001"
-# PATIENTS_SERVICE_URL="http://localhost:3002"
-# APPOINTMENTS_SERVICE_URL="http://localhost:3003"
+ROLES_SERVICE_URL="http://localhost:3002"
+CARDIOLOGY_SERVICE_URL="http://localhost:3003"
 ```
 
 ### 2. Instalación
@@ -214,3 +282,11 @@ npm run start:dev
 ## Notas de Desarrollo
 
 - En desarrollo, los tokens de reseteo de contraseña y las contraseñas iniciales se imprimen en consola para propósitos de simulación. No hay envío real de emails en este entorno.
+
+## Consistencia y Rollback en la Creación de Usuarios
+
+- Cuando se crea un usuario (por ejemplo, MEDIC, ADMIN o PATIENT), el Auth Service primero crea el usuario en su base de datos.
+- Luego, intenta especializar al usuario llamando al microservicio correspondiente (roles-service, cardiology-service, etc.).
+- **Si ocurre un error durante la especialización** (por ejemplo, si el microservicio de roles/pacientes no está implementado, no responde, o devuelve error), el Auth Service elimina automáticamente el usuario recién creado (rollback manual).
+- Esto asegura que **no queden usuarios huérfanos** si la especialización falla, manteniendo la base de datos consistente.
+- Este mecanismo aplica para cualquier rol, incluyendo futuros microservicios como `PATIENT`.

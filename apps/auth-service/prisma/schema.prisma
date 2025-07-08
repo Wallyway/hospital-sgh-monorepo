@@ -11,11 +11,11 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://wally:wally@localhost:5432/usuarios?schema=usuarios"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  idUser             Int                 @id //TODO: Cambiar por cedula
+  idUser             BigInt              @id @map("idUser") // La cédula como ID principal
   name               String              @db.VarChar(100)
   email              String              @unique //TODO: Unique no es necesario
   passwordHash       String // Almacena la contraseña hasheada con bcryptjs
@@ -29,7 +29,7 @@ model User {
 }
 
 model TelUser {
-  idUser    Int
+  idUser    BigInt
   telephone BigInt
   user      User     @relation(fields: [idUser], references: [idUser], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -48,7 +48,7 @@ model TelUser {
 model PasswordResetToken {
   id        String   @id @default(uuid())
   token     String   @unique // El token de un solo uso
-  userId    Int      @unique // ID del usuario asociado, @unique asegura solo un token activo por usuario
+  userId    BigInt   @unique // ID del usuario asociado, @unique asegura solo un token activo por usuario
   expiresAt DateTime // Fecha de expiración del token
   createdAt DateTime @default(now())
   user      User     @relation(name: "UserPasswordResetToken", fields: [userId], references: [idUser], onDelete: Cascade)

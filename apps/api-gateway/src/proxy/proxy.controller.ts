@@ -18,7 +18,7 @@ import { Public } from '../auth/decorators/public.decorator';
 
 @Controller()
 export class ProxyController {
-  constructor(private readonly proxyService: ProxyService) { }
+  constructor(private readonly proxyService: ProxyService) {}
 
   // == PUBLIC ROUTES ==
   // These routes are explicitly public and do not pass any auth headers.
@@ -51,6 +51,31 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
+  // == SPECIFIC PROTECTED ROUTES ==
+  // These routes must be BEFORE the catch-all to be matched correctly.
+  @UseGuards(JwtAuthGuard)
+  @Post('auth/root/create-user/:role')
+  async proxyRootCreateUser(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ROOT') {
+      throw new ForbiddenException(
+        'Only the super user (ROOT) can create users',
+      );
+    }
+    // Solo enviar headers esenciales, sin Authorization
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
   // == PROTECTED CATCH-ALL ROUTE ==
   // All other routes are caught by this handler and are protected by the JWT guard.
   @UseGuards(JwtAuthGuard)
@@ -66,30 +91,6 @@ export class ProxyController {
     forwardedHeaders['X-User-Email'] = user?.email;
     forwardedHeaders['X-User-Role'] = user?.role;
 
-    const recipientResponse = await this.proxyService.proxyRequest(
-      method,
-      originalUrl,
-      body,
-      forwardedHeaders,
-    );
-
-    res.status(recipientResponse.status).json(recipientResponse.data);
-  }
-
-  @Post('auth/root/create-user/:role')
-  async proxyRootCreateUser(@Req() req: any, @Res() res: any) {
-    // El usuario autenticado debe tener el rol ROOT
-    const user = req.user;
-    if (!user || !user.role || user.role !== 'ROOT') {
-      throw new ForbiddenException(
-        'Only the super user (ROOT) can create users',
-      );
-    }
-    // Copiar todos los headers relevantes, excluyendo 'host'
-    const forwardedHeaders = { ...req.headers };
-    delete forwardedHeaders['host'];
-
-    const { method, originalUrl, body } = req;
     const recipientResponse = await this.proxyService.proxyRequest(
       method,
       originalUrl,

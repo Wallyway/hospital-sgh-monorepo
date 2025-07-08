@@ -19,15 +19,13 @@ export class RolesService {
     );
   }
 
-  async assignRoleToUser(idUser: number, role: string) {
+  async assignRoleToUser(idUser: number, role: string, userData: any) {
     try {
+      const url = `${this.rolesServiceUrl}/${idUser}/${role}`;
       // LOG para depuración
-      console.log('[ROLES SERVICE] Llamando a:', this.rolesServiceUrl);
-      console.log('[ROLES SERVICE] Payload:', { idUser, role });
-      await axios.post(this.rolesServiceUrl, {
-        idUser,
-        role,
-      });
+      console.log('[ROLES SERVICE] Llamando a:', url);
+      console.log('[ROLES SERVICE] Body:', userData);
+      await axios.post(url, userData);
       this.logger.log(
         `Assigned role ${role} to user ${idUser} via RolesService`,
       );
