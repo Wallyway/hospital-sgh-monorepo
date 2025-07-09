@@ -128,11 +128,14 @@ export const MultiLogin: React.FC = () => {
       role = "admin";
     }
 
-    const result2 = await login(forms[type].email, forms[type].password, role);
+    const result = await login(forms[type].email, forms[type].password, role);
 
-    if (!result2) return;
+    if (!result) {
+      alert("Credenciales incorrectas o usuario no encontrado.");
+      return;
+    }
 
-    navigate(`/${role == "admin" && "p"}${role}`);
+    navigate(`/${role == "admin" ? "p" : ""}${role}`);
   };
 
   const getClass = (type: LoginType) => {
