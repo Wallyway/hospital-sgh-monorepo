@@ -1,6 +1,25 @@
-import './styles/consultarMedicos.scss';
+import { useEffect, useState } from "react";
+// contexts
+import { useAuth } from "@contexts/AuthContext";
+// queries
+import { useGetMedics } from "@db/queries/admin";
+// styles
+import "./styles/consultarMedicos.scss";
+
+interface Medico {
+  idUsuario: string;
+  nombre: string;
+  email: string;
+  genero: 'M' | 'F';
+  direccion: string;
+  fechaNacimiento: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const ConsultarMedicos = () => {
+  const { medics } = useConsultarMedicos();
+
   return (
     <div className="main-content-section consultar-medicos-container">
       <div className="medicos-header">
@@ -11,40 +30,37 @@ const ConsultarMedicos = () => {
 
       <div className="medicos-content">
         <div className="search-section">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Buscar médico por nombre, especialidad..."
             className="search-input"
           />
           <button className="search-btn">Buscar</button>
         </div>
-        
+
         <div className="medicos-list">
-          <div className="medico-card">
-            <div className="medico-info">
-              <h3>Dr. Juan Pérez</h3>
-              <p className="especialidad">Cardiología</p>
-              <p className="email">juan.perez@hospital.com</p>
-              <p className="telefono">+34 123 456 789</p>
+          {medics.length > 0 ? (
+            medics.map((medico) => (
+              <div key={medico.idUsuario} className="medico-card">
+                <div className="medico-info">
+                  <h3>Dr. {medico.nombre}</h3>
+                  <p className="email">{medico.email}</p>
+                  <p className="genero">Género: {medico.genero === 'M' ? 'Masculino' : 'Femenino'}</p>
+                  <p className="direccion">{medico.direccion}</p>
+                  <p className="fecha-nacimiento">
+                    F. Nacimiento: {new Date(medico.fechaNacimiento).toLocaleDateString('es-ES')}
+                  </p>
+                </div>
+                <div className="medico-actions">
+                  <button className="btn-action primary">Ver agenda</button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="no-medicos">
+              <p>No se encontraron médicos disponibles.</p>
             </div>
-            <div className="medico-actions">
-              <button className="btn-action secondary">Ver perfil</button>
-              <button className="btn-action primary">Ver agenda</button>
-            </div>
-          </div>
-          
-          <div className="medico-card">
-            <div className="medico-info">
-              <h3>Dra. María García</h3>
-              <p className="especialidad">Pediatría</p>
-              <p className="email">maria.garcia@hospital.com</p>
-              <p className="telefono">+34 987 654 321</p>
-            </div>
-            <div className="medico-actions">
-              <button className="btn-action secondary">Ver perfil</button>
-              <button className="btn-action primary">Ver agenda</button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
@@ -52,3 +68,28 @@ const ConsultarMedicos = () => {
 };
 
 export default ConsultarMedicos;
+
+const useConsultarMedicos = () => {
+  const { fetchData: getMedics } = useGetMedics();
+  const { isAuthenticated } = useAuth();
+
+  const [medics, setMedics] = useState<Medico[]>([]);
+
+  useEffect(() => {
+    const fetchMedics = async () => {
+      if (!isAuthenticated) return;
+
+      const medicsData = await getMedics();
+      if (medicsData?.fetchError) return;
+
+      if (medicsData && medicsData.length > 0) {
+        setMedics(medicsData);
+      }
+    };
+    fetchMedics();
+  }, [isAuthenticated]);
+
+  return {
+    medics,
+  };
+};

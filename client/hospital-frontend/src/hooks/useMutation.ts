@@ -33,7 +33,7 @@ export const useMutation = (): UseMutationReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const mutate = async (
     method: string,
@@ -42,7 +42,7 @@ export const useMutation = (): UseMutationReturn => {
     errorMessage?: string,
     options: MutationOptions = {}
   ): Promise<ApiResponse | MutationResult> => {
-    // if (!isAuthenticated && endpoint != "/users/login") return {};
+    // if (!isAuthenticated && endpoint) return {};
 
     setLoading(true);
     setError(null);

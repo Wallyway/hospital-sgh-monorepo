@@ -27,24 +27,26 @@ export const useFetch = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  //   const { isAuthenticated } = useAuth();
+  const { isAuthenticated,  } = useAuth();
 
   // No hace fetch hasta que se llame a fetchData directamente
   const fetchData = useCallback(
     async (newUrl: string = "") => {
-      //   if (verifyAuth && !isAuthenticated) return;
+      if (verifyAuth && !isAuthenticated)
+        throw new Error("No estás autenticado");
 
       setLoading(true);
       setError(null);
 
-      const finalUrl = `${newUrl || baseUrl}`;
+      const finalUrl = `/api/${newUrl || baseUrl}`;
       // const finalUrl = `${apiBase}${newUrl || baseUrl}`;
+      // console.log(finalUrl);
       try {
         const response = await fetch(finalUrl, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
             ...options.headers,
           },
           ...options,
@@ -68,7 +70,7 @@ export const useFetch = (
         setLoading(false);
       }
     },
-    [baseUrl, verifyAuth, errorMessage, options]
+    [baseUrl, verifyAuth, isAuthenticated, errorMessage]
   );
 
   return { fetchData, loading, error };

@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { User, AuthState } from "@/types/user";
-import { UserRole } from "@/types/user";
+import type { AuthState } from "@/types/user";
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string, role: string) => Promise<Boolean>;
@@ -35,14 +34,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // funcion login (se reemplza despues)
   const login = async (email: string, _password: string, role: string) => {
     try {
-      const response = await fetch(`api/auth/${role}/login`, {
+      const response = await fetch(`/api/auth/${role}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password: _password }),
       });
-      
+
       const result = await response.json();
 
       if (!response.ok || !result.accessToken) {
@@ -97,6 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setAuthState((prev) => ({ ...prev, isLoading: true }));
         // verficar token en localStorage
         const token = localStorage.getItem("accesToken");
         if (!token) {
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               name: `nombre de pepe`,
               email: "a@a.com",
               role: "pepe",
-            }, 
+            },
             isAuthenticated: true,
             isLoading: false,
           });
