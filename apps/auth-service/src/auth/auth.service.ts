@@ -23,7 +23,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) { }
+  ) {}
   async validateUser(
     email: string,
     pass: string,

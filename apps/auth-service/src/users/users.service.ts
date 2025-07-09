@@ -13,7 +13,7 @@ import axios from 'axios';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async user(
     userWhereUniqueInput: Prisma.UsuarioWhereUniqueInput,

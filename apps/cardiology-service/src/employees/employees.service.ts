@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async specializeEmployee(payload: any, eventType: string) {
     const { userId, idUser, role, ...rest } = payload;
@@ -82,5 +82,69 @@ export class EmployeesService {
     if (empleado?.medico?.length) roles.push('MEDIC');
     if (empleado?.pAdministrativo?.length) roles.push('ADMIN');
     return roles;
+  }
+
+  // NUEVO: Obtener médicos por departamento
+  async getMedicsByDepartment(idDepartamento: number) {
+    // Buscar empleados del departamento que sean médicos
+    const medicos = await this.prisma.medico.findMany({
+      include: {
+        empleado: true,
+      },
+      where: {
+        empleado: {
+          idDepartamento: idDepartamento,
+        },
+      },
+    });
+    return medicos;
+  }
+
+  // NUEVO: Obtener citas de un médico en una fecha dada
+  async getAppointmentsByMedicAndDate(idMedico: number, date: string) {
+    // Buscar citas del médico en la fecha dada (rango de 00:00 a 23:59)
+    const start = new Date(date + 'T00:00:00.000Z');
+    const end = new Date(date + 'T23:59:59.999Z');
+    const citas = await this.prisma.cita.findMany({
+      where: {
+        idMedico: idMedico,
+        fechaYHora: {
+          gte: start,
+          lte: end,
+        },
+      },
+    });
+    return citas;
+  }
+
+  // NUEVO: Crear cita
+  async createCita(body: any) {
+    // Destructura y convierte idPaciente a número
+    const { idPaciente, idMedico, fechaYHora, estado, resumen } = body;
+    // Validar que no exista cita solapada para el médico en esa franja
+    const start = new Date(fechaYHora);
+    const end = new Date(start.getTime() + 30 * 60000);
+    const overlap = await this.prisma.cita.findFirst({
+      where: {
+        idMedico: idMedico,
+        fechaYHora: {
+          gte: start,
+          lt: end,
+        },
+      },
+    });
+    if (overlap) {
+      throw new BadRequestException('El médico ya tiene una cita en esa franja horaria');
+    }
+    // Crear la cita
+    return this.prisma.cita.create({
+      data: {
+        idPaciente: Number(idPaciente),
+        idMedico,
+        fechaYHora: new Date(fechaYHora),
+        estado,
+        resumen,
+      },
+    });
   }
 }

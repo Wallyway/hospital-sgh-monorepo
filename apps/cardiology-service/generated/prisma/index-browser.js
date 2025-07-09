@@ -200,6 +200,17 @@ exports.Prisma.PAdmin_Gestiona_CitaScalarFieldEnum = {
   FAccion: 'FAccion'
 };
 
+exports.Prisma.DiagnosticoScalarFieldEnum = {
+  idDiagnostico: 'idDiagnostico',
+  nombre: 'nombre'
+};
+
+exports.Prisma.Medico_dictamina_diagnosticoScalarFieldEnum = {
+  idDiagnostico: 'idDiagnostico',
+  idMedico: 'idMedico',
+  idCita: 'idCita'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -222,7 +233,9 @@ exports.Prisma.ModelName = {
   Actualizaciones_HistoriaClinica: 'Actualizaciones_HistoriaClinica',
   Medico_Preescribe_Medicamento: 'Medico_Preescribe_Medicamento',
   Registro_Consulta_Medicamento: 'Registro_Consulta_Medicamento',
-  PAdmin_Gestiona_Cita: 'PAdmin_Gestiona_Cita'
+  PAdmin_Gestiona_Cita: 'PAdmin_Gestiona_Cita',
+  Diagnostico: 'Diagnostico',
+  Medico_dictamina_diagnostico: 'Medico_dictamina_diagnostico'
 };
 
 /**

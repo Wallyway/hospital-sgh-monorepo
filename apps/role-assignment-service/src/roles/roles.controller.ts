@@ -73,6 +73,10 @@ export class RolesController {
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @ApiResponse({ status: 400, description: 'Rol no soportado.' })
+  @ApiResponse({
+    status: 400,
+    description: 'El usuario ya está especializado como PATIENT.',
+  })
   @Post(':idUser/:role')
   async specializeRole(
     @Param('idUser', ParseIntPipe) idUser: number,

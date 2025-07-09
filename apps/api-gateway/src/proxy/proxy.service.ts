@@ -27,6 +27,24 @@ export class ProxyService {
         'http://localhost:3002',
       );
     }
+    if (path.startsWith('/equipment')) {
+      return this.configService.get<string>(
+        'EQUIPMENT_SERVICE_URL',
+        'http://localhost:3006',
+      );
+    }
+    if (path.startsWith('/appointments')) {
+      return this.configService.get<string>(
+        'APPOINTMENT_SERVICE_URL',
+        'http://localhost:3008',
+      );
+    }
+    if (path.startsWith('/employees')) {
+      return this.configService.get<string>(
+        'CARDIOLOGY_SERVICE_URL',
+        'http://localhost:3003',
+      );
+    }
     // Add other services here
     // if (path.startsWith('/patients')) {
     //   return process.env.PATIENTS_SERVICE_URL || 'http://localhost:3002';
@@ -43,6 +61,14 @@ export class ProxyService {
     const serviceUrl = this.getServiceUrl(path);
     const url = `${serviceUrl}${path}`;
 
+    console.log('[ProxyService] Forwarding request:', {
+      method,
+      path,
+      url,
+      headers,
+      data,
+    });
+
     try {
       const config: AxiosRequestConfig = {
         method: method as any,
@@ -54,9 +80,13 @@ export class ProxyService {
       };
 
       const response = await firstValueFrom(this.httpService.request(config));
+      console.log('[ProxyService] Received response:', {
+        status: response.status,
+        data: response.data,
+      });
       return response;
     } catch (error) {
-      console.error('[ProxyService] Error forwarding request:', error.message);
+      console.error('[ProxyService] Error forwarding request:', error);
       throw error;
     }
   }
@@ -72,6 +102,13 @@ export class ProxyService {
       'http://localhost:3003',
     );
     const url = `${serviceUrl}${path}`;
+    console.log('[ProxyService] Forwarding request to clinic-record-service:', {
+      method,
+      path,
+      url,
+      headers,
+      data,
+    });
     try {
       const config: AxiosRequestConfig = {
         method: method as any,
@@ -82,9 +119,52 @@ export class ProxyService {
         timeout: 10000,
       };
       const response = await firstValueFrom(this.httpService.request(config));
+      console.log('[ProxyService] Received response from clinic-record-service:', {
+        status: response.status,
+        data: response.data,
+      });
       return response;
     } catch (error) {
-      console.error('[ProxyService] Error forwarding request to clinic-record-service:', error.message);
+      console.error('[ProxyService] Error forwarding request to clinic-record-service:', error);
+      throw error;
+    }
+  }
+
+  async proxyRequestToEquipmentService(
+    method: string,
+    path: string,
+    data: any,
+    headers: any,
+  ): Promise<AxiosResponse<any>> {
+    const serviceUrl = this.configService.get<string>(
+      'EQUIPMENT_SERVICE_URL',
+      'http://localhost:3006',
+    );
+    const url = `${serviceUrl}${path}`;
+    console.log('[ProxyService] Forwarding request to equipment-service:', {
+      method,
+      path,
+      url,
+      headers,
+      data,
+    });
+    try {
+      const config: AxiosRequestConfig = {
+        method: method as any,
+        url,
+        data,
+        headers,
+        validateStatus: () => true,
+        timeout: 10000,
+      };
+      const response = await firstValueFrom(this.httpService.request(config));
+      console.log('[ProxyService] Received response from equipment-service:', {
+        status: response.status,
+        data: response.data,
+      });
+      return response;
+    } catch (error) {
+      console.error('[ProxyService] Error forwarding request to equipment-service:', error);
       throw error;
     }
   }

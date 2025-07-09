@@ -10,7 +10,7 @@ export class QueueSubscriberService implements OnModuleInit {
   private readonly logger = new Logger(QueueSubscriberService.name);
   private readonly queueName = process.env.QUEUE_NAME || 'hospital_events';
 
-  constructor(private patientService: PatientService) {}
+  constructor(private patientService: PatientService) { }
 
   onModuleInit() {
     QueueT.initialize(this.queueName, {
@@ -19,21 +19,23 @@ export class QueueSubscriberService implements OnModuleInit {
       password: process.env.REDIS_PASSWORD || '',
       tls: true,
     });
+    this.logger.log(`===> Subscribed to queue: ${this.queueName}`);
     QueueT.subscribe(this.handleEvent.bind(this));
-    this.logger.log(`Subscribed to queue: ${this.queueName}`);
   }
 
   async handleEvent(id: string, data: string) {
+    this.logger.log(`===> Evento recibido: id=${id}, data=${data}`);
     try {
       const parsed = JSON.parse(data) as {
         eventType: string;
         payload: any;
       };
       const { eventType, payload } = parsed;
+      this.logger.log(`===> Procesando evento: ${eventType} para userId=${payload?.userId}`);
       if (eventType === 'PatientSpecializationRequested') {
         await this.patientService.createPatientFromEvent(payload);
         this.logger.log(
-          `Processed PatientSpecializationRequested for user ${payload.userId}`,
+          `===> Procesado PatientSpecializationRequested para user ${payload.userId}`,
         );
       }
       await (QueueT as { delete: (id: string) => Promise<void> }).delete(id);

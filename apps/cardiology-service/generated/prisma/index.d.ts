@@ -68,6 +68,16 @@ export type Registro_Consulta_Medicamento = $Result.DefaultSelection<Prisma.$Reg
  * 
  */
 export type PAdmin_Gestiona_Cita = $Result.DefaultSelection<Prisma.$PAdmin_Gestiona_CitaPayload>
+/**
+ * Model Diagnostico
+ * 
+ */
+export type Diagnostico = $Result.DefaultSelection<Prisma.$DiagnosticoPayload>
+/**
+ * Model Medico_dictamina_diagnostico
+ * 
+ */
+export type Medico_dictamina_diagnostico = $Result.DefaultSelection<Prisma.$Medico_dictamina_diagnosticoPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -303,6 +313,26 @@ export class PrismaClient<
     * ```
     */
   get pAdmin_Gestiona_Cita(): Prisma.PAdmin_Gestiona_CitaDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.diagnostico`: Exposes CRUD operations for the **Diagnostico** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Diagnosticos
+    * const diagnosticos = await prisma.diagnostico.findMany()
+    * ```
+    */
+  get diagnostico(): Prisma.DiagnosticoDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.medico_dictamina_diagnostico`: Exposes CRUD operations for the **Medico_dictamina_diagnostico** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Medico_dictamina_diagnosticos
+    * const medico_dictamina_diagnosticos = await prisma.medico_dictamina_diagnostico.findMany()
+    * ```
+    */
+  get medico_dictamina_diagnostico(): Prisma.Medico_dictamina_diagnosticoDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -753,7 +783,9 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica: 'Actualizaciones_HistoriaClinica',
     Medico_Preescribe_Medicamento: 'Medico_Preescribe_Medicamento',
     Registro_Consulta_Medicamento: 'Registro_Consulta_Medicamento',
-    PAdmin_Gestiona_Cita: 'PAdmin_Gestiona_Cita'
+    PAdmin_Gestiona_Cita: 'PAdmin_Gestiona_Cita',
+    Diagnostico: 'Diagnostico',
+    Medico_dictamina_diagnostico: 'Medico_dictamina_diagnostico'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -772,7 +804,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "equipamiento" | "empleado" | "pAdministrativo" | "medico" | "medico_Equipo" | "cita" | "pAdmin_Modifica_Paciente" | "actualizaciones_HistoriaClinica" | "medico_Preescribe_Medicamento" | "registro_Consulta_Medicamento" | "pAdmin_Gestiona_Cita"
+      modelProps: "equipamiento" | "empleado" | "pAdministrativo" | "medico" | "medico_Equipo" | "cita" | "pAdmin_Modifica_Paciente" | "actualizaciones_HistoriaClinica" | "medico_Preescribe_Medicamento" | "registro_Consulta_Medicamento" | "pAdmin_Gestiona_Cita" | "diagnostico" | "medico_dictamina_diagnostico"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1590,6 +1622,154 @@ export namespace Prisma {
           }
         }
       }
+      Diagnostico: {
+        payload: Prisma.$DiagnosticoPayload<ExtArgs>
+        fields: Prisma.DiagnosticoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DiagnosticoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DiagnosticoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>
+          }
+          findFirst: {
+            args: Prisma.DiagnosticoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DiagnosticoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>
+          }
+          findMany: {
+            args: Prisma.DiagnosticoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>[]
+          }
+          create: {
+            args: Prisma.DiagnosticoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>
+          }
+          createMany: {
+            args: Prisma.DiagnosticoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DiagnosticoCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>[]
+          }
+          delete: {
+            args: Prisma.DiagnosticoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>
+          }
+          update: {
+            args: Prisma.DiagnosticoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>
+          }
+          deleteMany: {
+            args: Prisma.DiagnosticoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DiagnosticoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DiagnosticoUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>[]
+          }
+          upsert: {
+            args: Prisma.DiagnosticoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DiagnosticoPayload>
+          }
+          aggregate: {
+            args: Prisma.DiagnosticoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDiagnostico>
+          }
+          groupBy: {
+            args: Prisma.DiagnosticoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DiagnosticoGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DiagnosticoCountArgs<ExtArgs>
+            result: $Utils.Optional<DiagnosticoCountAggregateOutputType> | number
+          }
+        }
+      }
+      Medico_dictamina_diagnostico: {
+        payload: Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>
+        fields: Prisma.Medico_dictamina_diagnosticoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.Medico_dictamina_diagnosticoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.Medico_dictamina_diagnosticoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>
+          }
+          findFirst: {
+            args: Prisma.Medico_dictamina_diagnosticoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.Medico_dictamina_diagnosticoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>
+          }
+          findMany: {
+            args: Prisma.Medico_dictamina_diagnosticoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>[]
+          }
+          create: {
+            args: Prisma.Medico_dictamina_diagnosticoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>
+          }
+          createMany: {
+            args: Prisma.Medico_dictamina_diagnosticoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.Medico_dictamina_diagnosticoCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>[]
+          }
+          delete: {
+            args: Prisma.Medico_dictamina_diagnosticoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>
+          }
+          update: {
+            args: Prisma.Medico_dictamina_diagnosticoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>
+          }
+          deleteMany: {
+            args: Prisma.Medico_dictamina_diagnosticoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.Medico_dictamina_diagnosticoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.Medico_dictamina_diagnosticoUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>[]
+          }
+          upsert: {
+            args: Prisma.Medico_dictamina_diagnosticoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Medico_dictamina_diagnosticoPayload>
+          }
+          aggregate: {
+            args: Prisma.Medico_dictamina_diagnosticoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMedico_dictamina_diagnostico>
+          }
+          groupBy: {
+            args: Prisma.Medico_dictamina_diagnosticoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Medico_dictamina_diagnosticoGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.Medico_dictamina_diagnosticoCountArgs<ExtArgs>
+            result: $Utils.Optional<Medico_dictamina_diagnosticoCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1685,6 +1865,8 @@ export namespace Prisma {
     medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoOmit
     registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoOmit
     pAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaOmit
+    diagnostico?: DiagnosticoOmit
+    medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoOmit
   }
 
   /* Types for Logging */
@@ -1895,6 +2077,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica: number
     Medico_Preescribe_Medicamento: number
     Registro_Consulta_Medicamento: number
+    Medico_dictamina_diagnostico: number
   }
 
   export type MedicoCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1903,6 +2086,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: boolean | MedicoCountOutputTypeCountActualizaciones_HistoriaClinicaArgs
     Medico_Preescribe_Medicamento?: boolean | MedicoCountOutputTypeCountMedico_Preescribe_MedicamentoArgs
     Registro_Consulta_Medicamento?: boolean | MedicoCountOutputTypeCountRegistro_Consulta_MedicamentoArgs
+    Medico_dictamina_diagnostico?: boolean | MedicoCountOutputTypeCountMedico_dictamina_diagnosticoArgs
   }
 
   // Custom InputTypes
@@ -1951,6 +2135,13 @@ export namespace Prisma {
     where?: Registro_Consulta_MedicamentoWhereInput
   }
 
+  /**
+   * MedicoCountOutputType without action
+   */
+  export type MedicoCountOutputTypeCountMedico_dictamina_diagnosticoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Medico_dictamina_diagnosticoWhereInput
+  }
+
 
   /**
    * Count Type CitaCountOutputType
@@ -1960,12 +2151,14 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica: number
     Medico_Preescribe_Medicamento: number
     PAdmin_Gestiona_Cita: number
+    Medico_dictamina_diagnostico: number
   }
 
   export type CitaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Actualizaciones_HistoriaClinica?: boolean | CitaCountOutputTypeCountActualizaciones_HistoriaClinicaArgs
     Medico_Preescribe_Medicamento?: boolean | CitaCountOutputTypeCountMedico_Preescribe_MedicamentoArgs
     PAdmin_Gestiona_Cita?: boolean | CitaCountOutputTypeCountPAdmin_Gestiona_CitaArgs
+    Medico_dictamina_diagnostico?: boolean | CitaCountOutputTypeCountMedico_dictamina_diagnosticoArgs
   }
 
   // Custom InputTypes
@@ -1998,6 +2191,44 @@ export namespace Prisma {
    */
   export type CitaCountOutputTypeCountPAdmin_Gestiona_CitaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PAdmin_Gestiona_CitaWhereInput
+  }
+
+  /**
+   * CitaCountOutputType without action
+   */
+  export type CitaCountOutputTypeCountMedico_dictamina_diagnosticoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Medico_dictamina_diagnosticoWhereInput
+  }
+
+
+  /**
+   * Count Type DiagnosticoCountOutputType
+   */
+
+  export type DiagnosticoCountOutputType = {
+    medicoDictaminaDiagnostico: number
+  }
+
+  export type DiagnosticoCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    medicoDictaminaDiagnostico?: boolean | DiagnosticoCountOutputTypeCountMedicoDictaminaDiagnosticoArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DiagnosticoCountOutputType without action
+   */
+  export type DiagnosticoCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiagnosticoCountOutputType
+     */
+    select?: DiagnosticoCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DiagnosticoCountOutputType without action
+   */
+  export type DiagnosticoCountOutputTypeCountMedicoDictaminaDiagnosticoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Medico_dictamina_diagnosticoWhereInput
   }
 
 
@@ -5581,6 +5812,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: boolean | Medico$Actualizaciones_HistoriaClinicaArgs<ExtArgs>
     Medico_Preescribe_Medicamento?: boolean | Medico$Medico_Preescribe_MedicamentoArgs<ExtArgs>
     Registro_Consulta_Medicamento?: boolean | Medico$Registro_Consulta_MedicamentoArgs<ExtArgs>
+    Medico_dictamina_diagnostico?: boolean | Medico$Medico_dictamina_diagnosticoArgs<ExtArgs>
     _count?: boolean | MedicoCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["medico"]>
 
@@ -5612,6 +5844,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: boolean | Medico$Actualizaciones_HistoriaClinicaArgs<ExtArgs>
     Medico_Preescribe_Medicamento?: boolean | Medico$Medico_Preescribe_MedicamentoArgs<ExtArgs>
     Registro_Consulta_Medicamento?: boolean | Medico$Registro_Consulta_MedicamentoArgs<ExtArgs>
+    Medico_dictamina_diagnostico?: boolean | Medico$Medico_dictamina_diagnosticoArgs<ExtArgs>
     _count?: boolean | MedicoCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MedicoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5630,6 +5863,7 @@ export namespace Prisma {
       Actualizaciones_HistoriaClinica: Prisma.$Actualizaciones_HistoriaClinicaPayload<ExtArgs>[]
       Medico_Preescribe_Medicamento: Prisma.$Medico_Preescribe_MedicamentoPayload<ExtArgs>[]
       Registro_Consulta_Medicamento: Prisma.$Registro_Consulta_MedicamentoPayload<ExtArgs>[]
+      Medico_dictamina_diagnostico: Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       idMedico: number
@@ -6035,6 +6269,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica<T extends Medico$Actualizaciones_HistoriaClinicaArgs<ExtArgs> = {}>(args?: Subset<T, Medico$Actualizaciones_HistoriaClinicaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Actualizaciones_HistoriaClinicaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Medico_Preescribe_Medicamento<T extends Medico$Medico_Preescribe_MedicamentoArgs<ExtArgs> = {}>(args?: Subset<T, Medico$Medico_Preescribe_MedicamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_Preescribe_MedicamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Registro_Consulta_Medicamento<T extends Medico$Registro_Consulta_MedicamentoArgs<ExtArgs> = {}>(args?: Subset<T, Medico$Registro_Consulta_MedicamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Registro_Consulta_MedicamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Medico_dictamina_diagnostico<T extends Medico$Medico_dictamina_diagnosticoArgs<ExtArgs> = {}>(args?: Subset<T, Medico$Medico_dictamina_diagnosticoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6580,6 +6815,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Registro_Consulta_MedicamentoScalarFieldEnum | Registro_Consulta_MedicamentoScalarFieldEnum[]
+  }
+
+  /**
+   * Medico.Medico_dictamina_diagnostico
+   */
+  export type Medico$Medico_dictamina_diagnosticoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    where?: Medico_dictamina_diagnosticoWhereInput
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Medico_dictamina_diagnosticoScalarFieldEnum | Medico_dictamina_diagnosticoScalarFieldEnum[]
   }
 
   /**
@@ -7910,6 +8169,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: boolean | Cita$Actualizaciones_HistoriaClinicaArgs<ExtArgs>
     Medico_Preescribe_Medicamento?: boolean | Cita$Medico_Preescribe_MedicamentoArgs<ExtArgs>
     PAdmin_Gestiona_Cita?: boolean | Cita$PAdmin_Gestiona_CitaArgs<ExtArgs>
+    Medico_dictamina_diagnostico?: boolean | Cita$Medico_dictamina_diagnosticoArgs<ExtArgs>
     _count?: boolean | CitaCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cita"]>
 
@@ -7948,6 +8208,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: boolean | Cita$Actualizaciones_HistoriaClinicaArgs<ExtArgs>
     Medico_Preescribe_Medicamento?: boolean | Cita$Medico_Preescribe_MedicamentoArgs<ExtArgs>
     PAdmin_Gestiona_Cita?: boolean | Cita$PAdmin_Gestiona_CitaArgs<ExtArgs>
+    Medico_dictamina_diagnostico?: boolean | Cita$Medico_dictamina_diagnosticoArgs<ExtArgs>
     _count?: boolean | CitaCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CitaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7964,6 +8225,7 @@ export namespace Prisma {
       Actualizaciones_HistoriaClinica: Prisma.$Actualizaciones_HistoriaClinicaPayload<ExtArgs>[]
       Medico_Preescribe_Medicamento: Prisma.$Medico_Preescribe_MedicamentoPayload<ExtArgs>[]
       PAdmin_Gestiona_Cita: Prisma.$PAdmin_Gestiona_CitaPayload<ExtArgs>[]
+      Medico_dictamina_diagnostico: Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       idCita: number
@@ -8370,6 +8632,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica<T extends Cita$Actualizaciones_HistoriaClinicaArgs<ExtArgs> = {}>(args?: Subset<T, Cita$Actualizaciones_HistoriaClinicaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Actualizaciones_HistoriaClinicaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Medico_Preescribe_Medicamento<T extends Cita$Medico_Preescribe_MedicamentoArgs<ExtArgs> = {}>(args?: Subset<T, Cita$Medico_Preescribe_MedicamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_Preescribe_MedicamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     PAdmin_Gestiona_Cita<T extends Cita$PAdmin_Gestiona_CitaArgs<ExtArgs> = {}>(args?: Subset<T, Cita$PAdmin_Gestiona_CitaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PAdmin_Gestiona_CitaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Medico_dictamina_diagnostico<T extends Cita$Medico_dictamina_diagnosticoArgs<ExtArgs> = {}>(args?: Subset<T, Cita$Medico_dictamina_diagnosticoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8870,6 +9133,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PAdmin_Gestiona_CitaScalarFieldEnum | PAdmin_Gestiona_CitaScalarFieldEnum[]
+  }
+
+  /**
+   * Cita.Medico_dictamina_diagnostico
+   */
+  export type Cita$Medico_dictamina_diagnosticoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    where?: Medico_dictamina_diagnosticoWhereInput
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Medico_dictamina_diagnosticoScalarFieldEnum | Medico_dictamina_diagnosticoScalarFieldEnum[]
   }
 
   /**
@@ -14356,6 +14643,2161 @@ export namespace Prisma {
 
 
   /**
+   * Model Diagnostico
+   */
+
+  export type AggregateDiagnostico = {
+    _count: DiagnosticoCountAggregateOutputType | null
+    _avg: DiagnosticoAvgAggregateOutputType | null
+    _sum: DiagnosticoSumAggregateOutputType | null
+    _min: DiagnosticoMinAggregateOutputType | null
+    _max: DiagnosticoMaxAggregateOutputType | null
+  }
+
+  export type DiagnosticoAvgAggregateOutputType = {
+    idDiagnostico: number | null
+  }
+
+  export type DiagnosticoSumAggregateOutputType = {
+    idDiagnostico: number | null
+  }
+
+  export type DiagnosticoMinAggregateOutputType = {
+    idDiagnostico: number | null
+    nombre: string | null
+  }
+
+  export type DiagnosticoMaxAggregateOutputType = {
+    idDiagnostico: number | null
+    nombre: string | null
+  }
+
+  export type DiagnosticoCountAggregateOutputType = {
+    idDiagnostico: number
+    nombre: number
+    _all: number
+  }
+
+
+  export type DiagnosticoAvgAggregateInputType = {
+    idDiagnostico?: true
+  }
+
+  export type DiagnosticoSumAggregateInputType = {
+    idDiagnostico?: true
+  }
+
+  export type DiagnosticoMinAggregateInputType = {
+    idDiagnostico?: true
+    nombre?: true
+  }
+
+  export type DiagnosticoMaxAggregateInputType = {
+    idDiagnostico?: true
+    nombre?: true
+  }
+
+  export type DiagnosticoCountAggregateInputType = {
+    idDiagnostico?: true
+    nombre?: true
+    _all?: true
+  }
+
+  export type DiagnosticoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Diagnostico to aggregate.
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Diagnosticos to fetch.
+     */
+    orderBy?: DiagnosticoOrderByWithRelationInput | DiagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DiagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Diagnosticos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Diagnosticos
+    **/
+    _count?: true | DiagnosticoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DiagnosticoAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DiagnosticoSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DiagnosticoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DiagnosticoMaxAggregateInputType
+  }
+
+  export type GetDiagnosticoAggregateType<T extends DiagnosticoAggregateArgs> = {
+        [P in keyof T & keyof AggregateDiagnostico]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDiagnostico[P]>
+      : GetScalarType<T[P], AggregateDiagnostico[P]>
+  }
+
+
+
+
+  export type DiagnosticoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DiagnosticoWhereInput
+    orderBy?: DiagnosticoOrderByWithAggregationInput | DiagnosticoOrderByWithAggregationInput[]
+    by: DiagnosticoScalarFieldEnum[] | DiagnosticoScalarFieldEnum
+    having?: DiagnosticoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DiagnosticoCountAggregateInputType | true
+    _avg?: DiagnosticoAvgAggregateInputType
+    _sum?: DiagnosticoSumAggregateInputType
+    _min?: DiagnosticoMinAggregateInputType
+    _max?: DiagnosticoMaxAggregateInputType
+  }
+
+  export type DiagnosticoGroupByOutputType = {
+    idDiagnostico: number
+    nombre: string
+    _count: DiagnosticoCountAggregateOutputType | null
+    _avg: DiagnosticoAvgAggregateOutputType | null
+    _sum: DiagnosticoSumAggregateOutputType | null
+    _min: DiagnosticoMinAggregateOutputType | null
+    _max: DiagnosticoMaxAggregateOutputType | null
+  }
+
+  type GetDiagnosticoGroupByPayload<T extends DiagnosticoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DiagnosticoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DiagnosticoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DiagnosticoGroupByOutputType[P]>
+            : GetScalarType<T[P], DiagnosticoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DiagnosticoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    idDiagnostico?: boolean
+    nombre?: boolean
+    medicoDictaminaDiagnostico?: boolean | Diagnostico$medicoDictaminaDiagnosticoArgs<ExtArgs>
+    _count?: boolean | DiagnosticoCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["diagnostico"]>
+
+  export type DiagnosticoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    idDiagnostico?: boolean
+    nombre?: boolean
+  }, ExtArgs["result"]["diagnostico"]>
+
+  export type DiagnosticoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    idDiagnostico?: boolean
+    nombre?: boolean
+  }, ExtArgs["result"]["diagnostico"]>
+
+  export type DiagnosticoSelectScalar = {
+    idDiagnostico?: boolean
+    nombre?: boolean
+  }
+
+  export type DiagnosticoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"idDiagnostico" | "nombre", ExtArgs["result"]["diagnostico"]>
+  export type DiagnosticoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    medicoDictaminaDiagnostico?: boolean | Diagnostico$medicoDictaminaDiagnosticoArgs<ExtArgs>
+    _count?: boolean | DiagnosticoCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DiagnosticoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DiagnosticoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $DiagnosticoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Diagnostico"
+    objects: {
+      medicoDictaminaDiagnostico: Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      idDiagnostico: number
+      nombre: string
+    }, ExtArgs["result"]["diagnostico"]>
+    composites: {}
+  }
+
+  type DiagnosticoGetPayload<S extends boolean | null | undefined | DiagnosticoDefaultArgs> = $Result.GetResult<Prisma.$DiagnosticoPayload, S>
+
+  type DiagnosticoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DiagnosticoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DiagnosticoCountAggregateInputType | true
+    }
+
+  export interface DiagnosticoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Diagnostico'], meta: { name: 'Diagnostico' } }
+    /**
+     * Find zero or one Diagnostico that matches the filter.
+     * @param {DiagnosticoFindUniqueArgs} args - Arguments to find a Diagnostico
+     * @example
+     * // Get one Diagnostico
+     * const diagnostico = await prisma.diagnostico.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DiagnosticoFindUniqueArgs>(args: SelectSubset<T, DiagnosticoFindUniqueArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Diagnostico that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DiagnosticoFindUniqueOrThrowArgs} args - Arguments to find a Diagnostico
+     * @example
+     * // Get one Diagnostico
+     * const diagnostico = await prisma.diagnostico.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DiagnosticoFindUniqueOrThrowArgs>(args: SelectSubset<T, DiagnosticoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Diagnostico that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoFindFirstArgs} args - Arguments to find a Diagnostico
+     * @example
+     * // Get one Diagnostico
+     * const diagnostico = await prisma.diagnostico.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DiagnosticoFindFirstArgs>(args?: SelectSubset<T, DiagnosticoFindFirstArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Diagnostico that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoFindFirstOrThrowArgs} args - Arguments to find a Diagnostico
+     * @example
+     * // Get one Diagnostico
+     * const diagnostico = await prisma.diagnostico.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DiagnosticoFindFirstOrThrowArgs>(args?: SelectSubset<T, DiagnosticoFindFirstOrThrowArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Diagnosticos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Diagnosticos
+     * const diagnosticos = await prisma.diagnostico.findMany()
+     * 
+     * // Get first 10 Diagnosticos
+     * const diagnosticos = await prisma.diagnostico.findMany({ take: 10 })
+     * 
+     * // Only select the `idDiagnostico`
+     * const diagnosticoWithIdDiagnosticoOnly = await prisma.diagnostico.findMany({ select: { idDiagnostico: true } })
+     * 
+     */
+    findMany<T extends DiagnosticoFindManyArgs>(args?: SelectSubset<T, DiagnosticoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Diagnostico.
+     * @param {DiagnosticoCreateArgs} args - Arguments to create a Diagnostico.
+     * @example
+     * // Create one Diagnostico
+     * const Diagnostico = await prisma.diagnostico.create({
+     *   data: {
+     *     // ... data to create a Diagnostico
+     *   }
+     * })
+     * 
+     */
+    create<T extends DiagnosticoCreateArgs>(args: SelectSubset<T, DiagnosticoCreateArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Diagnosticos.
+     * @param {DiagnosticoCreateManyArgs} args - Arguments to create many Diagnosticos.
+     * @example
+     * // Create many Diagnosticos
+     * const diagnostico = await prisma.diagnostico.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DiagnosticoCreateManyArgs>(args?: SelectSubset<T, DiagnosticoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Diagnosticos and returns the data saved in the database.
+     * @param {DiagnosticoCreateManyAndReturnArgs} args - Arguments to create many Diagnosticos.
+     * @example
+     * // Create many Diagnosticos
+     * const diagnostico = await prisma.diagnostico.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Diagnosticos and only return the `idDiagnostico`
+     * const diagnosticoWithIdDiagnosticoOnly = await prisma.diagnostico.createManyAndReturn({
+     *   select: { idDiagnostico: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DiagnosticoCreateManyAndReturnArgs>(args?: SelectSubset<T, DiagnosticoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Diagnostico.
+     * @param {DiagnosticoDeleteArgs} args - Arguments to delete one Diagnostico.
+     * @example
+     * // Delete one Diagnostico
+     * const Diagnostico = await prisma.diagnostico.delete({
+     *   where: {
+     *     // ... filter to delete one Diagnostico
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DiagnosticoDeleteArgs>(args: SelectSubset<T, DiagnosticoDeleteArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Diagnostico.
+     * @param {DiagnosticoUpdateArgs} args - Arguments to update one Diagnostico.
+     * @example
+     * // Update one Diagnostico
+     * const diagnostico = await prisma.diagnostico.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DiagnosticoUpdateArgs>(args: SelectSubset<T, DiagnosticoUpdateArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Diagnosticos.
+     * @param {DiagnosticoDeleteManyArgs} args - Arguments to filter Diagnosticos to delete.
+     * @example
+     * // Delete a few Diagnosticos
+     * const { count } = await prisma.diagnostico.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DiagnosticoDeleteManyArgs>(args?: SelectSubset<T, DiagnosticoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Diagnosticos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Diagnosticos
+     * const diagnostico = await prisma.diagnostico.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DiagnosticoUpdateManyArgs>(args: SelectSubset<T, DiagnosticoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Diagnosticos and returns the data updated in the database.
+     * @param {DiagnosticoUpdateManyAndReturnArgs} args - Arguments to update many Diagnosticos.
+     * @example
+     * // Update many Diagnosticos
+     * const diagnostico = await prisma.diagnostico.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Diagnosticos and only return the `idDiagnostico`
+     * const diagnosticoWithIdDiagnosticoOnly = await prisma.diagnostico.updateManyAndReturn({
+     *   select: { idDiagnostico: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DiagnosticoUpdateManyAndReturnArgs>(args: SelectSubset<T, DiagnosticoUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Diagnostico.
+     * @param {DiagnosticoUpsertArgs} args - Arguments to update or create a Diagnostico.
+     * @example
+     * // Update or create a Diagnostico
+     * const diagnostico = await prisma.diagnostico.upsert({
+     *   create: {
+     *     // ... data to create a Diagnostico
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Diagnostico we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DiagnosticoUpsertArgs>(args: SelectSubset<T, DiagnosticoUpsertArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Diagnosticos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoCountArgs} args - Arguments to filter Diagnosticos to count.
+     * @example
+     * // Count the number of Diagnosticos
+     * const count = await prisma.diagnostico.count({
+     *   where: {
+     *     // ... the filter for the Diagnosticos we want to count
+     *   }
+     * })
+    **/
+    count<T extends DiagnosticoCountArgs>(
+      args?: Subset<T, DiagnosticoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DiagnosticoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Diagnostico.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DiagnosticoAggregateArgs>(args: Subset<T, DiagnosticoAggregateArgs>): Prisma.PrismaPromise<GetDiagnosticoAggregateType<T>>
+
+    /**
+     * Group by Diagnostico.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiagnosticoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DiagnosticoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DiagnosticoGroupByArgs['orderBy'] }
+        : { orderBy?: DiagnosticoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DiagnosticoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDiagnosticoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Diagnostico model
+   */
+  readonly fields: DiagnosticoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Diagnostico.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DiagnosticoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    medicoDictaminaDiagnostico<T extends Diagnostico$medicoDictaminaDiagnosticoArgs<ExtArgs> = {}>(args?: Subset<T, Diagnostico$medicoDictaminaDiagnosticoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Diagnostico model
+   */
+  interface DiagnosticoFieldRefs {
+    readonly idDiagnostico: FieldRef<"Diagnostico", 'Int'>
+    readonly nombre: FieldRef<"Diagnostico", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Diagnostico findUnique
+   */
+  export type DiagnosticoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Diagnostico to fetch.
+     */
+    where: DiagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Diagnostico findUniqueOrThrow
+   */
+  export type DiagnosticoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Diagnostico to fetch.
+     */
+    where: DiagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Diagnostico findFirst
+   */
+  export type DiagnosticoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Diagnostico to fetch.
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Diagnosticos to fetch.
+     */
+    orderBy?: DiagnosticoOrderByWithRelationInput | DiagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Diagnosticos.
+     */
+    cursor?: DiagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Diagnosticos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Diagnosticos.
+     */
+    distinct?: DiagnosticoScalarFieldEnum | DiagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Diagnostico findFirstOrThrow
+   */
+  export type DiagnosticoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Diagnostico to fetch.
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Diagnosticos to fetch.
+     */
+    orderBy?: DiagnosticoOrderByWithRelationInput | DiagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Diagnosticos.
+     */
+    cursor?: DiagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Diagnosticos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Diagnosticos.
+     */
+    distinct?: DiagnosticoScalarFieldEnum | DiagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Diagnostico findMany
+   */
+  export type DiagnosticoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Diagnosticos to fetch.
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Diagnosticos to fetch.
+     */
+    orderBy?: DiagnosticoOrderByWithRelationInput | DiagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Diagnosticos.
+     */
+    cursor?: DiagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Diagnosticos.
+     */
+    skip?: number
+    distinct?: DiagnosticoScalarFieldEnum | DiagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Diagnostico create
+   */
+  export type DiagnosticoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Diagnostico.
+     */
+    data: XOR<DiagnosticoCreateInput, DiagnosticoUncheckedCreateInput>
+  }
+
+  /**
+   * Diagnostico createMany
+   */
+  export type DiagnosticoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Diagnosticos.
+     */
+    data: DiagnosticoCreateManyInput | DiagnosticoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Diagnostico createManyAndReturn
+   */
+  export type DiagnosticoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * The data used to create many Diagnosticos.
+     */
+    data: DiagnosticoCreateManyInput | DiagnosticoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Diagnostico update
+   */
+  export type DiagnosticoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Diagnostico.
+     */
+    data: XOR<DiagnosticoUpdateInput, DiagnosticoUncheckedUpdateInput>
+    /**
+     * Choose, which Diagnostico to update.
+     */
+    where: DiagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Diagnostico updateMany
+   */
+  export type DiagnosticoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Diagnosticos.
+     */
+    data: XOR<DiagnosticoUpdateManyMutationInput, DiagnosticoUncheckedUpdateManyInput>
+    /**
+     * Filter which Diagnosticos to update
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * Limit how many Diagnosticos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Diagnostico updateManyAndReturn
+   */
+  export type DiagnosticoUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * The data used to update Diagnosticos.
+     */
+    data: XOR<DiagnosticoUpdateManyMutationInput, DiagnosticoUncheckedUpdateManyInput>
+    /**
+     * Filter which Diagnosticos to update
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * Limit how many Diagnosticos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Diagnostico upsert
+   */
+  export type DiagnosticoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Diagnostico to update in case it exists.
+     */
+    where: DiagnosticoWhereUniqueInput
+    /**
+     * In case the Diagnostico found by the `where` argument doesn't exist, create a new Diagnostico with this data.
+     */
+    create: XOR<DiagnosticoCreateInput, DiagnosticoUncheckedCreateInput>
+    /**
+     * In case the Diagnostico was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DiagnosticoUpdateInput, DiagnosticoUncheckedUpdateInput>
+  }
+
+  /**
+   * Diagnostico delete
+   */
+  export type DiagnosticoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter which Diagnostico to delete.
+     */
+    where: DiagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Diagnostico deleteMany
+   */
+  export type DiagnosticoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Diagnosticos to delete
+     */
+    where?: DiagnosticoWhereInput
+    /**
+     * Limit how many Diagnosticos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Diagnostico.medicoDictaminaDiagnostico
+   */
+  export type Diagnostico$medicoDictaminaDiagnosticoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    where?: Medico_dictamina_diagnosticoWhereInput
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Medico_dictamina_diagnosticoScalarFieldEnum | Medico_dictamina_diagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Diagnostico without action
+   */
+  export type DiagnosticoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Diagnostico
+     */
+    select?: DiagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Diagnostico
+     */
+    omit?: DiagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiagnosticoInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Medico_dictamina_diagnostico
+   */
+
+  export type AggregateMedico_dictamina_diagnostico = {
+    _count: Medico_dictamina_diagnosticoCountAggregateOutputType | null
+    _avg: Medico_dictamina_diagnosticoAvgAggregateOutputType | null
+    _sum: Medico_dictamina_diagnosticoSumAggregateOutputType | null
+    _min: Medico_dictamina_diagnosticoMinAggregateOutputType | null
+    _max: Medico_dictamina_diagnosticoMaxAggregateOutputType | null
+  }
+
+  export type Medico_dictamina_diagnosticoAvgAggregateOutputType = {
+    idDiagnostico: number | null
+    idMedico: number | null
+    idCita: number | null
+  }
+
+  export type Medico_dictamina_diagnosticoSumAggregateOutputType = {
+    idDiagnostico: number | null
+    idMedico: number | null
+    idCita: number | null
+  }
+
+  export type Medico_dictamina_diagnosticoMinAggregateOutputType = {
+    idDiagnostico: number | null
+    idMedico: number | null
+    idCita: number | null
+  }
+
+  export type Medico_dictamina_diagnosticoMaxAggregateOutputType = {
+    idDiagnostico: number | null
+    idMedico: number | null
+    idCita: number | null
+  }
+
+  export type Medico_dictamina_diagnosticoCountAggregateOutputType = {
+    idDiagnostico: number
+    idMedico: number
+    idCita: number
+    _all: number
+  }
+
+
+  export type Medico_dictamina_diagnosticoAvgAggregateInputType = {
+    idDiagnostico?: true
+    idMedico?: true
+    idCita?: true
+  }
+
+  export type Medico_dictamina_diagnosticoSumAggregateInputType = {
+    idDiagnostico?: true
+    idMedico?: true
+    idCita?: true
+  }
+
+  export type Medico_dictamina_diagnosticoMinAggregateInputType = {
+    idDiagnostico?: true
+    idMedico?: true
+    idCita?: true
+  }
+
+  export type Medico_dictamina_diagnosticoMaxAggregateInputType = {
+    idDiagnostico?: true
+    idMedico?: true
+    idCita?: true
+  }
+
+  export type Medico_dictamina_diagnosticoCountAggregateInputType = {
+    idDiagnostico?: true
+    idMedico?: true
+    idCita?: true
+    _all?: true
+  }
+
+  export type Medico_dictamina_diagnosticoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Medico_dictamina_diagnostico to aggregate.
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Medico_dictamina_diagnosticos to fetch.
+     */
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Medico_dictamina_diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Medico_dictamina_diagnosticos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Medico_dictamina_diagnosticos
+    **/
+    _count?: true | Medico_dictamina_diagnosticoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Medico_dictamina_diagnosticoAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Medico_dictamina_diagnosticoSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Medico_dictamina_diagnosticoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Medico_dictamina_diagnosticoMaxAggregateInputType
+  }
+
+  export type GetMedico_dictamina_diagnosticoAggregateType<T extends Medico_dictamina_diagnosticoAggregateArgs> = {
+        [P in keyof T & keyof AggregateMedico_dictamina_diagnostico]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMedico_dictamina_diagnostico[P]>
+      : GetScalarType<T[P], AggregateMedico_dictamina_diagnostico[P]>
+  }
+
+
+
+
+  export type Medico_dictamina_diagnosticoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Medico_dictamina_diagnosticoWhereInput
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithAggregationInput | Medico_dictamina_diagnosticoOrderByWithAggregationInput[]
+    by: Medico_dictamina_diagnosticoScalarFieldEnum[] | Medico_dictamina_diagnosticoScalarFieldEnum
+    having?: Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Medico_dictamina_diagnosticoCountAggregateInputType | true
+    _avg?: Medico_dictamina_diagnosticoAvgAggregateInputType
+    _sum?: Medico_dictamina_diagnosticoSumAggregateInputType
+    _min?: Medico_dictamina_diagnosticoMinAggregateInputType
+    _max?: Medico_dictamina_diagnosticoMaxAggregateInputType
+  }
+
+  export type Medico_dictamina_diagnosticoGroupByOutputType = {
+    idDiagnostico: number
+    idMedico: number
+    idCita: number
+    _count: Medico_dictamina_diagnosticoCountAggregateOutputType | null
+    _avg: Medico_dictamina_diagnosticoAvgAggregateOutputType | null
+    _sum: Medico_dictamina_diagnosticoSumAggregateOutputType | null
+    _min: Medico_dictamina_diagnosticoMinAggregateOutputType | null
+    _max: Medico_dictamina_diagnosticoMaxAggregateOutputType | null
+  }
+
+  type GetMedico_dictamina_diagnosticoGroupByPayload<T extends Medico_dictamina_diagnosticoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Medico_dictamina_diagnosticoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Medico_dictamina_diagnosticoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Medico_dictamina_diagnosticoGroupByOutputType[P]>
+            : GetScalarType<T[P], Medico_dictamina_diagnosticoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type Medico_dictamina_diagnosticoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    idDiagnostico?: boolean
+    idMedico?: boolean
+    idCita?: boolean
+    diagnostico?: boolean | DiagnosticoDefaultArgs<ExtArgs>
+    medico?: boolean | MedicoDefaultArgs<ExtArgs>
+    cita?: boolean | CitaDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["medico_dictamina_diagnostico"]>
+
+  export type Medico_dictamina_diagnosticoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    idDiagnostico?: boolean
+    idMedico?: boolean
+    idCita?: boolean
+    diagnostico?: boolean | DiagnosticoDefaultArgs<ExtArgs>
+    medico?: boolean | MedicoDefaultArgs<ExtArgs>
+    cita?: boolean | CitaDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["medico_dictamina_diagnostico"]>
+
+  export type Medico_dictamina_diagnosticoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    idDiagnostico?: boolean
+    idMedico?: boolean
+    idCita?: boolean
+    diagnostico?: boolean | DiagnosticoDefaultArgs<ExtArgs>
+    medico?: boolean | MedicoDefaultArgs<ExtArgs>
+    cita?: boolean | CitaDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["medico_dictamina_diagnostico"]>
+
+  export type Medico_dictamina_diagnosticoSelectScalar = {
+    idDiagnostico?: boolean
+    idMedico?: boolean
+    idCita?: boolean
+  }
+
+  export type Medico_dictamina_diagnosticoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"idDiagnostico" | "idMedico" | "idCita", ExtArgs["result"]["medico_dictamina_diagnostico"]>
+  export type Medico_dictamina_diagnosticoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    diagnostico?: boolean | DiagnosticoDefaultArgs<ExtArgs>
+    medico?: boolean | MedicoDefaultArgs<ExtArgs>
+    cita?: boolean | CitaDefaultArgs<ExtArgs>
+  }
+  export type Medico_dictamina_diagnosticoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    diagnostico?: boolean | DiagnosticoDefaultArgs<ExtArgs>
+    medico?: boolean | MedicoDefaultArgs<ExtArgs>
+    cita?: boolean | CitaDefaultArgs<ExtArgs>
+  }
+  export type Medico_dictamina_diagnosticoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    diagnostico?: boolean | DiagnosticoDefaultArgs<ExtArgs>
+    medico?: boolean | MedicoDefaultArgs<ExtArgs>
+    cita?: boolean | CitaDefaultArgs<ExtArgs>
+  }
+
+  export type $Medico_dictamina_diagnosticoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Medico_dictamina_diagnostico"
+    objects: {
+      diagnostico: Prisma.$DiagnosticoPayload<ExtArgs>
+      medico: Prisma.$MedicoPayload<ExtArgs>
+      cita: Prisma.$CitaPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      idDiagnostico: number
+      idMedico: number
+      idCita: number
+    }, ExtArgs["result"]["medico_dictamina_diagnostico"]>
+    composites: {}
+  }
+
+  type Medico_dictamina_diagnosticoGetPayload<S extends boolean | null | undefined | Medico_dictamina_diagnosticoDefaultArgs> = $Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload, S>
+
+  type Medico_dictamina_diagnosticoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<Medico_dictamina_diagnosticoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Medico_dictamina_diagnosticoCountAggregateInputType | true
+    }
+
+  export interface Medico_dictamina_diagnosticoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Medico_dictamina_diagnostico'], meta: { name: 'Medico_dictamina_diagnostico' } }
+    /**
+     * Find zero or one Medico_dictamina_diagnostico that matches the filter.
+     * @param {Medico_dictamina_diagnosticoFindUniqueArgs} args - Arguments to find a Medico_dictamina_diagnostico
+     * @example
+     * // Get one Medico_dictamina_diagnostico
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends Medico_dictamina_diagnosticoFindUniqueArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoFindUniqueArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Medico_dictamina_diagnostico that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {Medico_dictamina_diagnosticoFindUniqueOrThrowArgs} args - Arguments to find a Medico_dictamina_diagnostico
+     * @example
+     * // Get one Medico_dictamina_diagnostico
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends Medico_dictamina_diagnosticoFindUniqueOrThrowArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Medico_dictamina_diagnostico that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoFindFirstArgs} args - Arguments to find a Medico_dictamina_diagnostico
+     * @example
+     * // Get one Medico_dictamina_diagnostico
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends Medico_dictamina_diagnosticoFindFirstArgs>(args?: SelectSubset<T, Medico_dictamina_diagnosticoFindFirstArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Medico_dictamina_diagnostico that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoFindFirstOrThrowArgs} args - Arguments to find a Medico_dictamina_diagnostico
+     * @example
+     * // Get one Medico_dictamina_diagnostico
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends Medico_dictamina_diagnosticoFindFirstOrThrowArgs>(args?: SelectSubset<T, Medico_dictamina_diagnosticoFindFirstOrThrowArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Medico_dictamina_diagnosticos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Medico_dictamina_diagnosticos
+     * const medico_dictamina_diagnosticos = await prisma.medico_dictamina_diagnostico.findMany()
+     * 
+     * // Get first 10 Medico_dictamina_diagnosticos
+     * const medico_dictamina_diagnosticos = await prisma.medico_dictamina_diagnostico.findMany({ take: 10 })
+     * 
+     * // Only select the `idDiagnostico`
+     * const medico_dictamina_diagnosticoWithIdDiagnosticoOnly = await prisma.medico_dictamina_diagnostico.findMany({ select: { idDiagnostico: true } })
+     * 
+     */
+    findMany<T extends Medico_dictamina_diagnosticoFindManyArgs>(args?: SelectSubset<T, Medico_dictamina_diagnosticoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Medico_dictamina_diagnostico.
+     * @param {Medico_dictamina_diagnosticoCreateArgs} args - Arguments to create a Medico_dictamina_diagnostico.
+     * @example
+     * // Create one Medico_dictamina_diagnostico
+     * const Medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.create({
+     *   data: {
+     *     // ... data to create a Medico_dictamina_diagnostico
+     *   }
+     * })
+     * 
+     */
+    create<T extends Medico_dictamina_diagnosticoCreateArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoCreateArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Medico_dictamina_diagnosticos.
+     * @param {Medico_dictamina_diagnosticoCreateManyArgs} args - Arguments to create many Medico_dictamina_diagnosticos.
+     * @example
+     * // Create many Medico_dictamina_diagnosticos
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends Medico_dictamina_diagnosticoCreateManyArgs>(args?: SelectSubset<T, Medico_dictamina_diagnosticoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Medico_dictamina_diagnosticos and returns the data saved in the database.
+     * @param {Medico_dictamina_diagnosticoCreateManyAndReturnArgs} args - Arguments to create many Medico_dictamina_diagnosticos.
+     * @example
+     * // Create many Medico_dictamina_diagnosticos
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Medico_dictamina_diagnosticos and only return the `idDiagnostico`
+     * const medico_dictamina_diagnosticoWithIdDiagnosticoOnly = await prisma.medico_dictamina_diagnostico.createManyAndReturn({
+     *   select: { idDiagnostico: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends Medico_dictamina_diagnosticoCreateManyAndReturnArgs>(args?: SelectSubset<T, Medico_dictamina_diagnosticoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Medico_dictamina_diagnostico.
+     * @param {Medico_dictamina_diagnosticoDeleteArgs} args - Arguments to delete one Medico_dictamina_diagnostico.
+     * @example
+     * // Delete one Medico_dictamina_diagnostico
+     * const Medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.delete({
+     *   where: {
+     *     // ... filter to delete one Medico_dictamina_diagnostico
+     *   }
+     * })
+     * 
+     */
+    delete<T extends Medico_dictamina_diagnosticoDeleteArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoDeleteArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Medico_dictamina_diagnostico.
+     * @param {Medico_dictamina_diagnosticoUpdateArgs} args - Arguments to update one Medico_dictamina_diagnostico.
+     * @example
+     * // Update one Medico_dictamina_diagnostico
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends Medico_dictamina_diagnosticoUpdateArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoUpdateArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Medico_dictamina_diagnosticos.
+     * @param {Medico_dictamina_diagnosticoDeleteManyArgs} args - Arguments to filter Medico_dictamina_diagnosticos to delete.
+     * @example
+     * // Delete a few Medico_dictamina_diagnosticos
+     * const { count } = await prisma.medico_dictamina_diagnostico.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends Medico_dictamina_diagnosticoDeleteManyArgs>(args?: SelectSubset<T, Medico_dictamina_diagnosticoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Medico_dictamina_diagnosticos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Medico_dictamina_diagnosticos
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends Medico_dictamina_diagnosticoUpdateManyArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Medico_dictamina_diagnosticos and returns the data updated in the database.
+     * @param {Medico_dictamina_diagnosticoUpdateManyAndReturnArgs} args - Arguments to update many Medico_dictamina_diagnosticos.
+     * @example
+     * // Update many Medico_dictamina_diagnosticos
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Medico_dictamina_diagnosticos and only return the `idDiagnostico`
+     * const medico_dictamina_diagnosticoWithIdDiagnosticoOnly = await prisma.medico_dictamina_diagnostico.updateManyAndReturn({
+     *   select: { idDiagnostico: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends Medico_dictamina_diagnosticoUpdateManyAndReturnArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Medico_dictamina_diagnostico.
+     * @param {Medico_dictamina_diagnosticoUpsertArgs} args - Arguments to update or create a Medico_dictamina_diagnostico.
+     * @example
+     * // Update or create a Medico_dictamina_diagnostico
+     * const medico_dictamina_diagnostico = await prisma.medico_dictamina_diagnostico.upsert({
+     *   create: {
+     *     // ... data to create a Medico_dictamina_diagnostico
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Medico_dictamina_diagnostico we want to update
+     *   }
+     * })
+     */
+    upsert<T extends Medico_dictamina_diagnosticoUpsertArgs>(args: SelectSubset<T, Medico_dictamina_diagnosticoUpsertArgs<ExtArgs>>): Prisma__Medico_dictamina_diagnosticoClient<$Result.GetResult<Prisma.$Medico_dictamina_diagnosticoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Medico_dictamina_diagnosticos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoCountArgs} args - Arguments to filter Medico_dictamina_diagnosticos to count.
+     * @example
+     * // Count the number of Medico_dictamina_diagnosticos
+     * const count = await prisma.medico_dictamina_diagnostico.count({
+     *   where: {
+     *     // ... the filter for the Medico_dictamina_diagnosticos we want to count
+     *   }
+     * })
+    **/
+    count<T extends Medico_dictamina_diagnosticoCountArgs>(
+      args?: Subset<T, Medico_dictamina_diagnosticoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Medico_dictamina_diagnosticoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Medico_dictamina_diagnostico.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Medico_dictamina_diagnosticoAggregateArgs>(args: Subset<T, Medico_dictamina_diagnosticoAggregateArgs>): Prisma.PrismaPromise<GetMedico_dictamina_diagnosticoAggregateType<T>>
+
+    /**
+     * Group by Medico_dictamina_diagnostico.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Medico_dictamina_diagnosticoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends Medico_dictamina_diagnosticoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: Medico_dictamina_diagnosticoGroupByArgs['orderBy'] }
+        : { orderBy?: Medico_dictamina_diagnosticoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, Medico_dictamina_diagnosticoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMedico_dictamina_diagnosticoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Medico_dictamina_diagnostico model
+   */
+  readonly fields: Medico_dictamina_diagnosticoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Medico_dictamina_diagnostico.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__Medico_dictamina_diagnosticoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    diagnostico<T extends DiagnosticoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DiagnosticoDefaultArgs<ExtArgs>>): Prisma__DiagnosticoClient<$Result.GetResult<Prisma.$DiagnosticoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    medico<T extends MedicoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MedicoDefaultArgs<ExtArgs>>): Prisma__MedicoClient<$Result.GetResult<Prisma.$MedicoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    cita<T extends CitaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CitaDefaultArgs<ExtArgs>>): Prisma__CitaClient<$Result.GetResult<Prisma.$CitaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Medico_dictamina_diagnostico model
+   */
+  interface Medico_dictamina_diagnosticoFieldRefs {
+    readonly idDiagnostico: FieldRef<"Medico_dictamina_diagnostico", 'Int'>
+    readonly idMedico: FieldRef<"Medico_dictamina_diagnostico", 'Int'>
+    readonly idCita: FieldRef<"Medico_dictamina_diagnostico", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Medico_dictamina_diagnostico findUnique
+   */
+  export type Medico_dictamina_diagnosticoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Medico_dictamina_diagnostico to fetch.
+     */
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Medico_dictamina_diagnostico findUniqueOrThrow
+   */
+  export type Medico_dictamina_diagnosticoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Medico_dictamina_diagnostico to fetch.
+     */
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Medico_dictamina_diagnostico findFirst
+   */
+  export type Medico_dictamina_diagnosticoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Medico_dictamina_diagnostico to fetch.
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Medico_dictamina_diagnosticos to fetch.
+     */
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Medico_dictamina_diagnosticos.
+     */
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Medico_dictamina_diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Medico_dictamina_diagnosticos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Medico_dictamina_diagnosticos.
+     */
+    distinct?: Medico_dictamina_diagnosticoScalarFieldEnum | Medico_dictamina_diagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Medico_dictamina_diagnostico findFirstOrThrow
+   */
+  export type Medico_dictamina_diagnosticoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Medico_dictamina_diagnostico to fetch.
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Medico_dictamina_diagnosticos to fetch.
+     */
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Medico_dictamina_diagnosticos.
+     */
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Medico_dictamina_diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Medico_dictamina_diagnosticos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Medico_dictamina_diagnosticos.
+     */
+    distinct?: Medico_dictamina_diagnosticoScalarFieldEnum | Medico_dictamina_diagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Medico_dictamina_diagnostico findMany
+   */
+  export type Medico_dictamina_diagnosticoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter, which Medico_dictamina_diagnosticos to fetch.
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Medico_dictamina_diagnosticos to fetch.
+     */
+    orderBy?: Medico_dictamina_diagnosticoOrderByWithRelationInput | Medico_dictamina_diagnosticoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Medico_dictamina_diagnosticos.
+     */
+    cursor?: Medico_dictamina_diagnosticoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Medico_dictamina_diagnosticos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Medico_dictamina_diagnosticos.
+     */
+    skip?: number
+    distinct?: Medico_dictamina_diagnosticoScalarFieldEnum | Medico_dictamina_diagnosticoScalarFieldEnum[]
+  }
+
+  /**
+   * Medico_dictamina_diagnostico create
+   */
+  export type Medico_dictamina_diagnosticoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Medico_dictamina_diagnostico.
+     */
+    data: XOR<Medico_dictamina_diagnosticoCreateInput, Medico_dictamina_diagnosticoUncheckedCreateInput>
+  }
+
+  /**
+   * Medico_dictamina_diagnostico createMany
+   */
+  export type Medico_dictamina_diagnosticoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Medico_dictamina_diagnosticos.
+     */
+    data: Medico_dictamina_diagnosticoCreateManyInput | Medico_dictamina_diagnosticoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Medico_dictamina_diagnostico createManyAndReturn
+   */
+  export type Medico_dictamina_diagnosticoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * The data used to create many Medico_dictamina_diagnosticos.
+     */
+    data: Medico_dictamina_diagnosticoCreateManyInput | Medico_dictamina_diagnosticoCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Medico_dictamina_diagnostico update
+   */
+  export type Medico_dictamina_diagnosticoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Medico_dictamina_diagnostico.
+     */
+    data: XOR<Medico_dictamina_diagnosticoUpdateInput, Medico_dictamina_diagnosticoUncheckedUpdateInput>
+    /**
+     * Choose, which Medico_dictamina_diagnostico to update.
+     */
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Medico_dictamina_diagnostico updateMany
+   */
+  export type Medico_dictamina_diagnosticoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Medico_dictamina_diagnosticos.
+     */
+    data: XOR<Medico_dictamina_diagnosticoUpdateManyMutationInput, Medico_dictamina_diagnosticoUncheckedUpdateManyInput>
+    /**
+     * Filter which Medico_dictamina_diagnosticos to update
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * Limit how many Medico_dictamina_diagnosticos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Medico_dictamina_diagnostico updateManyAndReturn
+   */
+  export type Medico_dictamina_diagnosticoUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * The data used to update Medico_dictamina_diagnosticos.
+     */
+    data: XOR<Medico_dictamina_diagnosticoUpdateManyMutationInput, Medico_dictamina_diagnosticoUncheckedUpdateManyInput>
+    /**
+     * Filter which Medico_dictamina_diagnosticos to update
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * Limit how many Medico_dictamina_diagnosticos to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Medico_dictamina_diagnostico upsert
+   */
+  export type Medico_dictamina_diagnosticoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Medico_dictamina_diagnostico to update in case it exists.
+     */
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    /**
+     * In case the Medico_dictamina_diagnostico found by the `where` argument doesn't exist, create a new Medico_dictamina_diagnostico with this data.
+     */
+    create: XOR<Medico_dictamina_diagnosticoCreateInput, Medico_dictamina_diagnosticoUncheckedCreateInput>
+    /**
+     * In case the Medico_dictamina_diagnostico was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<Medico_dictamina_diagnosticoUpdateInput, Medico_dictamina_diagnosticoUncheckedUpdateInput>
+  }
+
+  /**
+   * Medico_dictamina_diagnostico delete
+   */
+  export type Medico_dictamina_diagnosticoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+    /**
+     * Filter which Medico_dictamina_diagnostico to delete.
+     */
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+  }
+
+  /**
+   * Medico_dictamina_diagnostico deleteMany
+   */
+  export type Medico_dictamina_diagnosticoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Medico_dictamina_diagnosticos to delete
+     */
+    where?: Medico_dictamina_diagnosticoWhereInput
+    /**
+     * Limit how many Medico_dictamina_diagnosticos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Medico_dictamina_diagnostico without action
+   */
+  export type Medico_dictamina_diagnosticoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Medico_dictamina_diagnostico
+     */
+    select?: Medico_dictamina_diagnosticoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Medico_dictamina_diagnostico
+     */
+    omit?: Medico_dictamina_diagnosticoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Medico_dictamina_diagnosticoInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -14480,6 +16922,23 @@ export namespace Prisma {
   };
 
   export type PAdmin_Gestiona_CitaScalarFieldEnum = (typeof PAdmin_Gestiona_CitaScalarFieldEnum)[keyof typeof PAdmin_Gestiona_CitaScalarFieldEnum]
+
+
+  export const DiagnosticoScalarFieldEnum: {
+    idDiagnostico: 'idDiagnostico',
+    nombre: 'nombre'
+  };
+
+  export type DiagnosticoScalarFieldEnum = (typeof DiagnosticoScalarFieldEnum)[keyof typeof DiagnosticoScalarFieldEnum]
+
+
+  export const Medico_dictamina_diagnosticoScalarFieldEnum: {
+    idDiagnostico: 'idDiagnostico',
+    idMedico: 'idMedico',
+    idCita: 'idCita'
+  };
+
+  export type Medico_dictamina_diagnosticoScalarFieldEnum = (typeof Medico_dictamina_diagnosticoScalarFieldEnum)[keyof typeof Medico_dictamina_diagnosticoScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -14759,6 +17218,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaListRelationFilter
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoListRelationFilter
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoListRelationFilter
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoListRelationFilter
   }
 
   export type MedicoOrderByWithRelationInput = {
@@ -14771,6 +17231,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaOrderByRelationAggregateInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoOrderByRelationAggregateInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoOrderByRelationAggregateInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoOrderByRelationAggregateInput
   }
 
   export type MedicoWhereUniqueInput = Prisma.AtLeast<{
@@ -14786,6 +17247,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaListRelationFilter
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoListRelationFilter
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoListRelationFilter
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoListRelationFilter
   }, "idMedico">
 
   export type MedicoOrderByWithAggregationInput = {
@@ -14878,6 +17340,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaListRelationFilter
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoListRelationFilter
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaListRelationFilter
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoListRelationFilter
   }
 
   export type CitaOrderByWithRelationInput = {
@@ -14891,6 +17354,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaOrderByRelationAggregateInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoOrderByRelationAggregateInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaOrderByRelationAggregateInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoOrderByRelationAggregateInput
   }
 
   export type CitaWhereUniqueInput = Prisma.AtLeast<{
@@ -14907,6 +17371,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaListRelationFilter
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoListRelationFilter
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaListRelationFilter
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoListRelationFilter
   }, "idCita">
 
   export type CitaOrderByWithAggregationInput = {
@@ -15214,6 +17679,102 @@ export namespace Prisma {
     FAccion?: DateTimeWithAggregatesFilter<"PAdmin_Gestiona_Cita"> | Date | string
   }
 
+  export type DiagnosticoWhereInput = {
+    AND?: DiagnosticoWhereInput | DiagnosticoWhereInput[]
+    OR?: DiagnosticoWhereInput[]
+    NOT?: DiagnosticoWhereInput | DiagnosticoWhereInput[]
+    idDiagnostico?: IntFilter<"Diagnostico"> | number
+    nombre?: StringFilter<"Diagnostico"> | string
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoListRelationFilter
+  }
+
+  export type DiagnosticoOrderByWithRelationInput = {
+    idDiagnostico?: SortOrder
+    nombre?: SortOrder
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoOrderByRelationAggregateInput
+  }
+
+  export type DiagnosticoWhereUniqueInput = Prisma.AtLeast<{
+    idDiagnostico?: number
+    nombre?: string
+    AND?: DiagnosticoWhereInput | DiagnosticoWhereInput[]
+    OR?: DiagnosticoWhereInput[]
+    NOT?: DiagnosticoWhereInput | DiagnosticoWhereInput[]
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoListRelationFilter
+  }, "idDiagnostico" | "nombre">
+
+  export type DiagnosticoOrderByWithAggregationInput = {
+    idDiagnostico?: SortOrder
+    nombre?: SortOrder
+    _count?: DiagnosticoCountOrderByAggregateInput
+    _avg?: DiagnosticoAvgOrderByAggregateInput
+    _max?: DiagnosticoMaxOrderByAggregateInput
+    _min?: DiagnosticoMinOrderByAggregateInput
+    _sum?: DiagnosticoSumOrderByAggregateInput
+  }
+
+  export type DiagnosticoScalarWhereWithAggregatesInput = {
+    AND?: DiagnosticoScalarWhereWithAggregatesInput | DiagnosticoScalarWhereWithAggregatesInput[]
+    OR?: DiagnosticoScalarWhereWithAggregatesInput[]
+    NOT?: DiagnosticoScalarWhereWithAggregatesInput | DiagnosticoScalarWhereWithAggregatesInput[]
+    idDiagnostico?: IntWithAggregatesFilter<"Diagnostico"> | number
+    nombre?: StringWithAggregatesFilter<"Diagnostico"> | string
+  }
+
+  export type Medico_dictamina_diagnosticoWhereInput = {
+    AND?: Medico_dictamina_diagnosticoWhereInput | Medico_dictamina_diagnosticoWhereInput[]
+    OR?: Medico_dictamina_diagnosticoWhereInput[]
+    NOT?: Medico_dictamina_diagnosticoWhereInput | Medico_dictamina_diagnosticoWhereInput[]
+    idDiagnostico?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    idMedico?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    idCita?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    diagnostico?: XOR<DiagnosticoScalarRelationFilter, DiagnosticoWhereInput>
+    medico?: XOR<MedicoScalarRelationFilter, MedicoWhereInput>
+    cita?: XOR<CitaScalarRelationFilter, CitaWhereInput>
+  }
+
+  export type Medico_dictamina_diagnosticoOrderByWithRelationInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+    diagnostico?: DiagnosticoOrderByWithRelationInput
+    medico?: MedicoOrderByWithRelationInput
+    cita?: CitaOrderByWithRelationInput
+  }
+
+  export type Medico_dictamina_diagnosticoWhereUniqueInput = Prisma.AtLeast<{
+    idDiagnostico_idMedico_idCita?: Medico_dictamina_diagnosticoIdDiagnosticoIdMedicoIdCitaCompoundUniqueInput
+    AND?: Medico_dictamina_diagnosticoWhereInput | Medico_dictamina_diagnosticoWhereInput[]
+    OR?: Medico_dictamina_diagnosticoWhereInput[]
+    NOT?: Medico_dictamina_diagnosticoWhereInput | Medico_dictamina_diagnosticoWhereInput[]
+    idDiagnostico?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    idMedico?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    idCita?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    diagnostico?: XOR<DiagnosticoScalarRelationFilter, DiagnosticoWhereInput>
+    medico?: XOR<MedicoScalarRelationFilter, MedicoWhereInput>
+    cita?: XOR<CitaScalarRelationFilter, CitaWhereInput>
+  }, "idDiagnostico_idMedico_idCita">
+
+  export type Medico_dictamina_diagnosticoOrderByWithAggregationInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+    _count?: Medico_dictamina_diagnosticoCountOrderByAggregateInput
+    _avg?: Medico_dictamina_diagnosticoAvgOrderByAggregateInput
+    _max?: Medico_dictamina_diagnosticoMaxOrderByAggregateInput
+    _min?: Medico_dictamina_diagnosticoMinOrderByAggregateInput
+    _sum?: Medico_dictamina_diagnosticoSumOrderByAggregateInput
+  }
+
+  export type Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput = {
+    AND?: Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput | Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput[]
+    OR?: Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput[]
+    NOT?: Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput | Medico_dictamina_diagnosticoScalarWhereWithAggregatesInput[]
+    idDiagnostico?: IntWithAggregatesFilter<"Medico_dictamina_diagnostico"> | number
+    idMedico?: IntWithAggregatesFilter<"Medico_dictamina_diagnostico"> | number
+    idCita?: IntWithAggregatesFilter<"Medico_dictamina_diagnostico"> | number
+  }
+
   export type EquipamientoCreateInput = {
     idDepartamento: number
     nombre: string
@@ -15386,6 +17947,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateInput = {
@@ -15397,6 +17959,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUpdateInput = {
@@ -15407,6 +17970,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateInput = {
@@ -15418,6 +17982,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoCreateManyInput = {
@@ -15492,6 +18057,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutCitaInput
   }
 
   export type CitaUncheckedCreateInput = {
@@ -15504,6 +18070,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutCitaInput
   }
 
   export type CitaUpdateInput = {
@@ -15515,6 +18082,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaUncheckedUpdateInput = {
@@ -15527,6 +18095,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaCreateManyInput = {
@@ -15796,6 +18365,82 @@ export namespace Prisma {
     idCita?: IntFieldUpdateOperationsInput | number
     accion?: StringFieldUpdateOperationsInput | string
     FAccion?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DiagnosticoCreateInput = {
+    nombre: string
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutDiagnosticoInput
+  }
+
+  export type DiagnosticoUncheckedCreateInput = {
+    idDiagnostico?: number
+    nombre: string
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutDiagnosticoInput
+  }
+
+  export type DiagnosticoUpdateInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutDiagnosticoNestedInput
+  }
+
+  export type DiagnosticoUncheckedUpdateInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    medicoDictaminaDiagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutDiagnosticoNestedInput
+  }
+
+  export type DiagnosticoCreateManyInput = {
+    idDiagnostico?: number
+    nombre: string
+  }
+
+  export type DiagnosticoUpdateManyMutationInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DiagnosticoUncheckedUpdateManyInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type Medico_dictamina_diagnosticoCreateInput = {
+    diagnostico: DiagnosticoCreateNestedOneWithoutMedicoDictaminaDiagnosticoInput
+    medico: MedicoCreateNestedOneWithoutMedico_dictamina_diagnosticoInput
+    cita: CitaCreateNestedOneWithoutMedico_dictamina_diagnosticoInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateInput = {
+    idDiagnostico: number
+    idMedico: number
+    idCita: number
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateInput = {
+    diagnostico?: DiagnosticoUpdateOneRequiredWithoutMedicoDictaminaDiagnosticoNestedInput
+    medico?: MedicoUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput
+    cita?: CitaUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    idMedico?: IntFieldUpdateOperationsInput | number
+    idCita?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type Medico_dictamina_diagnosticoCreateManyInput = {
+    idDiagnostico: number
+    idMedico: number
+    idCita: number
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateManyMutationInput = {
+
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    idMedico?: IntFieldUpdateOperationsInput | number
+    idCita?: IntFieldUpdateOperationsInput | number
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -16089,6 +18734,12 @@ export namespace Prisma {
     none?: Registro_Consulta_MedicamentoWhereInput
   }
 
+  export type Medico_dictamina_diagnosticoListRelationFilter = {
+    every?: Medico_dictamina_diagnosticoWhereInput
+    some?: Medico_dictamina_diagnosticoWhereInput
+    none?: Medico_dictamina_diagnosticoWhereInput
+  }
+
   export type CitaOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -16102,6 +18753,10 @@ export namespace Prisma {
   }
 
   export type Registro_Consulta_MedicamentoOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type Medico_dictamina_diagnosticoOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16422,6 +19077,70 @@ export namespace Prisma {
     idCita?: SortOrder
   }
 
+  export type DiagnosticoCountOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    nombre?: SortOrder
+  }
+
+  export type DiagnosticoAvgOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+  }
+
+  export type DiagnosticoMaxOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    nombre?: SortOrder
+  }
+
+  export type DiagnosticoMinOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    nombre?: SortOrder
+  }
+
+  export type DiagnosticoSumOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+  }
+
+  export type DiagnosticoScalarRelationFilter = {
+    is?: DiagnosticoWhereInput
+    isNot?: DiagnosticoWhereInput
+  }
+
+  export type Medico_dictamina_diagnosticoIdDiagnosticoIdMedicoIdCitaCompoundUniqueInput = {
+    idDiagnostico: number
+    idMedico: number
+    idCita: number
+  }
+
+  export type Medico_dictamina_diagnosticoCountOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+  }
+
+  export type Medico_dictamina_diagnosticoAvgOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+  }
+
+  export type Medico_dictamina_diagnosticoMaxOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+  }
+
+  export type Medico_dictamina_diagnosticoMinOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+  }
+
+  export type Medico_dictamina_diagnosticoSumOrderByAggregateInput = {
+    idDiagnostico?: SortOrder
+    idMedico?: SortOrder
+    idCita?: SortOrder
+  }
+
   export type Medico_EquipoCreateNestedManyWithoutEquipamientoInput = {
     create?: XOR<Medico_EquipoCreateWithoutEquipamientoInput, Medico_EquipoUncheckedCreateWithoutEquipamientoInput> | Medico_EquipoCreateWithoutEquipamientoInput[] | Medico_EquipoUncheckedCreateWithoutEquipamientoInput[]
     connectOrCreate?: Medico_EquipoCreateOrConnectWithoutEquipamientoInput | Medico_EquipoCreateOrConnectWithoutEquipamientoInput[]
@@ -16711,6 +19430,13 @@ export namespace Prisma {
     connect?: Registro_Consulta_MedicamentoWhereUniqueInput | Registro_Consulta_MedicamentoWhereUniqueInput[]
   }
 
+  export type Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput> | Medico_dictamina_diagnosticoCreateWithoutMedicoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyMedicoInputEnvelope
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+  }
+
   export type Medico_EquipoUncheckedCreateNestedManyWithoutMedicoInput = {
     create?: XOR<Medico_EquipoCreateWithoutMedicoInput, Medico_EquipoUncheckedCreateWithoutMedicoInput> | Medico_EquipoCreateWithoutMedicoInput[] | Medico_EquipoUncheckedCreateWithoutMedicoInput[]
     connectOrCreate?: Medico_EquipoCreateOrConnectWithoutMedicoInput | Medico_EquipoCreateOrConnectWithoutMedicoInput[]
@@ -16744,6 +19470,13 @@ export namespace Prisma {
     connectOrCreate?: Registro_Consulta_MedicamentoCreateOrConnectWithoutMedicoInput | Registro_Consulta_MedicamentoCreateOrConnectWithoutMedicoInput[]
     createMany?: Registro_Consulta_MedicamentoCreateManyMedicoInputEnvelope
     connect?: Registro_Consulta_MedicamentoWhereUniqueInput | Registro_Consulta_MedicamentoWhereUniqueInput[]
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput> | Medico_dictamina_diagnosticoCreateWithoutMedicoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyMedicoInputEnvelope
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
   }
 
   export type EmpleadoUpdateOneRequiredWithoutMedicoNestedInput = {
@@ -16824,6 +19557,20 @@ export namespace Prisma {
     deleteMany?: Registro_Consulta_MedicamentoScalarWhereInput | Registro_Consulta_MedicamentoScalarWhereInput[]
   }
 
+  export type Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput> | Medico_dictamina_diagnosticoCreateWithoutMedicoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput[]
+    upsert?: Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutMedicoInput | Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutMedicoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyMedicoInputEnvelope
+    set?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    disconnect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    delete?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    update?: Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutMedicoInput | Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutMedicoInput[]
+    updateMany?: Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutMedicoInput | Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutMedicoInput[]
+    deleteMany?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+  }
+
   export type Medico_EquipoUncheckedUpdateManyWithoutMedicoNestedInput = {
     create?: XOR<Medico_EquipoCreateWithoutMedicoInput, Medico_EquipoUncheckedCreateWithoutMedicoInput> | Medico_EquipoCreateWithoutMedicoInput[] | Medico_EquipoUncheckedCreateWithoutMedicoInput[]
     connectOrCreate?: Medico_EquipoCreateOrConnectWithoutMedicoInput | Medico_EquipoCreateOrConnectWithoutMedicoInput[]
@@ -16894,6 +19641,20 @@ export namespace Prisma {
     deleteMany?: Registro_Consulta_MedicamentoScalarWhereInput | Registro_Consulta_MedicamentoScalarWhereInput[]
   }
 
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput> | Medico_dictamina_diagnosticoCreateWithoutMedicoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput[]
+    upsert?: Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutMedicoInput | Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutMedicoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyMedicoInputEnvelope
+    set?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    disconnect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    delete?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    update?: Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutMedicoInput | Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutMedicoInput[]
+    updateMany?: Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutMedicoInput | Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutMedicoInput[]
+    deleteMany?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+  }
+
   export type MedicoCreateNestedOneWithoutMedicoEquipoInput = {
     create?: XOR<MedicoCreateWithoutMedicoEquipoInput, MedicoUncheckedCreateWithoutMedicoEquipoInput>
     connectOrCreate?: MedicoCreateOrConnectWithoutMedicoEquipoInput
@@ -16949,6 +19710,13 @@ export namespace Prisma {
     connect?: PAdmin_Gestiona_CitaWhereUniqueInput | PAdmin_Gestiona_CitaWhereUniqueInput[]
   }
 
+  export type Medico_dictamina_diagnosticoCreateNestedManyWithoutCitaInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput> | Medico_dictamina_diagnosticoCreateWithoutCitaInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyCitaInputEnvelope
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+  }
+
   export type Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutCitaInput = {
     create?: XOR<Actualizaciones_HistoriaClinicaCreateWithoutCitaInput, Actualizaciones_HistoriaClinicaUncheckedCreateWithoutCitaInput> | Actualizaciones_HistoriaClinicaCreateWithoutCitaInput[] | Actualizaciones_HistoriaClinicaUncheckedCreateWithoutCitaInput[]
     connectOrCreate?: Actualizaciones_HistoriaClinicaCreateOrConnectWithoutCitaInput | Actualizaciones_HistoriaClinicaCreateOrConnectWithoutCitaInput[]
@@ -16968,6 +19736,13 @@ export namespace Prisma {
     connectOrCreate?: PAdmin_Gestiona_CitaCreateOrConnectWithoutCitaInput | PAdmin_Gestiona_CitaCreateOrConnectWithoutCitaInput[]
     createMany?: PAdmin_Gestiona_CitaCreateManyCitaInputEnvelope
     connect?: PAdmin_Gestiona_CitaWhereUniqueInput | PAdmin_Gestiona_CitaWhereUniqueInput[]
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutCitaInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput> | Medico_dictamina_diagnosticoCreateWithoutCitaInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyCitaInputEnvelope
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
   }
 
   export type MedicoUpdateOneRequiredWithoutCitaNestedInput = {
@@ -17020,6 +19795,20 @@ export namespace Prisma {
     deleteMany?: PAdmin_Gestiona_CitaScalarWhereInput | PAdmin_Gestiona_CitaScalarWhereInput[]
   }
 
+  export type Medico_dictamina_diagnosticoUpdateManyWithoutCitaNestedInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput> | Medico_dictamina_diagnosticoCreateWithoutCitaInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput[]
+    upsert?: Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutCitaInput | Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutCitaInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyCitaInputEnvelope
+    set?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    disconnect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    delete?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    update?: Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutCitaInput | Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutCitaInput[]
+    updateMany?: Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutCitaInput | Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutCitaInput[]
+    deleteMany?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+  }
+
   export type Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutCitaNestedInput = {
     create?: XOR<Actualizaciones_HistoriaClinicaCreateWithoutCitaInput, Actualizaciones_HistoriaClinicaUncheckedCreateWithoutCitaInput> | Actualizaciones_HistoriaClinicaCreateWithoutCitaInput[] | Actualizaciones_HistoriaClinicaUncheckedCreateWithoutCitaInput[]
     connectOrCreate?: Actualizaciones_HistoriaClinicaCreateOrConnectWithoutCitaInput | Actualizaciones_HistoriaClinicaCreateOrConnectWithoutCitaInput[]
@@ -17060,6 +19849,20 @@ export namespace Prisma {
     update?: PAdmin_Gestiona_CitaUpdateWithWhereUniqueWithoutCitaInput | PAdmin_Gestiona_CitaUpdateWithWhereUniqueWithoutCitaInput[]
     updateMany?: PAdmin_Gestiona_CitaUpdateManyWithWhereWithoutCitaInput | PAdmin_Gestiona_CitaUpdateManyWithWhereWithoutCitaInput[]
     deleteMany?: PAdmin_Gestiona_CitaScalarWhereInput | PAdmin_Gestiona_CitaScalarWhereInput[]
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaNestedInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput> | Medico_dictamina_diagnosticoCreateWithoutCitaInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput[]
+    upsert?: Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutCitaInput | Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutCitaInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyCitaInputEnvelope
+    set?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    disconnect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    delete?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    update?: Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutCitaInput | Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutCitaInput[]
+    updateMany?: Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutCitaInput | Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutCitaInput[]
+    deleteMany?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
   }
 
   export type PAdministrativoCreateNestedOneWithoutPAdmin_Modifica_PacienteInput = {
@@ -17172,6 +19975,90 @@ export namespace Prisma {
     upsert?: CitaUpsertWithoutPAdmin_Gestiona_CitaInput
     connect?: CitaWhereUniqueInput
     update?: XOR<XOR<CitaUpdateToOneWithWhereWithoutPAdmin_Gestiona_CitaInput, CitaUpdateWithoutPAdmin_Gestiona_CitaInput>, CitaUncheckedUpdateWithoutPAdmin_Gestiona_CitaInput>
+  }
+
+  export type Medico_dictamina_diagnosticoCreateNestedManyWithoutDiagnosticoInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput> | Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyDiagnosticoInputEnvelope
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutDiagnosticoInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput> | Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyDiagnosticoInputEnvelope
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateManyWithoutDiagnosticoNestedInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput> | Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput[]
+    upsert?: Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutDiagnosticoInput | Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutDiagnosticoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyDiagnosticoInputEnvelope
+    set?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    disconnect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    delete?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    update?: Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutDiagnosticoInput | Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutDiagnosticoInput[]
+    updateMany?: Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutDiagnosticoInput | Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutDiagnosticoInput[]
+    deleteMany?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutDiagnosticoNestedInput = {
+    create?: XOR<Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput> | Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput[] | Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput[]
+    connectOrCreate?: Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput | Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput[]
+    upsert?: Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutDiagnosticoInput | Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutDiagnosticoInput[]
+    createMany?: Medico_dictamina_diagnosticoCreateManyDiagnosticoInputEnvelope
+    set?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    disconnect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    delete?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    connect?: Medico_dictamina_diagnosticoWhereUniqueInput | Medico_dictamina_diagnosticoWhereUniqueInput[]
+    update?: Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutDiagnosticoInput | Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutDiagnosticoInput[]
+    updateMany?: Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutDiagnosticoInput | Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutDiagnosticoInput[]
+    deleteMany?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+  }
+
+  export type DiagnosticoCreateNestedOneWithoutMedicoDictaminaDiagnosticoInput = {
+    create?: XOR<DiagnosticoCreateWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUncheckedCreateWithoutMedicoDictaminaDiagnosticoInput>
+    connectOrCreate?: DiagnosticoCreateOrConnectWithoutMedicoDictaminaDiagnosticoInput
+    connect?: DiagnosticoWhereUniqueInput
+  }
+
+  export type MedicoCreateNestedOneWithoutMedico_dictamina_diagnosticoInput = {
+    create?: XOR<MedicoCreateWithoutMedico_dictamina_diagnosticoInput, MedicoUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+    connectOrCreate?: MedicoCreateOrConnectWithoutMedico_dictamina_diagnosticoInput
+    connect?: MedicoWhereUniqueInput
+  }
+
+  export type CitaCreateNestedOneWithoutMedico_dictamina_diagnosticoInput = {
+    create?: XOR<CitaCreateWithoutMedico_dictamina_diagnosticoInput, CitaUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+    connectOrCreate?: CitaCreateOrConnectWithoutMedico_dictamina_diagnosticoInput
+    connect?: CitaWhereUniqueInput
+  }
+
+  export type DiagnosticoUpdateOneRequiredWithoutMedicoDictaminaDiagnosticoNestedInput = {
+    create?: XOR<DiagnosticoCreateWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUncheckedCreateWithoutMedicoDictaminaDiagnosticoInput>
+    connectOrCreate?: DiagnosticoCreateOrConnectWithoutMedicoDictaminaDiagnosticoInput
+    upsert?: DiagnosticoUpsertWithoutMedicoDictaminaDiagnosticoInput
+    connect?: DiagnosticoWhereUniqueInput
+    update?: XOR<XOR<DiagnosticoUpdateToOneWithWhereWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUpdateWithoutMedicoDictaminaDiagnosticoInput>, DiagnosticoUncheckedUpdateWithoutMedicoDictaminaDiagnosticoInput>
+  }
+
+  export type MedicoUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput = {
+    create?: XOR<MedicoCreateWithoutMedico_dictamina_diagnosticoInput, MedicoUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+    connectOrCreate?: MedicoCreateOrConnectWithoutMedico_dictamina_diagnosticoInput
+    upsert?: MedicoUpsertWithoutMedico_dictamina_diagnosticoInput
+    connect?: MedicoWhereUniqueInput
+    update?: XOR<XOR<MedicoUpdateToOneWithWhereWithoutMedico_dictamina_diagnosticoInput, MedicoUpdateWithoutMedico_dictamina_diagnosticoInput>, MedicoUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput>
+  }
+
+  export type CitaUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput = {
+    create?: XOR<CitaCreateWithoutMedico_dictamina_diagnosticoInput, CitaUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+    connectOrCreate?: CitaCreateOrConnectWithoutMedico_dictamina_diagnosticoInput
+    upsert?: CitaUpsertWithoutMedico_dictamina_diagnosticoInput
+    connect?: CitaWhereUniqueInput
+    update?: XOR<XOR<CitaUpdateToOneWithWhereWithoutMedico_dictamina_diagnosticoInput, CitaUpdateWithoutMedico_dictamina_diagnosticoInput>, CitaUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -17373,6 +20260,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateWithoutEmpleadoInput = {
@@ -17383,6 +20271,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoCreateOrConnectWithoutEmpleadoInput = {
@@ -17643,6 +20532,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutCitaInput
   }
 
   export type CitaUncheckedCreateWithoutMedicoInput = {
@@ -17654,6 +20544,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutCitaInput
   }
 
   export type CitaCreateOrConnectWithoutMedicoInput = {
@@ -17731,6 +20622,26 @@ export namespace Prisma {
 
   export type Registro_Consulta_MedicamentoCreateManyMedicoInputEnvelope = {
     data: Registro_Consulta_MedicamentoCreateManyMedicoInput | Registro_Consulta_MedicamentoCreateManyMedicoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type Medico_dictamina_diagnosticoCreateWithoutMedicoInput = {
+    diagnostico: DiagnosticoCreateNestedOneWithoutMedicoDictaminaDiagnosticoInput
+    cita: CitaCreateNestedOneWithoutMedico_dictamina_diagnosticoInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput = {
+    idDiagnostico: number
+    idCita: number
+  }
+
+  export type Medico_dictamina_diagnosticoCreateOrConnectWithoutMedicoInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    create: XOR<Medico_dictamina_diagnosticoCreateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoCreateManyMedicoInputEnvelope = {
+    data: Medico_dictamina_diagnosticoCreateManyMedicoInput | Medico_dictamina_diagnosticoCreateManyMedicoInput[]
     skipDuplicates?: boolean
   }
 
@@ -17885,6 +20796,31 @@ export namespace Prisma {
     FConsulta?: DateTimeFilter<"Registro_Consulta_Medicamento"> | Date | string
   }
 
+  export type Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutMedicoInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    update: XOR<Medico_dictamina_diagnosticoUpdateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedUpdateWithoutMedicoInput>
+    create: XOR<Medico_dictamina_diagnosticoCreateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutMedicoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutMedicoInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    data: XOR<Medico_dictamina_diagnosticoUpdateWithoutMedicoInput, Medico_dictamina_diagnosticoUncheckedUpdateWithoutMedicoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutMedicoInput = {
+    where: Medico_dictamina_diagnosticoScalarWhereInput
+    data: XOR<Medico_dictamina_diagnosticoUpdateManyMutationInput, Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoScalarWhereInput = {
+    AND?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+    OR?: Medico_dictamina_diagnosticoScalarWhereInput[]
+    NOT?: Medico_dictamina_diagnosticoScalarWhereInput | Medico_dictamina_diagnosticoScalarWhereInput[]
+    idDiagnostico?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    idMedico?: IntFilter<"Medico_dictamina_diagnostico"> | number
+    idCita?: IntFilter<"Medico_dictamina_diagnostico"> | number
+  }
+
   export type MedicoCreateWithoutMedicoEquipoInput = {
     sueldo: bigint | number
     empleado: EmpleadoCreateNestedOneWithoutMedicoInput
@@ -17892,6 +20828,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateWithoutMedicoEquipoInput = {
@@ -17902,6 +20839,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoCreateOrConnectWithoutMedicoEquipoInput = {
@@ -17947,6 +20885,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateWithoutMedicoEquipoInput = {
@@ -17957,6 +20896,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type EquipamientoUpsertWithoutMedicoEquipoInput = {
@@ -17992,6 +20932,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateWithoutCitaInput = {
@@ -18002,6 +20943,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoCreateOrConnectWithoutCitaInput = {
@@ -18079,6 +21021,26 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type Medico_dictamina_diagnosticoCreateWithoutCitaInput = {
+    diagnostico: DiagnosticoCreateNestedOneWithoutMedicoDictaminaDiagnosticoInput
+    medico: MedicoCreateNestedOneWithoutMedico_dictamina_diagnosticoInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput = {
+    idDiagnostico: number
+    idMedico: number
+  }
+
+  export type Medico_dictamina_diagnosticoCreateOrConnectWithoutCitaInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    create: XOR<Medico_dictamina_diagnosticoCreateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput>
+  }
+
+  export type Medico_dictamina_diagnosticoCreateManyCitaInputEnvelope = {
+    data: Medico_dictamina_diagnosticoCreateManyCitaInput | Medico_dictamina_diagnosticoCreateManyCitaInput[]
+    skipDuplicates?: boolean
+  }
+
   export type MedicoUpsertWithoutCitaInput = {
     update: XOR<MedicoUpdateWithoutCitaInput, MedicoUncheckedUpdateWithoutCitaInput>
     create: XOR<MedicoCreateWithoutCitaInput, MedicoUncheckedCreateWithoutCitaInput>
@@ -18097,6 +21059,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateWithoutCitaInput = {
@@ -18107,6 +21070,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type Actualizaciones_HistoriaClinicaUpsertWithWhereUniqueWithoutCitaInput = {
@@ -18155,6 +21119,22 @@ export namespace Prisma {
   export type PAdmin_Gestiona_CitaUpdateManyWithWhereWithoutCitaInput = {
     where: PAdmin_Gestiona_CitaScalarWhereInput
     data: XOR<PAdmin_Gestiona_CitaUpdateManyMutationInput, PAdmin_Gestiona_CitaUncheckedUpdateManyWithoutCitaInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutCitaInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    update: XOR<Medico_dictamina_diagnosticoUpdateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedUpdateWithoutCitaInput>
+    create: XOR<Medico_dictamina_diagnosticoCreateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutCitaInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutCitaInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    data: XOR<Medico_dictamina_diagnosticoUpdateWithoutCitaInput, Medico_dictamina_diagnosticoUncheckedUpdateWithoutCitaInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutCitaInput = {
+    where: Medico_dictamina_diagnosticoScalarWhereInput
+    data: XOR<Medico_dictamina_diagnosticoUpdateManyMutationInput, Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaInput>
   }
 
   export type PAdministrativoCreateWithoutPAdmin_Modifica_PacienteInput = {
@@ -18206,6 +21186,7 @@ export namespace Prisma {
     Cita?: CitaCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18216,6 +21197,7 @@ export namespace Prisma {
     Cita?: CitaUncheckedCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoCreateOrConnectWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18231,6 +21213,7 @@ export namespace Prisma {
     medico: MedicoCreateNestedOneWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutCitaInput
   }
 
   export type CitaUncheckedCreateWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18242,6 +21225,7 @@ export namespace Prisma {
     resumen: string
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutCitaInput
   }
 
   export type CitaCreateOrConnectWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18267,6 +21251,7 @@ export namespace Prisma {
     Cita?: CitaUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18277,6 +21262,7 @@ export namespace Prisma {
     Cita?: CitaUncheckedUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type CitaUpsertWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18298,6 +21284,7 @@ export namespace Prisma {
     medico?: MedicoUpdateOneRequiredWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaUncheckedUpdateWithoutActualizaciones_HistoriaClinicaInput = {
@@ -18309,6 +21296,7 @@ export namespace Prisma {
     resumen?: StringFieldUpdateOperationsInput | string
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaNestedInput
   }
 
   export type MedicoCreateWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18318,6 +21306,7 @@ export namespace Prisma {
     Cita?: CitaCreateNestedManyWithoutMedicoInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18328,6 +21317,7 @@ export namespace Prisma {
     Cita?: CitaUncheckedCreateNestedManyWithoutMedicoInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoCreateOrConnectWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18343,6 +21333,7 @@ export namespace Prisma {
     medico: MedicoCreateNestedOneWithoutCitaInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutCitaInput
   }
 
   export type CitaUncheckedCreateWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18354,6 +21345,7 @@ export namespace Prisma {
     resumen: string
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutCitaInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutCitaInput
   }
 
   export type CitaCreateOrConnectWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18379,6 +21371,7 @@ export namespace Prisma {
     Cita?: CitaUpdateManyWithoutMedicoNestedInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18389,6 +21382,7 @@ export namespace Prisma {
     Cita?: CitaUncheckedUpdateManyWithoutMedicoNestedInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type CitaUpsertWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18410,6 +21404,7 @@ export namespace Prisma {
     medico?: MedicoUpdateOneRequiredWithoutCitaNestedInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaUncheckedUpdateWithoutMedico_Preescribe_MedicamentoInput = {
@@ -18421,6 +21416,7 @@ export namespace Prisma {
     resumen?: StringFieldUpdateOperationsInput | string
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaNestedInput
   }
 
   export type MedicoCreateWithoutRegistro_Consulta_MedicamentoInput = {
@@ -18430,6 +21426,7 @@ export namespace Prisma {
     Cita?: CitaCreateNestedManyWithoutMedicoInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoUncheckedCreateWithoutRegistro_Consulta_MedicamentoInput = {
@@ -18440,6 +21437,7 @@ export namespace Prisma {
     Cita?: CitaUncheckedCreateNestedManyWithoutMedicoInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutMedicoInput
   }
 
   export type MedicoCreateOrConnectWithoutRegistro_Consulta_MedicamentoInput = {
@@ -18465,6 +21463,7 @@ export namespace Prisma {
     Cita?: CitaUpdateManyWithoutMedicoNestedInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateWithoutRegistro_Consulta_MedicamentoInput = {
@@ -18475,6 +21474,7 @@ export namespace Prisma {
     Cita?: CitaUncheckedUpdateManyWithoutMedicoNestedInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type PAdministrativoCreateWithoutPAdmin_Gestiona_CitaInput = {
@@ -18503,6 +21503,7 @@ export namespace Prisma {
     medico: MedicoCreateNestedOneWithoutCitaInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoCreateNestedManyWithoutCitaInput
   }
 
   export type CitaUncheckedCreateWithoutPAdmin_Gestiona_CitaInput = {
@@ -18514,6 +21515,7 @@ export namespace Prisma {
     resumen: string
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutCitaInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutCitaInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedCreateNestedManyWithoutCitaInput
   }
 
   export type CitaCreateOrConnectWithoutPAdmin_Gestiona_CitaInput = {
@@ -18564,6 +21566,7 @@ export namespace Prisma {
     medico?: MedicoUpdateOneRequiredWithoutCitaNestedInput
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaUncheckedUpdateWithoutPAdmin_Gestiona_CitaInput = {
@@ -18575,6 +21578,197 @@ export namespace Prisma {
     resumen?: StringFieldUpdateOperationsInput | string
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaNestedInput
+  }
+
+  export type Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput = {
+    medico: MedicoCreateNestedOneWithoutMedico_dictamina_diagnosticoInput
+    cita: CitaCreateNestedOneWithoutMedico_dictamina_diagnosticoInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput = {
+    idMedico: number
+    idCita: number
+  }
+
+  export type Medico_dictamina_diagnosticoCreateOrConnectWithoutDiagnosticoInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    create: XOR<Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoCreateManyDiagnosticoInputEnvelope = {
+    data: Medico_dictamina_diagnosticoCreateManyDiagnosticoInput | Medico_dictamina_diagnosticoCreateManyDiagnosticoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type Medico_dictamina_diagnosticoUpsertWithWhereUniqueWithoutDiagnosticoInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    update: XOR<Medico_dictamina_diagnosticoUpdateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedUpdateWithoutDiagnosticoInput>
+    create: XOR<Medico_dictamina_diagnosticoCreateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedCreateWithoutDiagnosticoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateWithWhereUniqueWithoutDiagnosticoInput = {
+    where: Medico_dictamina_diagnosticoWhereUniqueInput
+    data: XOR<Medico_dictamina_diagnosticoUpdateWithoutDiagnosticoInput, Medico_dictamina_diagnosticoUncheckedUpdateWithoutDiagnosticoInput>
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateManyWithWhereWithoutDiagnosticoInput = {
+    where: Medico_dictamina_diagnosticoScalarWhereInput
+    data: XOR<Medico_dictamina_diagnosticoUpdateManyMutationInput, Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutDiagnosticoInput>
+  }
+
+  export type DiagnosticoCreateWithoutMedicoDictaminaDiagnosticoInput = {
+    nombre: string
+  }
+
+  export type DiagnosticoUncheckedCreateWithoutMedicoDictaminaDiagnosticoInput = {
+    idDiagnostico?: number
+    nombre: string
+  }
+
+  export type DiagnosticoCreateOrConnectWithoutMedicoDictaminaDiagnosticoInput = {
+    where: DiagnosticoWhereUniqueInput
+    create: XOR<DiagnosticoCreateWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUncheckedCreateWithoutMedicoDictaminaDiagnosticoInput>
+  }
+
+  export type MedicoCreateWithoutMedico_dictamina_diagnosticoInput = {
+    sueldo: bigint | number
+    empleado: EmpleadoCreateNestedOneWithoutMedicoInput
+    medicoEquipo?: Medico_EquipoCreateNestedManyWithoutMedicoInput
+    Cita?: CitaCreateNestedManyWithoutMedicoInput
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutMedicoInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutMedicoInput
+    Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoCreateNestedManyWithoutMedicoInput
+  }
+
+  export type MedicoUncheckedCreateWithoutMedico_dictamina_diagnosticoInput = {
+    idMedico?: number
+    idEmpleado: number
+    sueldo: bigint | number
+    medicoEquipo?: Medico_EquipoUncheckedCreateNestedManyWithoutMedicoInput
+    Cita?: CitaUncheckedCreateNestedManyWithoutMedicoInput
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutMedicoInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+    Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedCreateNestedManyWithoutMedicoInput
+  }
+
+  export type MedicoCreateOrConnectWithoutMedico_dictamina_diagnosticoInput = {
+    where: MedicoWhereUniqueInput
+    create: XOR<MedicoCreateWithoutMedico_dictamina_diagnosticoInput, MedicoUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+  }
+
+  export type CitaCreateWithoutMedico_dictamina_diagnosticoInput = {
+    idPaciente: number
+    fechaYHora: Date | string
+    estado?: string
+    resumen: string
+    medico: MedicoCreateNestedOneWithoutCitaInput
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaCreateNestedManyWithoutCitaInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoCreateNestedManyWithoutCitaInput
+    PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaCreateNestedManyWithoutCitaInput
+  }
+
+  export type CitaUncheckedCreateWithoutMedico_dictamina_diagnosticoInput = {
+    idCita?: number
+    idPaciente: number
+    idMedico: number
+    fechaYHora: Date | string
+    estado?: string
+    resumen: string
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedCreateNestedManyWithoutCitaInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedCreateNestedManyWithoutCitaInput
+    PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedCreateNestedManyWithoutCitaInput
+  }
+
+  export type CitaCreateOrConnectWithoutMedico_dictamina_diagnosticoInput = {
+    where: CitaWhereUniqueInput
+    create: XOR<CitaCreateWithoutMedico_dictamina_diagnosticoInput, CitaUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+  }
+
+  export type DiagnosticoUpsertWithoutMedicoDictaminaDiagnosticoInput = {
+    update: XOR<DiagnosticoUpdateWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUncheckedUpdateWithoutMedicoDictaminaDiagnosticoInput>
+    create: XOR<DiagnosticoCreateWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUncheckedCreateWithoutMedicoDictaminaDiagnosticoInput>
+    where?: DiagnosticoWhereInput
+  }
+
+  export type DiagnosticoUpdateToOneWithWhereWithoutMedicoDictaminaDiagnosticoInput = {
+    where?: DiagnosticoWhereInput
+    data: XOR<DiagnosticoUpdateWithoutMedicoDictaminaDiagnosticoInput, DiagnosticoUncheckedUpdateWithoutMedicoDictaminaDiagnosticoInput>
+  }
+
+  export type DiagnosticoUpdateWithoutMedicoDictaminaDiagnosticoInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DiagnosticoUncheckedUpdateWithoutMedicoDictaminaDiagnosticoInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MedicoUpsertWithoutMedico_dictamina_diagnosticoInput = {
+    update: XOR<MedicoUpdateWithoutMedico_dictamina_diagnosticoInput, MedicoUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput>
+    create: XOR<MedicoCreateWithoutMedico_dictamina_diagnosticoInput, MedicoUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+    where?: MedicoWhereInput
+  }
+
+  export type MedicoUpdateToOneWithWhereWithoutMedico_dictamina_diagnosticoInput = {
+    where?: MedicoWhereInput
+    data: XOR<MedicoUpdateWithoutMedico_dictamina_diagnosticoInput, MedicoUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput>
+  }
+
+  export type MedicoUpdateWithoutMedico_dictamina_diagnosticoInput = {
+    sueldo?: BigIntFieldUpdateOperationsInput | bigint | number
+    empleado?: EmpleadoUpdateOneRequiredWithoutMedicoNestedInput
+    medicoEquipo?: Medico_EquipoUpdateManyWithoutMedicoNestedInput
+    Cita?: CitaUpdateManyWithoutMedicoNestedInput
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+  }
+
+  export type MedicoUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput = {
+    idMedico?: IntFieldUpdateOperationsInput | number
+    idEmpleado?: IntFieldUpdateOperationsInput | number
+    sueldo?: BigIntFieldUpdateOperationsInput | bigint | number
+    medicoEquipo?: Medico_EquipoUncheckedUpdateManyWithoutMedicoNestedInput
+    Cita?: CitaUncheckedUpdateManyWithoutMedicoNestedInput
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+  }
+
+  export type CitaUpsertWithoutMedico_dictamina_diagnosticoInput = {
+    update: XOR<CitaUpdateWithoutMedico_dictamina_diagnosticoInput, CitaUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput>
+    create: XOR<CitaCreateWithoutMedico_dictamina_diagnosticoInput, CitaUncheckedCreateWithoutMedico_dictamina_diagnosticoInput>
+    where?: CitaWhereInput
+  }
+
+  export type CitaUpdateToOneWithWhereWithoutMedico_dictamina_diagnosticoInput = {
+    where?: CitaWhereInput
+    data: XOR<CitaUpdateWithoutMedico_dictamina_diagnosticoInput, CitaUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput>
+  }
+
+  export type CitaUpdateWithoutMedico_dictamina_diagnosticoInput = {
+    idPaciente?: IntFieldUpdateOperationsInput | number
+    fechaYHora?: DateTimeFieldUpdateOperationsInput | Date | string
+    estado?: StringFieldUpdateOperationsInput | string
+    resumen?: StringFieldUpdateOperationsInput | string
+    medico?: MedicoUpdateOneRequiredWithoutCitaNestedInput
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutCitaNestedInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutCitaNestedInput
+    PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUpdateManyWithoutCitaNestedInput
+  }
+
+  export type CitaUncheckedUpdateWithoutMedico_dictamina_diagnosticoInput = {
+    idCita?: IntFieldUpdateOperationsInput | number
+    idPaciente?: IntFieldUpdateOperationsInput | number
+    idMedico?: IntFieldUpdateOperationsInput | number
+    fechaYHora?: DateTimeFieldUpdateOperationsInput | Date | string
+    estado?: StringFieldUpdateOperationsInput | string
+    resumen?: StringFieldUpdateOperationsInput | string
+    Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutCitaNestedInput
+    Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutCitaNestedInput
+    PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedUpdateManyWithoutCitaNestedInput
   }
 
   export type Medico_EquipoCreateManyEquipamientoInput = {
@@ -18636,6 +21830,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateWithoutEmpleadoInput = {
@@ -18646,6 +21841,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutMedicoNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
     Registro_Consulta_Medicamento?: Registro_Consulta_MedicamentoUncheckedUpdateManyWithoutMedicoNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoNestedInput
   }
 
   export type MedicoUncheckedUpdateManyWithoutEmpleadoInput = {
@@ -18734,6 +21930,11 @@ export namespace Prisma {
     FConsulta?: Date | string
   }
 
+  export type Medico_dictamina_diagnosticoCreateManyMedicoInput = {
+    idDiagnostico: number
+    idCita: number
+  }
+
   export type Medico_EquipoUpdateWithoutMedicoInput = {
     FPrestamo?: DateTimeFieldUpdateOperationsInput | Date | string
     FDevolucion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18760,6 +21961,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUpdateManyWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaUncheckedUpdateWithoutMedicoInput = {
@@ -18771,6 +21973,7 @@ export namespace Prisma {
     Actualizaciones_HistoriaClinica?: Actualizaciones_HistoriaClinicaUncheckedUpdateManyWithoutCitaNestedInput
     Medico_Preescribe_Medicamento?: Medico_Preescribe_MedicamentoUncheckedUpdateManyWithoutCitaNestedInput
     PAdmin_Gestiona_Cita?: PAdmin_Gestiona_CitaUncheckedUpdateManyWithoutCitaNestedInput
+    Medico_dictamina_diagnostico?: Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaNestedInput
   }
 
   export type CitaUncheckedUpdateManyWithoutMedicoInput = {
@@ -18838,6 +22041,21 @@ export namespace Prisma {
     FConsulta?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type Medico_dictamina_diagnosticoUpdateWithoutMedicoInput = {
+    diagnostico?: DiagnosticoUpdateOneRequiredWithoutMedicoDictaminaDiagnosticoNestedInput
+    cita?: CitaUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateWithoutMedicoInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    idCita?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutMedicoInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    idCita?: IntFieldUpdateOperationsInput | number
+  }
+
   export type Actualizaciones_HistoriaClinicaCreateManyCitaInput = {
     idMedico: number
     idHistoriaClinica: number
@@ -18856,6 +22074,11 @@ export namespace Prisma {
     idPAdministrativo: number
     accion?: string
     FAccion?: Date | string
+  }
+
+  export type Medico_dictamina_diagnosticoCreateManyCitaInput = {
+    idDiagnostico: number
+    idMedico: number
   }
 
   export type Actualizaciones_HistoriaClinicaUpdateWithoutCitaInput = {
@@ -18916,6 +22139,41 @@ export namespace Prisma {
     idPAdministrativo?: IntFieldUpdateOperationsInput | number
     accion?: StringFieldUpdateOperationsInput | string
     FAccion?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateWithoutCitaInput = {
+    diagnostico?: DiagnosticoUpdateOneRequiredWithoutMedicoDictaminaDiagnosticoNestedInput
+    medico?: MedicoUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateWithoutCitaInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    idMedico?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutCitaInput = {
+    idDiagnostico?: IntFieldUpdateOperationsInput | number
+    idMedico?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type Medico_dictamina_diagnosticoCreateManyDiagnosticoInput = {
+    idMedico: number
+    idCita: number
+  }
+
+  export type Medico_dictamina_diagnosticoUpdateWithoutDiagnosticoInput = {
+    medico?: MedicoUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput
+    cita?: CitaUpdateOneRequiredWithoutMedico_dictamina_diagnosticoNestedInput
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateWithoutDiagnosticoInput = {
+    idMedico?: IntFieldUpdateOperationsInput | number
+    idCita?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type Medico_dictamina_diagnosticoUncheckedUpdateManyWithoutDiagnosticoInput = {
+    idMedico?: IntFieldUpdateOperationsInput | number
+    idCita?: IntFieldUpdateOperationsInput | number
   }
 
 

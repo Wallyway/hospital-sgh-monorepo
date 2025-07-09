@@ -9,7 +9,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "concurrently \"npm run start:dev --workspace=api-gateway\" \"npm run start:dev --workspace=auth-service\" \"npm run start:dev --workspace=role-assignment-service\" \"npm run start:dev --workspace=cardiology-service\" \"npm run start:dev --workspace=clinic-record-service\" \"npm run start:dev --workspace=department-service\" ",
+    "start:dev": "concurrently \"npm run start:dev --workspace=api-gateway\" \"npm run start:dev --workspace=auth-service\" \"npm run start:dev --workspace=role-assignment-service\" \"npm run start:dev --workspace=cardiology-service\" \"npm run start:dev --workspace=clinic-record-service\" \"npm run start:dev --workspace=department-service\" \"npm run start:dev --workspace=equipment-service\" \"npm run start:dev --workspace=farmacy-service\" \"npm run start:dev --workspace=appointment-service\"",
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces"
