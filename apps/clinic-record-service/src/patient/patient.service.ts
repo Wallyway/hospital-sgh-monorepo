@@ -19,6 +19,9 @@ export class PatientService {
         `El usuario ya está especializado como PATIENT.`,
       );
     }
+    if (!idPAdministrativo || !baseDepartamento) {
+      throw new BadRequestException('Faltan datos para crear el paciente (idPAdministrativo o baseDepartamento)');
+    }
     // 1. Crear paciente SIN idHistoriaClinica
     const paciente = await this.prisma.paciente.create({
       data: {

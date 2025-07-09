@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -189,6 +190,7 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
+  // eslint-disable-next-line prettier/prettier
   @UseGuards(JwtAuthGuard)
   @Get('auth/patient/medical-records')
   async proxyPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
@@ -207,6 +209,29 @@ export class ProxyController {
       method,
       originalUrl,
       body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('roles/:idUser/patient')
+  async proxySpecializePatientRole(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only an ADMIN can specialize a user as PATIENT');
+    }
+    // Agregar el idUsuario del admin autenticado al body como adminId
+    const bodyWithAdmin = { ...req.body, adminId: user.userId || user.sub };
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+    };
+    const { method, originalUrl } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      bodyWithAdmin,
       forwardedHeaders,
     );
     res.status(recipientResponse.status).json(recipientResponse.data);
