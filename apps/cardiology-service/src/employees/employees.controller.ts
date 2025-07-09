@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, Query, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, NotFoundException, Query, Body } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma.service';
 
@@ -60,6 +60,24 @@ export class EmployeesController {
   async createCita(@Body() body: any) {
     // Espera: { idPaciente, idMedico, fechaYHora, estado, resumen }
     return this.employeesService.createCita(body);
+  }
+
+  // NUEVO: Obtener citas por paciente
+  @Get('/citas')
+  async getCitasByPatient(@Query('patient') patient: string) {
+    return this.employeesService.getCitasByPatient(Number(patient));
+  }
+
+  // NUEVO: Obtener cita específica por ID
+  @Get('/citas/:id')
+  async getCitaById(@Param('id') id: string) {
+    return this.employeesService.getCitaById(Number(id));
+  }
+
+  // NUEVO: Actualizar cita (para cancelar)
+  @Patch('/citas/:id')
+  async updateCita(@Param('id') id: string, @Body() body: any) {
+    return this.employeesService.updateCita(Number(id), body);
   }
 
   @Get('medics/:idMedico')

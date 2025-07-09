@@ -138,4 +138,108 @@ export class AppointmentService {
             throw new Error('No se pudo crear la cita: ' + (error?.response?.data?.message || error.message));
         }
     }
+
+    async getAppointments(user: any) {
+        console.log('[AppointmentService] [getAppointments] Iniciando con user:', user);
+
+        const idPaciente = user?.idPaciente || user?.userId || user?.sub;
+        console.log('[AppointmentService] [getAppointments] idPaciente determinado:', idPaciente);
+
+        if (!idPaciente) {
+            console.error('[AppointmentService] [getAppointments] No se pudo determinar el idPaciente del usuario autenticado');
+            throw new Error('No se pudo determinar el idPaciente del usuario autenticado');
+        }
+
+        // Consultar citas del paciente desde cardiology-service
+        const url = `http://localhost:3003/employees/citas?patient=${idPaciente}`;
+        console.log('[AppointmentService] [getAppointments] Consultando citas en:', url);
+
+        try {
+            const response = await this.httpService.axiosRef.get(url);
+            console.log('[AppointmentService] [getAppointments] Respuesta de cardiology-service:', response.data);
+
+            // Enriquecer las citas con información del médico
+            const citas = response.data;
+            const citasEnriquecidas = await Promise.all(
+                citas.map(async (cita: any) => {
+                    try {
+                        const medico = await this.getMedicById(cita.idMedico);
+                        return {
+                            ...cita,
+                            medico: medico ? {
+                                idMedico: medico.idMedico,
+                                nombre: medico.nombre,
+                                apellido: medico.apellido,
+                                especialidad: medico.especialidad
+                            } : null
+                        };
+                    } catch (error) {
+                        console.error(`[AppointmentService] [getAppointments] Error obteniendo médico ${cita.idMedico}:`, error);
+                        return {
+                            ...cita,
+                            medico: null
+                        };
+                    }
+                })
+            );
+
+            console.log('[AppointmentService] [getAppointments] Citas enriquecidas:', citasEnriquecidas);
+            return citasEnriquecidas;
+        } catch (error) {
+            console.error('[AppointmentService] [getAppointments] Error consultando citas:', error.message, error);
+            throw new Error('No se pudieron obtener las citas: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    async cancelAppointment(idCita: number, user: any) {
+        console.log('[AppointmentService] [cancelAppointment] Iniciando con idCita:', idCita, 'user:', user);
+
+        const idPaciente = user?.idPaciente || user?.userId || user?.sub;
+        console.log('[AppointmentService] [cancelAppointment] idPaciente determinado:', idPaciente);
+
+        if (!idPaciente) {
+            console.error('[AppointmentService] [cancelAppointment] No se pudo determinar el idPaciente del usuario autenticado');
+            throw new Error('No se pudo determinar el idPaciente del usuario autenticado');
+        }
+
+        // 1. Verificar que la cita existe y pertenece al paciente
+        const citaUrl = `http://localhost:3003/employees/citas/${idCita}`;
+        console.log('[AppointmentService] [cancelAppointment] Consultando cita en:', citaUrl);
+
+        let cita;
+        try {
+            const response = await this.httpService.axiosRef.get(citaUrl);
+            cita = response.data;
+            console.log('[AppointmentService] [cancelAppointment] Cita encontrada:', cita);
+        } catch (error) {
+            console.error('[AppointmentService] [cancelAppointment] Error consultando cita:', error.message, error);
+            throw new Error('No se encontró la cita especificada');
+        }
+
+        // 2. Verificar que la cita pertenece al paciente autenticado
+        if (cita.idPaciente !== Number(idPaciente)) {
+            console.error('[AppointmentService] [cancelAppointment] La cita no pertenece al paciente autenticado');
+            throw new Error('No tienes permisos para cancelar esta cita');
+        }
+
+        // 3. Verificar que la cita está en estado 'R' (Reservada)
+        if (cita.estado !== 'R') {
+            console.error('[AppointmentService] [cancelAppointment] La cita no está en estado reservada:', cita.estado);
+            throw new Error('Solo se pueden cancelar citas en estado reservada');
+        }
+
+        // 4. Cancelar la cita (cambiar estado a 'C')
+        const cancelUrl = `http://localhost:3003/employees/citas/${idCita}`;
+        const cancelPayload = { estado: 'C' };
+        console.log('[AppointmentService] [cancelAppointment] Cancelando cita en:', cancelUrl, 'con payload:', cancelPayload);
+
+        try {
+            const response = await this.httpService.axiosRef.patch(cancelUrl, cancelPayload);
+            console.log('[AppointmentService] [cancelAppointment] Cita cancelada exitosamente:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [cancelAppointment] Error cancelando cita:', error.message, error);
+            throw new Error('No se pudo cancelar la cita: ' + (error?.response?.data?.message || error.message));
+        }
+    }
 }

@@ -147,4 +147,58 @@ export class EmployeesService {
       },
     });
   }
+
+  // NUEVO: Obtener citas por paciente
+  async getCitasByPatient(idPaciente: number) {
+    const citas = await this.prisma.cita.findMany({
+      where: {
+        idPaciente: idPaciente,
+      },
+      orderBy: {
+        fechaYHora: 'desc', // Ordenar por fecha más reciente primero
+      },
+    });
+    return citas;
+  }
+
+  // NUEVO: Obtener cita específica por ID
+  async getCitaById(idCita: number) {
+    const cita = await this.prisma.cita.findUnique({
+      where: {
+        idCita: idCita,
+      },
+    });
+    if (!cita) {
+      throw new BadRequestException('Cita no encontrada');
+    }
+    return cita;
+  }
+
+  // NUEVO: Actualizar cita
+  async updateCita(idCita: number, body: any) {
+    const { estado, resumen } = body;
+
+    // Verificar que la cita existe
+    const citaExistente = await this.prisma.cita.findUnique({
+      where: {
+        idCita: idCita,
+      },
+    });
+
+    if (!citaExistente) {
+      throw new BadRequestException('Cita no encontrada');
+    }
+
+    // Actualizar solo los campos proporcionados
+    const updateData: any = {};
+    if (estado !== undefined) updateData.estado = estado;
+    if (resumen !== undefined) updateData.resumen = resumen;
+
+    return this.prisma.cita.update({
+      where: {
+        idCita: idCita,
+      },
+      data: updateData,
+    });
+  }
 }
