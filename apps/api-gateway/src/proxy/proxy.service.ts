@@ -11,7 +11,7 @@ export class ProxyService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {
@@ -31,6 +31,12 @@ export class ProxyService {
       return this.configService.get<string>(
         'EQUIPMENT_SERVICE_URL',
         'http://localhost:3006',
+      );
+    }
+    if (path.startsWith('/appointments')) {
+      return this.configService.get<string>(
+        'APPOINTMENT_SERVICE_URL',
+        'http://localhost:3008',
       );
     }
     // Add other services here
