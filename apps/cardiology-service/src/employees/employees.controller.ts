@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, Query, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, NotFoundException, Query, Body } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma.service';
 
@@ -52,7 +52,12 @@ export class EmployeesController {
     @Param('idMedico') idMedico: string,
     @Query('date') date: string,
   ) {
-    return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+    if (date) {
+      return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+    } else {
+      // Si no hay fecha, obtener todas las citas del médico
+      return this.employeesService.getAllAppointmentsByMedic(Number(idMedico));
+    }
   }
 
   // NUEVO: Crear cita
@@ -60,6 +65,24 @@ export class EmployeesController {
   async createCita(@Body() body: any) {
     // Espera: { idPaciente, idMedico, fechaYHora, estado, resumen }
     return this.employeesService.createCita(body);
+  }
+
+  // NUEVO: Obtener citas por paciente
+  @Get('/citas')
+  async getCitasByPatient(@Query('patient') patient: string) {
+    return this.employeesService.getCitasByPatient(Number(patient));
+  }
+
+  // NUEVO: Obtener cita específica por ID
+  @Get('/citas/:id')
+  async getCitaById(@Param('id') id: string) {
+    return this.employeesService.getCitaById(Number(id));
+  }
+
+  // NUEVO: Actualizar cita (para cancelar)
+  @Patch('/citas/:id')
+  async updateCita(@Param('id') id: string, @Body() body: any) {
+    return this.employeesService.updateCita(Number(id), body);
   }
 
   @Get('medics/:idMedico')
@@ -75,6 +98,23 @@ export class EmployeesController {
     return {
       ...medic,
       idDepartamento: medic.empleado?.idDepartamento,
+    };
+  }
+
+  // NUEVO: Obtener médico por idMedico y devolver su idUsuario
+  @Get('medics/:idMedico/user-id')
+  async getMedicUserId(@Param('idMedico') idMedico: string) {
+    const medic = await this.prisma.medico.findUnique({
+      where: { idMedico: Number(idMedico) },
+      include: { empleado: true },
+    });
+    if (!medic) {
+      throw new NotFoundException('Médico no encontrado');
+    }
+    return {
+      idMedico: medic.idMedico,
+      idEmpleado: medic.idEmpleado,
+      idUsuario: medic.empleado.idUsuario,
     };
   }
 }
