@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./auth.scss";
 import { useNavigate } from "react-router-dom";
 
+import { useLoginSuperUser } from "@db/queries/auth";
+
 const departamentos = [
   "Cardiología",
   "Oncología",
@@ -20,7 +22,7 @@ const loginTitles: Record<LoginType, string> = {
 };
 
 const initialForm = {
-  usuario: "",
+  email: "",
   password: "",
   departamento: departamentos[0],
 };
@@ -75,10 +77,12 @@ const loginIcons: Record<LoginType, React.ReactNode> = {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const MultiLogin: React.FC = () => {
+  const loginMutation = useLoginSuperUser();
+
   const [active, setActive] = useState<LoginType>("paciente");
   const [forms, setForms] = useState({
     medico: { ...initialForm },
-    paciente: { usuario: "", password: "" },
+    paciente: { email: "", password: "" },
     admin: { ...initialForm },
   });
   const navigate = useNavigate();
@@ -94,7 +98,7 @@ export const MultiLogin: React.FC = () => {
       [type]: { ...prev[type], [field]: value },
     }));
     // Validación de email
-    if (field === "usuario") {
+    if (field === "email") {
       setEmailErrors((prev) => ({
         ...prev,
         [type]:
@@ -103,17 +107,23 @@ export const MultiLogin: React.FC = () => {
     }
   };
 
-  const handleLogin = (e: React.FormEvent, type: LoginType) => {
+  const handleLogin = async (e: React.FormEvent, type: LoginType) => {
     e.preventDefault();
     // Validación de email antes de enviar
-    if (!forms[type].usuario || !emailRegex.test(forms[type].usuario)) {
+    if (!forms[type].email || !emailRegex.test(forms[type].email)) {
       setEmailErrors((prev) => ({
         ...prev,
         [type]: "Correo electrónico inválido",
       }));
       return;
     }
-    alert(`Login ${type}: ${JSON.stringify(forms[type])}`);
+
+    const result = await loginMutation.post(forms[type]);
+    if (result.errorMutationMsg) return;
+
+    console.log("Login superuser result:", result);
+
+
   };
 
   const getClass = (type: LoginType) => {
@@ -170,11 +180,12 @@ export const MultiLogin: React.FC = () => {
               <label>Correo electrónico</label>
               <input
                 type="email"
-                value={forms[type].usuario}
-                onChange={(e) => handleInput(type, "usuario", e.target.value)}
+                name="email"
+                value={forms[type].email}
+                onChange={(e) => handleInput(type, "email", e.target.value)}
                 placeholder="usuario@hospital.com"
                 required
-                autoComplete="username"
+                autoComplete="email"
               />
               {emailErrors[type] && (
                 <span className="field-error">{emailErrors[type]}</span>
