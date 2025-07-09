@@ -19,17 +19,13 @@ export interface Patient {
 }
 
 export interface PatientFormData {
-  nombre: string;
-  apellidos: string;
-  dni: string;
-  fechaNacimiento: string;
-  telefono: string;
   email: string;
+  password: string;
+  nombre: string;
   direccion: string;
-  seguroMedico: 'publico' | 'privado' | 'mutua' | '';
-  numeroSeguro: string;
-  alergias: string;
-  observacionesMedicas: string;
+  genero: 'M' | 'F' | '';
+  fechaNacimiento: string;
+  idUsuario: number;
 }
 
 export interface Appointment {

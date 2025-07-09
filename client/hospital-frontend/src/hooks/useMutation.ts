@@ -50,7 +50,7 @@ export const useMutation = (): UseMutationReturn => {
     try {
       const isFormData = body instanceof FormData;
 
-      const response = await fetch(`api/${endpoint}`, {
+      const response = await fetch(`/api/${endpoint}`, {
         method,
         headers: {
           ...(isFormData ? {} : { "Content-Type": "application/json" }),
