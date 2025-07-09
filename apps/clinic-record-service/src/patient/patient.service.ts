@@ -78,4 +78,20 @@ export class PatientService {
     });
     return historias;
   }
+
+  // NUEVO: Obtener paciente por idUsuario
+  async getPatientByUserId(idUsuario: bigint) {
+    const paciente = await this.prisma.paciente.findFirst({
+      where: { idUsuario },
+    });
+    return paciente;
+  }
+
+  // NUEVO: Obtener paciente por idPaciente
+  async getPatientById(idPaciente: bigint) {
+    const paciente = await this.prisma.paciente.findUnique({
+      where: { idPaciente: Number(idPaciente) },
+    });
+    return paciente;
+  }
 }

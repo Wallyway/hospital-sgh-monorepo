@@ -52,7 +52,12 @@ export class EmployeesController {
     @Param('idMedico') idMedico: string,
     @Query('date') date: string,
   ) {
-    return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+    if (date) {
+      return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+    } else {
+      // Si no hay fecha, obtener todas las citas del médico
+      return this.employeesService.getAllAppointmentsByMedic(Number(idMedico));
+    }
   }
 
   // NUEVO: Crear cita
@@ -93,6 +98,23 @@ export class EmployeesController {
     return {
       ...medic,
       idDepartamento: medic.empleado?.idDepartamento,
+    };
+  }
+
+  // NUEVO: Obtener médico por idMedico y devolver su idUsuario
+  @Get('medics/:idMedico/user-id')
+  async getMedicUserId(@Param('idMedico') idMedico: string) {
+    const medic = await this.prisma.medico.findUnique({
+      where: { idMedico: Number(idMedico) },
+      include: { empleado: true },
+    });
+    if (!medic) {
+      throw new NotFoundException('Médico no encontrado');
+    }
+    return {
+      idMedico: medic.idMedico,
+      idEmpleado: medic.idEmpleado,
+      idUsuario: medic.empleado.idUsuario,
     };
   }
 }

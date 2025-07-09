@@ -38,7 +38,7 @@ export class AppointmentController {
     }
 
     @Get()
-    async getAppointments(@Req() req: any, @Res() res: any) {
+    async getAppointments(@Query() query: any, @Req() req: any, @Res() res: any) {
         // Log headers recibidos
         console.log('[AppointmentController] Headers recibidos:', req.headers);
         // Extraer user de req.user o decodificar JWT
@@ -61,14 +61,29 @@ export class AppointmentController {
                 email: decoded?.email,
             };
         }
-        console.log('[AppointmentController] GET /appointments - user:', user);
-        try {
-            const result = await this.appointmentService.getAppointments(user);
-            console.log('[AppointmentController] Appointments retrieved successfully:', result);
-            return res.status(HttpStatus.OK).json(result);
-        } catch (error: any) {
-            console.error('[AppointmentController] Error getting appointments:', error);
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        console.log('[AppointmentController] GET /appointments - user:', user, 'query:', query);
+
+        // Determinar el tipo de usuario y obtener las citas correspondientes
+        if (user?.role === 'MEDIC') {
+            // Médico: obtener sus propias citas
+            try {
+                const result = await this.appointmentService.getMedicAppointments(user);
+                console.log('[AppointmentController] Medic appointments retrieved successfully:', result);
+                return res.status(HttpStatus.OK).json(result);
+            } catch (error: any) {
+                console.error('[AppointmentController] Error getting medic appointments:', error);
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+            }
+        } else {
+            // Paciente: obtener sus propias citas
+            try {
+                const result = await this.appointmentService.getAppointments(user);
+                console.log('[AppointmentController] Patient appointments retrieved successfully:', result);
+                return res.status(HttpStatus.OK).json(result);
+            } catch (error: any) {
+                console.error('[AppointmentController] Error getting patient appointments:', error);
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+            }
         }
     }
 

@@ -35,4 +35,34 @@ export class PatientController {
     }
     return records;
   }
+
+  // NUEVO: Obtener paciente por idUsuario
+  @Get('by-user/:idUsuario')
+  async getPatientByUserId(@Param('idUsuario') idUsuario: string) {
+    const paciente = await this.patientService.getPatientByUserId(BigInt(idUsuario));
+    if (!paciente) {
+      throw new NotFoundException('Paciente no encontrado');
+    }
+    // Convierte todos los BigInt a string antes de responder
+    return JSON.parse(
+      JSON.stringify(paciente, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      ),
+    );
+  }
+
+  // NUEVO: Obtener paciente por idPaciente
+  @Get('by-id/:idPaciente')
+  async getPatientById(@Param('idPaciente') idPaciente: string) {
+    const paciente = await this.patientService.getPatientById(BigInt(idPaciente));
+    if (!paciente) {
+      throw new NotFoundException('Paciente no encontrado');
+    }
+    // Convierte todos los BigInt a string antes de responder
+    return JSON.parse(
+      JSON.stringify(paciente, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      ),
+    );
+  }
 }

@@ -117,6 +117,22 @@ export class EmployeesService {
     return citas;
   }
 
+  // NUEVO: Obtener todas las citas de un médico (solo vigentes, no canceladas)
+  async getAllAppointmentsByMedic(idMedico: number) {
+    const citas = await this.prisma.cita.findMany({
+      where: {
+        idMedico: idMedico,
+        estado: {
+          not: 'C', // Excluir citas canceladas
+        },
+      },
+      orderBy: {
+        fechaYHora: 'asc', // Ordenar por fecha ascendente
+      },
+    });
+    return citas;
+  }
+
   // NUEVO: Crear cita
   async createCita(body: any) {
     // Destructura y convierte idPaciente a número
