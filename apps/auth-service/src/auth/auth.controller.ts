@@ -42,11 +42,24 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
-  @ApiResponse({ status: 201, description: 'Super usuario generado en consola y base de datos' })
-  @ApiResponse({ status: 400, description: 'El usuario ya existe o error de validación', schema: { example: { message: 'El usuario ya existe.', error: 'Bad Request', statusCode: 400 } } })
+  @ApiResponse({
+    status: 201,
+    description: 'Super usuario generado en consola y base de datos',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El usuario ya existe o error de validación',
+    schema: {
+      example: {
+        message: 'El usuario ya existe.',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  })
   @ApiBody({ type: CreateUserAdminDto })
   @Post('dev/bootstrap-superuser')
   async bootstrapSuperUser(@Body() dto: CreateUserAdminDto) {
@@ -428,8 +441,23 @@ export class AuthController {
    */
   @ApiOperation({ summary: 'Listar usuarios por rol (solo ROOT)' })
   @ApiParam({ name: 'role', enum: ['MEDIC', 'ADMIN', 'PATIENT'] })
-  @ApiResponse({ status: 200, description: 'Lista de usuarios filtrados por rol', schema: { example: [{ idUsuario: '123456789', nombre: 'Dr. House', email: 'house@mail.com' }] } })
-  @ApiResponse({ status: 403, description: 'Solo el usuario ROOT puede acceder' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuarios filtrados por rol',
+    schema: {
+      example: [
+        {
+          idUsuario: '123456789',
+          nombre: 'Dr. House',
+          email: 'house@mail.com',
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo el usuario ROOT puede acceder',
+  })
   @Get('root/users/by-role/:role')
   async getUsersByRole(@Req() req, @Param('role') role: string) {
     const userRole = req.headers['x-user-role'];
@@ -470,8 +498,23 @@ export class AuthController {
    *         description: Solo el usuario ADMIN puede acceder
    */
   @ApiOperation({ summary: 'Obtener todos los médicos (solo ADMIN)' })
-  @ApiResponse({ status: 200, description: 'Lista de médicos', schema: { example: [{ idUsuario: '123456789', nombre: 'Dr. House', email: 'house@mail.com' }] } })
-  @ApiResponse({ status: 403, description: 'Solo el usuario ADMIN puede acceder' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de médicos',
+    schema: {
+      example: [
+        {
+          idUsuario: '123456789',
+          nombre: 'Dr. House',
+          email: 'house@mail.com',
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo el usuario ADMIN puede acceder',
+  })
   @Get('admin/medics')
   async getAllMedics(@Req() req) {
     const userRole = req.headers['x-user-role'];
@@ -516,8 +559,19 @@ export class AuthController {
    *         description: Solo el usuario ADMIN puede acceder
    */
   @ApiOperation({ summary: 'Obtener todos los pacientes (solo ADMIN)' })
-  @ApiResponse({ status: 200, description: 'Lista de pacientes', schema: { example: [{ idUsuario: '1234567890', nombre: 'Juan', email: 'patient@mail.com' }] } })
-  @ApiResponse({ status: 403, description: 'Solo el usuario ADMIN puede acceder' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de pacientes',
+    schema: {
+      example: [
+        { idUsuario: '1234567890', nombre: 'Juan', email: 'patient@mail.com' },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo el usuario ADMIN puede acceder',
+  })
   @Get('admin/patients')
   async getAllPatients(@Req() req) {
     const userRole = req.headers['x-user-role'];
@@ -729,11 +783,28 @@ export class AuthController {
    *         description: Paciente no encontrado
    */
   @ApiOperation({ summary: 'Modificar datos de un paciente (solo ADMIN)' })
-  @ApiResponse({ status: 200, description: 'Paciente actualizado', schema: { example: { idUsuario: '1234567890', nombre: 'Nuevo Nombre', direccion: 'Nueva dirección' } } })
-  @ApiResponse({ status: 403, description: 'Solo el usuario ADMIN puede acceder' })
+  @ApiResponse({
+    status: 200,
+    description: 'Paciente actualizado',
+    schema: {
+      example: {
+        idUsuario: '1234567890',
+        nombre: 'Nuevo Nombre',
+        direccion: 'Nueva dirección',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo el usuario ADMIN puede acceder',
+  })
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   @Patch('admin/patients/:id')
-  async updatePatientByAdmin(@Req() req, @Param('id') id: string, @Body() body: any) {
+  async updatePatientByAdmin(
+    @Req() req,
+    @Param('id') id: string,
+    @Body() body: any,
+  ) {
     const userRole = req.headers['x-user-role'];
     if (userRole !== 'ADMIN') {
       throw new ForbiddenException('Solo el usuario ADMIN puede acceder');
@@ -776,9 +847,24 @@ export class AuthController {
    *       404:
    *         description: Paciente no encontrado
    */
-  @ApiOperation({ summary: 'Modificar datos personales del paciente (solo PATIENT)' })
-  @ApiResponse({ status: 200, description: 'Perfil actualizado', schema: { example: { idUsuario: '1234567890', nombre: 'Nuevo Nombre', direccion: 'Nueva dirección' } } })
-  @ApiResponse({ status: 403, description: 'Solo el usuario PATIENT puede acceder' })
+  @ApiOperation({
+    summary: 'Modificar datos personales del paciente (solo PATIENT)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Perfil actualizado',
+    schema: {
+      example: {
+        idUsuario: '1234567890',
+        nombre: 'Nuevo Nombre',
+        direccion: 'Nueva dirección',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo el usuario PATIENT puede acceder',
+  })
   @ApiResponse({ status: 404, description: 'Paciente no encontrado' })
   @Patch('patient/profile')
   async updatePatientProfile(@Req() req, @Body() body: any) {
@@ -796,7 +882,9 @@ export class AuthController {
       }
     }
     if (Object.keys(updateData).length === 0) {
-      throw new ForbiddenException('No se enviaron datos válidos para actualizar');
+      throw new ForbiddenException(
+        'No se enviaron datos válidos para actualizar',
+      );
     }
     const updated = await this.usersService.updateUser({
       where: { idUsuario: BigInt(userId) },

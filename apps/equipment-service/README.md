@@ -96,3 +96,66 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# Equipment Service
+
+Este microservicio gestiona la solicitud y el inventario de equipamiento médico para el sistema hospitalario.
+
+## Endpoints
+
+### 1. Listar Equipos (solo MEDIC)
+- **GET /equipment**
+- **Descripción:** Devuelve la lista de todos los equipos disponibles.
+- **Auth:** Requiere token JWT de un usuario con rol MEDIC.
+- **Respuesta:**
+  ```json
+  [
+    {
+      "idEquipamiento": 1,
+      "idDepartamento": 1,
+      "nombre": "Electrocardiógrafo",
+      "estado": "D",
+      "FContratacion": "2025-07-09T06:34:51.962Z"
+    },
+    ...
+  ]
+  ```
+
+### 2. Solicitar Equipo (solo MEDIC)
+- **POST /equipment/request**
+- **Descripción:** Permite a un médico solicitar un equipo. El estado del equipo cambia de 'D' (disponible) a 'P' (prestado) y se crea un registro en la tabla Medico_Equipo.
+- **Auth:** Requiere token JWT de un usuario con rol MEDIC.
+- **Body:**
+  ```json
+  {
+    "idEquipamiento": 1,
+    "FPrestamo": "2025-07-15T09:00:00.000Z",
+    "FDevolucion": "2025-07-15T09:05:00.000Z"
+  }
+  ```
+- **Respuesta:**
+  - Éxito: Registro del préstamo.
+  - Forbidden: Solo los usuarios MEDIC pueden solicitar equipos.
+
+### 3. Poblar Equipos por Defecto (Interno)
+- **POST /equipment/internal/seed**
+- **Descripción:** Llena la tabla de equipos con equipos por defecto. No está expuesto al API Gateway ni al frontend.
+- **Auth:** Solo uso interno.
+
+## Arquitectura
+- **API Gateway** inyecta el ID de usuario en el body de la request para todos los endpoints protegidos.
+- **Equipment Service** valida el rol del usuario (debe ser MEDIC) antes de permitir la solicitud de equipos.
+- **Cardiology Service** gestiona los equipos y los registros de préstamo en la base de datos.
+
+## Swagger/OpenAPI
+- **Swagger UI** está disponible al ejecutar el servicio (ver main.ts para la ruta, usualmente `/api`).
+- Todos los endpoints están documentados con tipos de request/response y requisitos de autenticación.
+
+## Notas
+- Solo los usuarios con rol MEDIC pueden listar o solicitar equipos.
+- El servicio es robusto ante IDs de usuario faltantes o malformados.
+- Los mensajes de error se propagan al cliente para facilitar la depuración.
+
+---
+
+Para más detalles, consulta el código y la documentación Swagger UI.

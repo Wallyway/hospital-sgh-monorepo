@@ -1,9 +1,6 @@
-import { IsInt, IsDateString } from 'class-validator';
+import { IsInt, IsDateString, IsOptional } from 'class-validator';
 
 export class RequestEquipmentDto {
-  @IsInt()
-  idMedico: number;
-
   @IsInt()
   idEquipamiento: number;
 
@@ -12,4 +9,7 @@ export class RequestEquipmentDto {
 
   @IsDateString()
   FDevolucion: string;
+
+  @IsOptional()
+  idUsuario?: string;
 }

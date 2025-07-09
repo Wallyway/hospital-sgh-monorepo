@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -21,7 +20,7 @@ import { Public } from '../auth/decorators/public.decorator';
 
 @Controller()
 export class ProxyController {
-  constructor(private readonly proxyService: ProxyService) { }
+  constructor(private readonly proxyService: ProxyService) {}
 
   // == PUBLIC ROUTES ==
   // These routes are explicitly public and do not pass any auth headers.
@@ -128,7 +127,9 @@ export class ProxyController {
   async proxyAdminGetPatients(@Req() req: any, @Res() res: any) {
     const user = req.user;
     if (!user || !user.role || user.role !== 'ADMIN') {
-      throw new ForbiddenException('Only an ADMIN can get the list of patients');
+      throw new ForbiddenException(
+        'Only an ADMIN can get the list of patients',
+      );
     }
     const forwardedHeaders = {
       'Content-Type': req.headers['content-type'],
@@ -190,13 +191,14 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
-  // eslint-disable-next-line prettier/prettier
   @UseGuards(JwtAuthGuard)
   @Get('auth/patient/medical-records')
   async proxyPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
     const user = req.user;
     if (!user || !user.role || user.role !== 'PATIENT') {
-      throw new ForbiddenException('Only a PATIENT can get their medical records');
+      throw new ForbiddenException(
+        'Only a PATIENT can get their medical records',
+      );
     }
     const forwardedHeaders = {
       'Content-Type': req.headers['content-type'],
@@ -219,7 +221,9 @@ export class ProxyController {
   async proxySpecializePatientRole(@Req() req: any, @Res() res: any) {
     const user = req.user;
     if (!user || !user.role || user.role !== 'ADMIN') {
-      throw new ForbiddenException('Only an ADMIN can specialize a user as PATIENT');
+      throw new ForbiddenException(
+        'Only an ADMIN can specialize a user as PATIENT',
+      );
     }
     // Agregar el idUsuario del admin autenticado al body como adminId
     const bodyWithAdmin = { ...req.body, adminId: user.userId || user.sub };
@@ -239,10 +243,15 @@ export class ProxyController {
 
   @UseGuards(JwtAuthGuard)
   @Get('clinic-record/patient/medical-records')
-  async proxyClinicRecordPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
+  async proxyClinicRecordPatientGetMedicalRecords(
+    @Req() req: any,
+    @Res() res: any,
+  ) {
     const user = req.user;
     if (!user || !user.role || user.role !== 'PATIENT') {
-      throw new ForbiddenException('Only a PATIENT can get their medical records');
+      throw new ForbiddenException(
+        'Only a PATIENT can get their medical records',
+      );
     }
     const forwardedHeaders = {
       'Content-Type': req.headers['content-type'],
@@ -251,12 +260,13 @@ export class ProxyController {
       'x-user-id': user?.userId || user?.sub,
     };
     // Redirigir al microservicio clinic-record-service
-    const recipientResponse = await this.proxyService.proxyRequestToClinicRecord(
-      req.method,
-      '/patients/medical-records',
-      req.body,
-      forwardedHeaders,
-    );
+    const recipientResponse =
+      await this.proxyService.proxyRequestToClinicRecord(
+        req.method,
+        '/patients/medical-records',
+        req.body,
+        forwardedHeaders,
+      );
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
@@ -271,12 +281,13 @@ export class ProxyController {
       'x-user-id': user?.userId || user?.sub,
     };
     const { method, originalUrl, body } = req;
-    const recipientResponse = await this.proxyService.proxyRequestToEquipmentService(
-      method,
-      originalUrl,
-      body,
-      forwardedHeaders,
-    );
+    const recipientResponse =
+      await this.proxyService.proxyRequestToEquipmentService(
+        method,
+        originalUrl,
+        body,
+        forwardedHeaders,
+      );
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
@@ -291,12 +302,15 @@ export class ProxyController {
       'x-user-id': user?.userId || user?.sub,
     };
     const { method, originalUrl, body } = req;
-    const recipientResponse = await this.proxyService.proxyRequestToEquipmentService(
-      method,
-      originalUrl,
-      body,
-      forwardedHeaders,
-    );
+    // Inyectar userId en el body
+    const bodyWithUserId = { ...body, idUsuario: user?.userId || user?.sub };
+    const recipientResponse =
+      await this.proxyService.proxyRequestToEquipmentService(
+        method,
+        originalUrl,
+        bodyWithUserId,
+        forwardedHeaders,
+      );
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 

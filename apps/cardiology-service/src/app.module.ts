@@ -10,4 +10,4 @@ import { EquipmentController } from './equipment.controller';
   controllers: [EmployeesController, EquipmentController],
   providers: [PrismaService, EmployeesService, EventSubscriberService],
 })
-export class AppModule { }
+export class AppModule {}

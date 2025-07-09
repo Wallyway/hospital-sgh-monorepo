@@ -11,7 +11,7 @@ export class ProxyService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   private getServiceUrl(path: string): string {
     if (path.startsWith('/auth')) {
@@ -90,7 +90,10 @@ export class ProxyService {
       const response = await firstValueFrom(this.httpService.request(config));
       return response;
     } catch (error) {
-      console.error('[ProxyService] Error forwarding request to clinic-record-service:', error.message);
+      console.error(
+        '[ProxyService] Error forwarding request to clinic-record-service:',
+        error.message,
+      );
       throw error;
     }
   }
@@ -118,7 +121,10 @@ export class ProxyService {
       const response = await firstValueFrom(this.httpService.request(config));
       return response;
     } catch (error) {
-      console.error('[ProxyService] Error forwarding request to equipment-service:', error.message);
+      console.error(
+        '[ProxyService] Error forwarding request to equipment-service:',
+        error.message,
+      );
       throw error;
     }
   }
