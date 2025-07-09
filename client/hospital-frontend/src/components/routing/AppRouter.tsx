@@ -49,6 +49,7 @@ export const AppRouter = () => {
         <Route path="agregar-pacientes" element={<AgregarPacientes />} />
         <Route path="consultar-pacientes" element={<ConsultarPacientes />} />
         <Route path="modificar-datos-pacientes" element={<ModificarDatosPacientes />} />
+        <Route path="modificar-datos-pacientes/:patientId" element={<ModificarDatosPacientes />} />
       </Route>
 
       {/* Patient routes */}
