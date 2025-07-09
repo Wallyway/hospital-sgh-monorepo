@@ -45,10 +45,8 @@ export class AuthController {
   ) { }
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
-  @ApiResponse({
-    status: 201,
-    description: 'Super usuario generado en consola y base de datos',
-  })
+  @ApiResponse({ status: 201, description: 'Super usuario generado en consola y base de datos' })
+  @ApiResponse({ status: 400, description: 'El usuario ya existe o error de validación', schema: { example: { message: 'El usuario ya existe.', error: 'Bad Request', statusCode: 400 } } })
   @ApiBody({ type: CreateUserAdminDto })
   @Post('dev/bootstrap-superuser')
   async bootstrapSuperUser(@Body() dto: CreateUserAdminDto) {
@@ -567,6 +565,27 @@ export class AuthController {
    *               baseDepartamento: "Cardiologia"
    *       400:
    *         description: Error de validación, especialización o permisos
+   *         content:
+   *           application/json:
+   *             examples:
+   *               Duplicidad:
+   *                 summary: El usuario ya es paciente
+   *                 value:
+   *                   message: "El usuario ya está especializado como PATIENT."
+   *                   error: "Bad Request"
+   *                   statusCode: 400
+   *               Permisos:
+   *                 summary: El usuario autenticado no es ADMIN
+   *                 value:
+   *                   message: "Only an ADMIN can create a patient"
+   *                   error: "Forbidden"
+   *                   statusCode: 403
+   *               ErrorEspecializacion:
+   *                 summary: Error de especialización en microservicio
+   *                 value:
+   *                   message: "No se pudo validar la especialización en clinic-record-service."
+   *                   error: "Bad Request"
+   *                   statusCode: 400
    */
   @ApiOperation({ summary: 'Crear paciente por ADMIN' })
   @ApiResponse({ status: 201, description: 'Paciente creado y rol asignado' })

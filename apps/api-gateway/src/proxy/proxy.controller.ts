@@ -215,6 +215,29 @@ export class ProxyController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('roles/:idUser/patient')
+  async proxySpecializePatientRole(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    if (!user || !user.role || user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only an ADMIN can specialize a user as PATIENT');
+    }
+    // Agregar el idUsuario del admin autenticado al body como adminId
+    const bodyWithAdmin = { ...req.body, adminId: user.userId || user.sub };
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+    };
+    const { method, originalUrl } = req;
+    const recipientResponse = await this.proxyService.proxyRequest(
+      method,
+      originalUrl,
+      bodyWithAdmin,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('clinic-record/patient/medical-records')
   async proxyClinicRecordPatientGetMedicalRecords(@Req() req: any, @Res() res: any) {
     const user = req.user;

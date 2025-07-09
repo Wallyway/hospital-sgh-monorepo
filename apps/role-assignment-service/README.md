@@ -663,7 +663,6 @@ export class AuthService {
 
   //... (forgotPassword y resetPassword métodos, sin cambios significativos)
 }
-```
 
 *Nota: He añadido `HttpService` al constructor de `AuthService` y he creado un método `getUserRolesFromDomainServices` para centralizar la lógica de consulta de roles. Las URLs de los servicios de dominio (`CARDIO_SERVICE_URL`, `PATIENT_SERVICE_URL`) deberán configurarse en el `.env` del `auth-service`. Los servicios de dominio deberán exponer endpoints para verificar si un `idUser` tiene un rol específico o para listar sus roles.*
 
@@ -1041,3 +1040,25 @@ Transacciones Distribuidas (Consistencia Eventual): Recuerda que el patrón Saga
 Seguridad de DBLINK: Las credenciales de DBLINK (user, password) deben ser gestionadas de forma segura (ej., con variables de entorno o un gestor de secretos en producción) y el usuario de la base de datos remota (wally en este caso) debe tener el mínimo privilegio necesario (solo SELECT en la tabla User del auth-service).
 Swagger: La documentación interactiva de la API del role-assignment-service estará disponible en /api (ej., http://localhost:3002/api en desarrollo).
 Con esta guía detallada, tienes una hoja de ruta clara para implementar el role-assignment-service y su integración con el auth-service y el sistema de mensajería QueueT, siguiendo el nuevo modelo de especialización de roles por tablas de dominio.
+
+### Errores comunes
+
+- Si el usuario ya está especializado como PATIENT:
+
+```json
+{
+  "message": "El usuario ya está especializado como PATIENT.",
+  "error": "Bad Request",
+  "statusCode": 400
+}
+```
+
+- Si ocurre un error de validación en clinic-record-service:
+
+```json
+{
+  "message": "No se pudo validar la especialización en clinic-record-service.",
+  "error": "Bad Request",
+  "statusCode": 400
+}
+```
