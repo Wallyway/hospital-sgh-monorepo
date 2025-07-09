@@ -116,4 +116,35 @@ export class EmployeesService {
     });
     return citas;
   }
+
+  // NUEVO: Crear cita
+  async createCita(body: any) {
+    // Destructura y convierte idPaciente a número
+    const { idPaciente, idMedico, fechaYHora, estado, resumen } = body;
+    // Validar que no exista cita solapada para el médico en esa franja
+    const start = new Date(fechaYHora);
+    const end = new Date(start.getTime() + 30 * 60000);
+    const overlap = await this.prisma.cita.findFirst({
+      where: {
+        idMedico: idMedico,
+        fechaYHora: {
+          gte: start,
+          lt: end,
+        },
+      },
+    });
+    if (overlap) {
+      throw new BadRequestException('El médico ya tiene una cita en esa franja horaria');
+    }
+    // Crear la cita
+    return this.prisma.cita.create({
+      data: {
+        idPaciente: Number(idPaciente),
+        idMedico,
+        fechaYHora: new Date(fechaYHora),
+        estado,
+        resumen,
+      },
+    });
+  }
 }

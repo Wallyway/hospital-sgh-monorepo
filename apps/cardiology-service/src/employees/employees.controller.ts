@@ -1,9 +1,10 @@
-import { Controller, Get, Param, NotFoundException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, Query, Body } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
+import { PrismaService } from '../prisma.service';
 
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) { }
+  constructor(private readonly employeesService: EmployeesService, private readonly prisma: PrismaService) { }
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -52,5 +53,28 @@ export class EmployeesController {
     @Query('date') date: string,
   ) {
     return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+  }
+
+  // NUEVO: Crear cita
+  @Post('/citas')
+  async createCita(@Body() body: any) {
+    // Espera: { idPaciente, idMedico, fechaYHora, estado, resumen }
+    return this.employeesService.createCita(body);
+  }
+
+  @Get('medics/:idMedico')
+  async getMedicById(@Param('idMedico') idMedico: string) {
+    const medic = await this.prisma.medico.findUnique({
+      where: { idMedico: Number(idMedico) },
+      include: { empleado: true }, // Para obtener idDepartamento
+    });
+    if (!medic) {
+      throw new NotFoundException('Médico no encontrado');
+    }
+    // Devolver idDepartamento junto con los datos del médico
+    return {
+      ...medic,
+      idDepartamento: medic.empleado?.idDepartamento,
+    };
   }
 }
