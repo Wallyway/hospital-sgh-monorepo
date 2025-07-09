@@ -68,7 +68,7 @@ export const useFetch = (
         setLoading(false);
       }
     },
-    [baseUrl, verifyAuth, isAuthenticated, errorMessage, options]
+    [baseUrl, verifyAuth, errorMessage, options]
   );
 
   return { fetchData, loading, error };
