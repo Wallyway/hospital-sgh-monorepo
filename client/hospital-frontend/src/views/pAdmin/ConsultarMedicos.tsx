@@ -20,6 +20,15 @@ interface Medico {
 const ConsultarMedicos = () => {
   const { medics } = useConsultarMedicos();
 
+  const formatUTCDate = (dateString: string) => {
+    const date = new Date(dateString);
+    // Usar getUTC methods para evitar problemas de zona horaria
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div className="main-content-section consultar-medicos-container">
       <div className="medicos-header">
@@ -45,10 +54,11 @@ const ConsultarMedicos = () => {
                 <div className="medico-info">
                   <h3>Dr. {medico.nombre}</h3>
                   <p className="email">{medico.email}</p>
+                  <p className="id-usuario">ID Usuario: {medico.idUsuario}</p>
                   <p className="genero">Género: {medico.genero === 'M' ? 'Masculino' : 'Femenino'}</p>
                   <p className="direccion">{medico.direccion}</p>
                   <p className="fecha-nacimiento">
-                    F. Nacimiento: {new Date(medico.fechaNacimiento).toLocaleDateString('es-ES')}
+                    F. Nacimiento: {formatUTCDate(medico.fechaNacimiento)}
                   </p>
                 </div>
                 <div className="medico-actions">
