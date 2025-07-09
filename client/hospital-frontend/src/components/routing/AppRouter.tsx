@@ -41,8 +41,8 @@ export const AppRouter = () => {
 
       {/* Admin routes */}
       <Route path="/padmin" element={<PAdminBase />}>
-        <Route index element={<PAdminDashboard />} />
-        <Route path="dashboard" element={<PAdminDashboard />} />
+        <Route index element={<Navigate to="consultar-medicos" replace/>} />
+        {/* <Route path="dashboard" element={<PAdminDashboard />} /> */}
         <Route path="consultar-medicos" element={<ConsultarMedicos />} />
         <Route path="consultar-agenda-medicos" element={<ConsultarAgendaMedicos />} />
         <Route path="gestionar-citas-pacientes" element={<GestionarCitasPacientes />} />

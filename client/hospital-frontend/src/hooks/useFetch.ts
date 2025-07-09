@@ -27,12 +27,12 @@ export const useFetch = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-//   const { isAuthenticated } = useAuth();
+  //   const { isAuthenticated } = useAuth();
 
   // No hace fetch hasta que se llame a fetchData directamente
   const fetchData = useCallback(
     async (newUrl: string = "") => {
-    //   if (verifyAuth && !isAuthenticated) return;
+      //   if (verifyAuth && !isAuthenticated) return;
 
       setLoading(true);
       setError(null);
@@ -42,9 +42,9 @@ export const useFetch = (
       try {
         const response = await fetch(finalUrl, {
           method: "GET",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${localStorage.getItem("accesToken")}`,
             ...options.headers,
           },
           ...options,
@@ -53,7 +53,7 @@ export const useFetch = (
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || `HTTP error ${response.status}`);
+          throw new Error(result.message || `HTTP error ${response.status}`);
         }
         return result;
       } catch (err: any) {

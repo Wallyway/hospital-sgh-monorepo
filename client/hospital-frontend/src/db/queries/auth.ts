@@ -16,10 +16,10 @@ export const useLoginSuperUser = () => {
   const post = useMutation();
 
   return {
-    post: (user) =>
+    post: (role: string, user: any) =>
       post.mutate(
         "POST",
-        "auth/root/login",
+        `auth/${role}/login`,
         user,
         "Error al hacer login como superusuario"
       ),

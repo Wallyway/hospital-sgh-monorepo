@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import "./auth.scss";
 import { useNavigate } from "react-router-dom";
-
-import { useLoginSuperUser } from "@db/queries/auth";
+// contexts
+import { useAuth } from "@contexts/AuthContext";
+// styles
+import "./auth.scss";
 
 const departamentos = [
   "Cardiología",
@@ -77,7 +78,7 @@ const loginIcons: Record<LoginType, React.ReactNode> = {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const MultiLogin: React.FC = () => {
-  const loginMutation = useLoginSuperUser();
+  const { login } = useAuth();
 
   const [active, setActive] = useState<LoginType>("paciente");
   const [forms, setForms] = useState({
@@ -118,12 +119,20 @@ export const MultiLogin: React.FC = () => {
       return;
     }
 
-    const result = await loginMutation.post(forms[type]);
-    if (result.errorMutationMsg) return;
+    let role = "sin rol";
+    if (type === "medico") {
+      role = "medic";
+    } else if (type === "paciente") {
+      role = "patient";
+    } else if (type === "admin") {
+      role = "admin";
+    }
 
-    console.log("Login superuser result:", result);
+    const result2 = await login(forms[type].email, forms[type].password, role);
 
+    if (!result2) return;
 
+    navigate(`/${role == "admin" && "p"}${role}`);
   };
 
   const getClass = (type: LoginType) => {

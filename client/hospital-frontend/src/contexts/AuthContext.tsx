@@ -4,10 +4,9 @@ import type { User, AuthState } from "@/types/user";
 import { UserRole } from "@/types/user";
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<User>;
+  login: (email: string, password: string, role: string) => Promise<Boolean>;
   logout: () => void;
   hasRole: (role: string) => boolean;
-  hasPermission: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,34 +33,49 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   });
 
   // funcion login (se reemplza despues)
-  const login = async (email: string, _password: string) => {
+  const login = async (email: string, _password: string, role: string) => {
     try {
-      // Aquí iría tu lógica de autenticación real
-      const mockUser: User = {
-        id: "1",
-        name: "Dr. Juan Pérez",
-        email: email,
-        role: UserRole.PATIENT, // Usar el enum correcto
-        department: "Cardiología",
-        specialization: "Cardiólogo",
-        permissions: [
-          "view_patients",
-          "edit_medical_records",
-          "prescribe_medication",
-          "manage_users",
-        ],
-      };
+      const response = await fetch(`api/auth/${role}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password: _password }),
+      });
+      
+      const result = await response.json();
+
+      if (!response.ok || !result.accessToken) {
+        throw new Error(`Login failed: ${result.message || "Unknown error"}`);
+      }
+
+      // Guardar token en localStorage
+      localStorage.setItem("accesToken", result.accessToken);
+
+      // peticion para validar token
 
       setAuthState({
-        user: mockUser,
+        user: {
+          id: "1",
+          name: `nombre de ${role}`,
+          email: email,
+          role: role,
+        },
         isAuthenticated: true,
         isLoading: false,
       });
 
-      return mockUser;
-    } catch (error) {
-      console.error("Login error:", error);
-      throw new Error("Login failed");
+      return true;
+    } catch (error: any) {
+      console.error("Login error:", error.message);
+
+      localStorage.removeItem("accesToken");
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+      });
+      return false;
     }
   };
 
@@ -79,17 +93,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return authState.user?.role === role;
   };
 
-  // verificar si el usuario tiene un permiso específico
-  const hasPermission = (permission: string): boolean => {
-    return authState.user?.permissions?.includes(permission) || false;
-  };
-
   // Verificar autenticación al cargar la app
   useEffect(() => {
     const checkAuth = async () => {
       try {
         // verficar token en localStorage
-        setAuthState((prev) => ({ ...prev, isLoading: false }));
+        const token = localStorage.getItem("accesToken");
+        if (!token) {
+          setAuthState({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+          return;
+        } else {
+          setAuthState({
+            user: {
+              id: "1",
+              name: `nombre de pepe`,
+              email: "a@a.com",
+              role: "pepe",
+            }, 
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        }
       } catch (error) {
         setAuthState({
           user: null,
@@ -108,7 +136,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     logout,
     hasRole,
-    hasPermission,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

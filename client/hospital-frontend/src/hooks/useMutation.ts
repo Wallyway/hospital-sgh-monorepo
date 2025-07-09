@@ -50,13 +50,11 @@ export const useMutation = (): UseMutationReturn => {
     try {
       const isFormData = body instanceof FormData;
 
-      console.log(body)
-      
       const response = await fetch(`api/${endpoint}`, {
         method,
-        credentials: "include", // Importante: incluir cookies en la petición
         headers: {
           ...(isFormData ? {} : { "Content-Type": "application/json" }),
+          authorization: `Bearer ${localStorage.getItem("accesToken")}`,
           ...options.headers,
         },
         body: body ? (isFormData ? body : JSON.stringify(body)) : null,
@@ -73,7 +71,7 @@ export const useMutation = (): UseMutationReturn => {
       }
 
       if (!response.ok) {
-        throw new Error(result.error || result.errors || 'Error desconocido');
+        throw new Error(result.message || "Error desconocido");
       }
       return result;
     } catch (err: any) {
