@@ -39,6 +39,12 @@ export class ProxyService {
         'http://localhost:3008',
       );
     }
+    if (path.startsWith('/employees')) {
+      return this.configService.get<string>(
+        'CARDIOLOGY_SERVICE_URL',
+        'http://localhost:3003',
+      );
+    }
     // Add other services here
     // if (path.startsWith('/patients')) {
     //   return process.env.PATIENTS_SERVICE_URL || 'http://localhost:3002';
