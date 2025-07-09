@@ -24,7 +24,7 @@ export class RolesService {
     private dblinkService: DblinkService,
     private eventPublisherService: EventPublisherService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async specializeUserRole(
     userId: number,
@@ -103,7 +103,8 @@ export class RolesService {
           err?.message,
         );
         throw new BadRequestException(
-          err?.response?.data?.message || 'No se pudo validar la especialización en clinic-record-service.',
+          err?.response?.data?.message ||
+            'No se pudo validar la especialización en clinic-record-service.',
         );
       }
     }
@@ -115,52 +116,85 @@ export class RolesService {
     if (role === UserRole.PATIENT && userData) {
       // Determinar si quien especializa es admin o medic
       const especializadorId = userData.adminId || userData.medicId;
-      const especializadorRol = userData.adminId ? 'ADMIN' : userData.medicId ? 'MEDIC' : undefined;
+      const especializadorRol = userData.adminId
+        ? 'ADMIN'
+        : userData.medicId
+          ? 'MEDIC'
+          : undefined;
       if (!especializadorId || !especializadorRol) {
-        throw new BadRequestException('Falta el id y rol del especializador (adminId o medicId)');
+        throw new BadRequestException(
+          'Falta el id y rol del especializador (adminId o medicId)',
+        );
       }
       // Consultar empleado en cardiology-service
-      const cardiologyUrl = this.configService.get<string>('CARDIOLOGY_SERVICE_URL');
+      const cardiologyUrl = this.configService.get<string>(
+        'CARDIOLOGY_SERVICE_URL',
+      );
       let empleado;
       try {
-        const resp = await axios.get(`${cardiologyUrl}/employees/by-user/${especializadorId}`);
+        const resp = await axios.get(
+          `${cardiologyUrl}/employees/by-user/${especializadorId}`,
+        );
         empleado = resp.data;
       } catch (err) {
-        throw new BadRequestException('No se pudo obtener el empleado del especializador');
+        throw new BadRequestException(
+          'No se pudo obtener el empleado del especializador',
+        );
       }
       if (!empleado || !empleado.idEmpleado || !empleado.idDepartamento) {
-        throw new BadRequestException('El especializador no tiene empleado o departamento asignado');
+        throw new BadRequestException(
+          'El especializador no tiene empleado o departamento asignado',
+        );
       }
       // Según el rol, obtener idPAdministrativo o idMedico
       if (especializadorRol === 'ADMIN') {
         try {
-          const resp = await axios.get(`${cardiologyUrl}/employees/padministrativo/by-employee/${empleado.idEmpleado}`);
+          const resp = await axios.get(
+            `${cardiologyUrl}/employees/padministrativo/by-employee/${empleado.idEmpleado}`,
+          );
           idPAdministrativo = resp.data.idPAdministrativo;
         } catch (err) {
-          throw new BadRequestException('No se pudo obtener el idPAdministrativo del admin');
+          throw new BadRequestException(
+            'No se pudo obtener el idPAdministrativo del admin',
+          );
         }
         if (!idPAdministrativo) {
-          throw new BadRequestException('El admin no tiene idPAdministrativo asignado');
+          throw new BadRequestException(
+            'El admin no tiene idPAdministrativo asignado',
+          );
         }
       } else if (especializadorRol === 'MEDIC') {
         try {
-          const resp = await axios.get(`${cardiologyUrl}/employees/medico/by-employee/${empleado.idEmpleado}`);
+          const resp = await axios.get(
+            `${cardiologyUrl}/employees/medico/by-employee/${empleado.idEmpleado}`,
+          );
           idMedico = resp.data.idMedico;
         } catch (err) {
-          throw new BadRequestException('No se pudo obtener el idMedico del medic');
+          throw new BadRequestException(
+            'No se pudo obtener el idMedico del medic',
+          );
         }
         if (!idMedico) {
           throw new BadRequestException('El medic no tiene idMedico asignado');
         }
       }
       // Consultar nombre del departamento
-      const departmentUrl = this.configService.get<string>('DEPARTMENT_SERVICE_URL', 'http://localhost:3005');
-      this.logger.log(`Consultando departamento: ${departmentUrl}/departments/${empleado.idDepartamento}`);
+      const departmentUrl = this.configService.get<string>(
+        'DEPARTMENT_SERVICE_URL',
+        'http://localhost:3005',
+      );
+      this.logger.log(
+        `Consultando departamento: ${departmentUrl}/departments/${empleado.idDepartamento}`,
+      );
       try {
-        const resp = await axios.get(`${departmentUrl}/departments/${empleado.idDepartamento}`);
+        const resp = await axios.get(
+          `${departmentUrl}/departments/${empleado.idDepartamento}`,
+        );
         baseDepartamento = resp.data.Nombre;
       } catch (err) {
-        throw new BadRequestException('No se pudo obtener el nombre del departamento');
+        throw new BadRequestException(
+          'No se pudo obtener el nombre del departamento',
+        );
       }
     }
     // --- FIN INTEGRACIÓN DATOS DE ADMIN/MEDIC PARA PACIENTE ---

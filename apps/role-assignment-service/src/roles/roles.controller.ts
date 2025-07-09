@@ -18,7 +18,7 @@ import {
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {
-  constructor(private rolesService: RolesService) { }
+  constructor(private rolesService: RolesService) {}
 
   @ApiOperation({ summary: 'Solicitar especialización de rol para un usuario' })
   @ApiParam({
@@ -73,7 +73,10 @@ export class RolesController {
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   @ApiResponse({ status: 400, description: 'Rol no soportado.' })
-  @ApiResponse({ status: 400, description: 'El usuario ya está especializado como PATIENT.' })
+  @ApiResponse({
+    status: 400,
+    description: 'El usuario ya está especializado como PATIENT.',
+  })
   @Post(':idUser/:role')
   async specializeRole(
     @Param('idUser', ParseIntPipe) idUser: number,
