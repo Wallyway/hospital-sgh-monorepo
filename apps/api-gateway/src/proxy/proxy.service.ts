@@ -27,6 +27,12 @@ export class ProxyService {
         'http://localhost:3002',
       );
     }
+    if (path.startsWith('/equipment')) {
+      return this.configService.get<string>(
+        'EQUIPMENT_SERVICE_URL',
+        'http://localhost:3006',
+      );
+    }
     // Add other services here
     // if (path.startsWith('/patients')) {
     //   return process.env.PATIENTS_SERVICE_URL || 'http://localhost:3002';
@@ -85,6 +91,34 @@ export class ProxyService {
       return response;
     } catch (error) {
       console.error('[ProxyService] Error forwarding request to clinic-record-service:', error.message);
+      throw error;
+    }
+  }
+
+  async proxyRequestToEquipmentService(
+    method: string,
+    path: string,
+    data: any,
+    headers: any,
+  ): Promise<AxiosResponse<any>> {
+    const serviceUrl = this.configService.get<string>(
+      'EQUIPMENT_SERVICE_URL',
+      'http://localhost:3006',
+    );
+    const url = `${serviceUrl}${path}`;
+    try {
+      const config: AxiosRequestConfig = {
+        method: method as any,
+        url,
+        data,
+        headers,
+        validateStatus: () => true,
+        timeout: 10000,
+      };
+      const response = await firstValueFrom(this.httpService.request(config));
+      return response;
+    } catch (error) {
+      console.error('[ProxyService] Error forwarding request to equipment-service:', error.message);
       throw error;
     }
   }

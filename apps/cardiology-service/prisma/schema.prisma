@@ -55,6 +55,7 @@ model Medico {
     Actualizaciones_HistoriaClinica Actualizaciones_HistoriaClinica[]
     Medico_Preescribe_Medicamento   Medico_Preescribe_Medicamento[]
     Registro_Consulta_Medicamento   Registro_Consulta_Medicamento[]
+    Medico_dictamina_diagnostico    Medico_dictamina_diagnostico[]
 }
 
 model Medico_Equipo {
@@ -84,6 +85,7 @@ model Cita {
     Actualizaciones_HistoriaClinica Actualizaciones_HistoriaClinica[]
     Medico_Preescribe_Medicamento   Medico_Preescribe_Medicamento[]
     PAdmin_Gestiona_Cita            PAdmin_Gestiona_Cita[]
+    Medico_dictamina_diagnostico    Medico_dictamina_diagnostico[]
 }
 
 model PAdmin_Modifica_Paciente {
@@ -143,4 +145,23 @@ model PAdmin_Gestiona_Cita {
     cita            Cita            @relation(fields: [idCita], references: [idCita])
 
     @@id([idPAdministrativo, idCita])
+}
+
+model Diagnostico {
+    idDiagnostico Int    @id @default(autoincrement())
+    nombre        String @unique
+
+    medicoDictaminaDiagnostico Medico_dictamina_diagnostico[]
+}
+
+model Medico_dictamina_diagnostico {
+    idDiagnostico Int
+    idMedico      Int
+    idCita        Int
+
+    diagnostico Diagnostico @relation(fields: [idDiagnostico], references: [idDiagnostico])
+    medico      Medico      @relation(fields: [idMedico], references: [idMedico])
+    cita        Cita        @relation(fields: [idCita], references: [idCita])
+
+    @@id([idDiagnostico, idMedico, idCita])
 }

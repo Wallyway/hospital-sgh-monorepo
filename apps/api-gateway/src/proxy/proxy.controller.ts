@@ -260,6 +260,46 @@ export class ProxyController {
     res.status(recipientResponse.status).json(recipientResponse.data);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('equipment')
+  async proxyGetEquipment(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+      'x-user-id': user?.userId || user?.sub,
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequestToEquipmentService(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('equipment/request')
+  async proxyRequestEquipment(@Req() req: any, @Res() res: any) {
+    const user = req.user;
+    const forwardedHeaders = {
+      'Content-Type': req.headers['content-type'],
+      Authorization: req.headers['authorization'],
+      'x-user-role': user?.role,
+      'x-user-id': user?.userId || user?.sub,
+    };
+    const { method, originalUrl, body } = req;
+    const recipientResponse = await this.proxyService.proxyRequestToEquipmentService(
+      method,
+      originalUrl,
+      body,
+      forwardedHeaders,
+    );
+    res.status(recipientResponse.status).json(recipientResponse.data);
+  }
+
   // == PROTECTED CATCH-ALL ROUTE ==
   // All other routes are caught by this handler and are protected by the JWT guard.
   @UseGuards(JwtAuthGuard)
