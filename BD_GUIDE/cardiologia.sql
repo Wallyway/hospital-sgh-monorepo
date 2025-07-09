@@ -363,3 +363,45 @@ ALTER TABLE PAdmin_Gestiona_Cita
 	ADD CONSTRAINT fk_idPAdministrativo FOREIGN KEY (idPAdministrativo) REFERENCES PAdministrativo (idPAdministrativo),
 	ADD CONSTRAINT fk_idCita FOREIGN KEY (idCita) REFERENCES Cita (idCita),
 	ADD CONSTRAINT chk_accion CHECK (accion IN ('A', 'C'));
+
+CREATE TABLE Diagnostico (
+	idDiagnostico SERIAL PRIMARY KEY,
+	nombre VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE Medico_dictamina_diagnostico (
+	idDiagnostico INT,
+	idMedico INT,
+	idCita INT
+);
+
+ALTER TABLE Medico_dictamina_diagnostico
+	ADD CONSTRAINT pk_Medico_dictamina_diagnostico PRIMARY KEY (idDiagnostico, idMedico, idCita),
+	ADD CONSTRAINT fk_idDiagnostico FOREIGN KEY (idDiagnostico) REFERENCES Diagnostico (idDiagnostico),
+	ADD CONSTRAINT fk_idMedico FOREIGN KEY (idMedico) REFERENCES Medico (idMedico),
+	ADD CONSTRAINT fk_idCita FOREIGN KEY (idCita) REFERENCES Cita (idCita);
+
+    --ejemplo insercio diagnostico y medico_dictamina_diagnostico
+--     INSERT INTO Diagnostico (nombre) VALUES
+-- ('Infarto agudo de miocardio'),
+-- ('Insuficiencia cardíaca congestiva'),
+-- ('Arritmia cardíaca'),
+-- ('Cardiopatía isquémica'),
+-- ('Miocardiopatía dilatada'),
+-- ('Valvulopatía mitral'),
+-- ('Hipertensión arterial sistémica'),
+-- ('Pericarditis aguda'),
+-- ('Endocarditis infecciosa'),
+-- ('Cardiopatía congénita');
+
+-- INSERT INTO Medico_dictamina_diagnostico (idDiagnostico, idMedico, idCita) VALUES
+-- (1, 3, 13),
+-- (2, 4, 15),
+-- (3, 3, 13),
+-- (4, 6, 14),
+-- (5, 4, 15),
+-- (6, 6, 17),
+-- (7, 6, 17),
+-- (8, 4, 18),
+-- (9, 3, 19),
+-- (10, 3, 20);
