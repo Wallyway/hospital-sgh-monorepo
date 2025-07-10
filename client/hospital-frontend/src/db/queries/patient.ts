@@ -23,13 +23,16 @@ export const useCreateAppointment = () => {
 
   return {
     post: (data: any) =>
-      post.mutate(
-        "POST",
-        "appointments",
-        data,
-        "Error al crear la cita"
-      ),
+      post.mutate("POST", "appointments", data, "Error al crear la cita"),
     postLoading: post.loading,
     postError: post.error,
   };
+};
+
+// citas del paciente
+export const useGetPatientAppointments = () => {
+  return useFetch(
+    "appointments",
+    "Error al obtener las citas del paciente"
+  );
 };
