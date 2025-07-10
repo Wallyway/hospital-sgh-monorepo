@@ -1,7 +1,7 @@
 // Tipos de usuario y roles del sistema hospitalario
 export const UserRole = {
-  PADMIN: 'padmin',
-  DOCTOR: 'doctor',
+  ADMIN: 'admin',
+  MEDIC: 'medic',
   PATIENT: 'patient',
 } as const;
 
@@ -11,10 +11,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
+  role: string;
   department?: string;
   specialization?: string;
-  permissions: string[];
 }
 
 export interface AuthState {

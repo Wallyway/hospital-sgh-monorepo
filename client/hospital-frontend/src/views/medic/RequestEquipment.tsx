@@ -1,85 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useGetEquipments, useRequestEquipment } from "@/db/queries/medic";
 import "./styles/requestEquipment.scss";
 
+// Interfaz para los equipos según la API
+interface Equipment {
+  idEquipamiento: number;
+  idDepartamento: number;
+  nombre: string;
+  estado: "D" | "P"; // D = Disponible, P = Prestado
+  FContratacion: string;
+}
+
+// Interfaz para las solicitudes de equipos
 interface EquipmentRequest {
   id: string;
   nombreEquipo: string;
   fechaPrestamo: string;
   fechaDevolucion: string;
-  estado: "en_uso" | "devuelto";
+  estado: "D" | "P";
   medicoSolicitante: string;
-  observaciones?: string;
+  observaciones: string;
   fechaSolicitud: string;
 }
 
 const SolicitarEquipos = () => {
   const navigate = useNavigate();
-  const fechaPrestamo = new Date(); // Fecha actual fija
+  const { isAuthenticated } = useAuth();
+  
+  // Usar el hook existente para obtener equipos
+  const { fetchData: fetchEquipments, loading: equipmentLoading, error: equipmentError } = useGetEquipments();
+  
+  // Usar el hook para solicitar equipos
+  const { post: requestEquipment, postLoading: requestLoading, postError: requestError } = useRequestEquipment();
+  
+  const fechaPrestamo = new Date(); 
   const [filtroEstado, setFiltroEstado] = useState<string>("todos");
+  const [equipos, setEquipos] = useState<Equipment[]>([]);
 
   const [nuevaSolicitud, setNuevaSolicitud] = useState({
-    nombreEquipo: "",
+    idEquipamiento: 0,
     observaciones: "",
   });
 
-  // Datos mock de solicitudes existentes (ahora como estado para poder modificarlos)
-  const [solicitudesExistentes, setSolicitudesExistentes] = useState<
-    EquipmentRequest[]
-  >([
-    {
-      id: "EQ-003",
-      nombreEquipo: "Silla de Ruedas",
-      fechaPrestamo: "2025-06-28",
-      fechaDevolucion: "2025-07-02",
-      estado: "devuelto",
-      medicoSolicitante: "Dr. Juan Pérez",
-      observaciones: "Traslado de paciente",
-      fechaSolicitud: "2025-06-27",
-    },
-    {
-      id: "EQ-004",
-      nombreEquipo: "Oxímetro de Pulso",
-      fechaPrestamo: "2025-07-01",
-      fechaDevolucion: "2025-07-08",
-      estado: "en_uso",
-      medicoSolicitante: "Dr. Juan Pérez",
-      observaciones: "Monitoreo de saturación",
-      fechaSolicitud: "2025-06-30",
-    },
-  ]);
+  // Convertir equipos a formato de solicitudes
+  const solicitudesExistentes: EquipmentRequest[] = equipos.map((equipo) => ({
+    id: `EQ-${equipo.idEquipamiento.toString().padStart(3, '0')}`,
+    nombreEquipo: equipo.nombre,
+    fechaPrestamo: new Date(equipo.FContratacion).toISOString().split("T")[0],
+    fechaDevolucion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 7 días después
+    estado: equipo.estado,
+    medicoSolicitante: "Dr. Usuario Actual", // Placeholder para el médico actual
+    observaciones: "Solicitud de equipo",
+    fechaSolicitud: new Date(equipo.FContratacion).toISOString().split("T")[0],
+  }));
 
-  // Lista de equipos disponibles
-  const equiposDisponibles = [
-    "Electrocardiografo",
-    "Monitor de Presión Arterial",
-    "Oxímetro de Pulso",
-    "Nebulizador",
-    "Aspirador de Secreciones",
-    "Silla de Ruedas",
-    "Camilla de Transporte",
-    "Desfibrilador",
-    "Ventilador Mecánico",
-    "Bomba de Infusión",
-    "Estetoscopio Electrónico",
-    "Termómetro Digital",
-    "Tensiómetro Manual",
-    "Lámpara de Examen",
-    "Mesa de Instrumentos",
-  ];
+  // Cargar equipos disponibles desde la API
+  useEffect(() => {
+    const loadEquipments = async () => {
+      if (!isAuthenticated) return;
+      
+      try {
+        const equiposData = await fetchEquipments();
+        setEquipos(equiposData || []);
+      } catch (error) {
+        console.error('Error al cargar equipos:', error);
+      }
+    };
+
+    loadEquipments();
+  }, [isAuthenticated, fetchEquipments]);
+
+
+
+  // Filtrar solo equipos disponibles (estado 'D') para el select
+  const equiposParaSelect = equipos.filter((equipo: Equipment) => equipo.estado === 'D');
 
   // Función para marcar equipo como devuelto
   const marcarComoDevuelto = (solicitudId: string) => {
-    const fechaActual = new Date().toISOString().split("T")[0];
-    setSolicitudesExistentes((prevSolicitudes) =>
-      prevSolicitudes.map((solicitud) =>
-        solicitud.id === solicitudId
+    // Extraer el ID del equipo del ID de la solicitud
+    const equipoId = parseInt(solicitudId.replace('EQ-', ''));
+    
+    // Actualizar el estado del equipo en la lista
+    setEquipos((prevEquipos) =>
+      prevEquipos.map((equipo) =>
+        equipo.idEquipamiento === equipoId
           ? {
-              ...solicitud,
-              estado: "devuelto" as const,
-              fechaDevolucion: fechaActual,
+              ...equipo,
+              estado: "D" as const, // Disponible (devuelto)
             }
-          : solicitud
+          : equipo
       )
     );
   };
@@ -88,16 +99,18 @@ const SolicitarEquipos = () => {
   const solicitudesFiltradas =
     filtroEstado === "todos"
       ? solicitudesExistentes
-      : solicitudesExistentes.filter(
-          (solicitud) => solicitud.estado === filtroEstado
-        );
+      : filtroEstado === "en_uso"
+      ? solicitudesExistentes.filter((solicitud) => solicitud.estado === "P")
+      : filtroEstado === "devuelto"
+      ? solicitudesExistentes.filter((solicitud) => solicitud.estado === "D")
+      : solicitudesExistentes;
 
   // Función para obtener la clase CSS según el estado
   const getEstadoClass = (estado: string) => {
     switch (estado) {
-      case "en_uso":
+      case "P":
         return "estado-en-uso";
-      case "devuelto":
+      case "D":
         return "estado-devuelto";
       default:
         return "";
@@ -107,10 +120,10 @@ const SolicitarEquipos = () => {
   // Función para obtener el texto del estado
   const getEstadoText = (estado: string) => {
     switch (estado) {
-      case "en_uso":
+      case "P":
         return "EN USO";
-      case "devuelto":
-        return "DEVUELTO";
+      case "D":
+        return "DISPONIBLE";
       default:
         return estado.toUpperCase();
     }
@@ -129,29 +142,48 @@ const SolicitarEquipos = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Calcular fecha de devolución (7 días después del préstamo)
-    const fechaDevolucionCalculada = new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000
-    );
+    if (!nuevaSolicitud.idEquipamiento) {
+      alert("Por favor selecciona un equipo");
+      return;
+    }
 
-    // Aquí se enviaría la solicitud a la API
-    console.log("Nueva solicitud:", {
-      nombreEquipo: nuevaSolicitud.nombreEquipo,
-      fechaPrestamo: fechaPrestamo.toISOString().split("T")[0],
-      fechaDevolucion: fechaDevolucionCalculada.toISOString().split("T")[0],
-      observaciones: nuevaSolicitud.observaciones,
-    });
+    // Crear fechas: préstamo actual y devolución 30 minutos después
+    const fechaPrestamo = new Date();
+    const fechaDevolucion = new Date(fechaPrestamo.getTime() + 30 * 60 * 1000); // 30 minutos después
 
-    // Resetear formulario
-    setNuevaSolicitud({
-      nombreEquipo: "",
-      observaciones: "",
-    });
+    const requestData = {
+      idEquipamiento: nuevaSolicitud.idEquipamiento,
+      FPrestamo: fechaPrestamo.toISOString(),
+      FDevolucion: fechaDevolucion.toISOString(),
+    };
 
-    alert("Solicitud enviada correctamente");
+    try {
+      await requestEquipment(requestData);
+
+      // Resetear formulario
+      setNuevaSolicitud({
+        idEquipamiento: 0,
+        observaciones: "",
+      });
+
+      // Recargar equipos para actualizar disponibilidad
+      if (isAuthenticated) {
+        try {
+          const equiposActualizados = await fetchEquipments();
+          setEquipos(equiposActualizados || []);
+        } catch (refreshError) {
+          console.error('Error al actualizar lista de equipos:', refreshError);
+        }
+      }
+
+      alert("Solicitud enviada correctamente");
+    } catch (error: any) {
+      console.error("Error al enviar solicitud:", error);
+      alert(`Error al enviar la solicitud: ${error.message || 'Error desconocido'}`);
+    }
   };
 
   return (
@@ -176,24 +208,30 @@ const SolicitarEquipos = () => {
             <div className="form-row">
               <div className="form-group">
                 <label className="form-label">Equipo Solicitado</label>
-                <select
-                  className="form-select"
-                  value={nuevaSolicitud.nombreEquipo}
-                  onChange={(e) =>
-                    setNuevaSolicitud({
-                      ...nuevaSolicitud,
-                      nombreEquipo: e.target.value,
-                    })
-                  }
-                  required
-                >
-                  <option value="">Selecciona un equipo</option>
-                  {equiposDisponibles.map((equipo, index) => (
-                    <option key={index} value={equipo}>
-                      {equipo}
-                    </option>
-                  ))}
-                </select>
+                {equipmentLoading ? (
+                  <div className="loading-message">Cargando equipos...</div>
+                ) : equipmentError ? (
+                  <div className="error-message">{equipmentError}</div>
+                ) : (
+                  <select
+                    className="form-select"
+                    value={nuevaSolicitud.idEquipamiento}
+                    onChange={(e) =>
+                      setNuevaSolicitud({
+                        ...nuevaSolicitud,
+                        idEquipamiento: parseInt(e.target.value),
+                      })
+                    }
+                    required
+                  >
+                    <option value={0}>Selecciona un equipo</option>
+                    {equiposParaSelect.map((equipo) => (
+                      <option key={equipo.idEquipamiento} value={equipo.idEquipamiento}>
+                        {equipo.nombre}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             </div>
 
@@ -212,9 +250,18 @@ const SolicitarEquipos = () => {
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="btn-primary">
-                Enviar Solicitud
+              <button 
+                type="submit" 
+                className="btn-primary"
+                disabled={requestLoading}
+              >
+                {requestLoading ? 'Enviando...' : 'Enviar Solicitud'}
               </button>
+              {requestError && (
+                <div className="error-message" style={{ marginTop: '10px', color: 'red' }}>
+                  {requestError}
+                </div>
+              )}
             </div>
           </form>
         </div>
@@ -287,7 +334,7 @@ const SolicitarEquipos = () => {
                   </div>
 
                   <div className="solicitud-actions">
-                    {solicitud.estado === "en_uso" && (
+                    {solicitud.estado === "P" && (
                       <button
                         className="btn-action btn-return"
                         onClick={() => marcarComoDevuelto(solicitud.id)}

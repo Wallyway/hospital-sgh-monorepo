@@ -23,6 +23,7 @@ export class DblinkService implements OnModuleDestroy {
       database: this.configService.get<string>('AUTH_DB_DBLINK_DBNAME'),
       user: this.configService.get<string>('AUTH_DB_DBLINK_USER'),
       password: this.configService.get<string>('AUTH_DB_DBLINK_PASSWORD'),
+      ssl: { rejectUnauthorized: false },
     });
     this.authDbPool
       .query('CREATE EXTENSION IF NOT EXISTS dblink;')

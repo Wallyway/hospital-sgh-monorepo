@@ -1,30 +1,44 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+// contexts
+import { useAuth } from "@contexts/AuthContext";
 // styles
 import "./styles/patientAppoinment.scss";
+// queries
+import { usePrescribeMedicines, useGetMedicines, useAddAppointmentSummary } from "@db/queries/medic";
 
 const CitaPaciente = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Extraer parámetros de la URL
+  const queryParams = new URLSearchParams(location.search);
+  const patientId = queryParams.get('patientId') || "12345";
+  const appointmentId = queryParams.get('appointmentId') || "0";
+  const appointmentDate = queryParams.get('date') || new Date().toLocaleDateString("es-ES");
+  const appointmentTime = queryParams.get('time') || "06:00";
+  const appointmentType = queryParams.get('type') || "Consulta General";
 
-  // Datos simulados del paciente (en una aplicación real, esto vendría de los parámetros de la URL o API)
+  // Datos del paciente (usando los parámetros recibidos)
   const pacienteData = {
-    id: "12345",
-    nombre: "María González",
-    edad: 35,
-    telefono: "+34 612 345 678",
-    email: "maria.gonzalez@email.com",
-    fechaNacimiento: "15/03/1989",
-    genero: "Femenino",
-    direccion: "Calle Mayor 123, Madrid",
+    id: patientId,
+    nombre: `Paciente: #${patientId}`,
+    edad: 25,
+    telefono: "3170835965",
+    email: `patient.${patientId}@mail.com`,
+    fechaNacimiento: "01/01/2000",
+    genero: "Masculino",
+    direccion: "Calle 100",
     numeroSeguroSocial: "123456789012",
     alergias: ["Penicilina", "Frutos secos"],
     medicamentosActuales: ["Ibuprofeno 400mg", "Omeprazol 20mg"],
   };
 
   const citaData = {
-    fecha: new Date().toLocaleDateString("es-ES"),
-    hora: "09:00",
-    tipo: "Consulta General",
+    id: appointmentId,
+    fecha: appointmentDate,
+    hora: appointmentTime,
+    tipo: appointmentType,
     motivo: "Control rutinario",
   };
 
@@ -33,13 +47,19 @@ const CitaPaciente = () => {
     observaciones: "",
   });
 
-  const [medicamentos, setMedicamentos] = useState([
+  const [medicamentos, setMedicamentos] = useState<{
+    id: number;
+    idMedicamento: number;
+    nombre: string;
+    posologia: string;
+    esParticular: boolean;
+  }[]>([
     {
       id: 1,
-      nombre: "",
-      farmaciaDisponible: "",
+      idMedicamento: 0, // Se actualizará cuando se carguen los medicamentos
+      nombre: "", // Solo para la interfaz
       posologia: "",
-      particular: false,
+      esParticular: false,
     },
   ]);
 
@@ -59,28 +79,54 @@ const CitaPaciente = () => {
     "Otro",
   ];
 
-  // Lista de medicamentos comunes (en una app real vendría de una API)
-  const medicamentosDisponibles = [
-    "Paracetamol 500mg",
-    "Ibuprofeno 400mg",
-    "Amoxicilina 500mg",
-    "Omeprazol 20mg",
-    "Losartán 50mg",
-    "Metformina 850mg",
-    "Atenolol 50mg",
-    "Aspirina 100mg",
-    "Loratadina 10mg",
-    "Diclofenaco 50mg",
-  ];
+  // Interfaz para medicamentos
+  interface Medicamento {
+    idMedicamento: number;
+    nombre: string;
+    descripcion: string;
+  }
+  
+  // Estado para medicamentos disponibles desde la API
+  const [medicamentosDisponibles, setMedicamentosDisponibles] = useState<Medicamento[]>([]);
+  
+  // Obtener lista de medicamentos desde la API
+  const { fetchData: getMedicamentos, loading: loadingMedicamentos } = useGetMedicines();
+  
+  const { isAuthenticated } = useAuth();
 
-  // Lista de farmacias (en una app real vendría de una API)
-  const farmaciasDisponibles = [
-    "Farmacia Central",
-    "Farmacia San José",
-    "Farmacia del Hospital",
-    "Farmacia 24 Horas",
-    "Farmacia Municipal",
-  ];
+  useEffect(() => {
+    // Cargar medicamentos cuando se monta el componente
+    const cargarMedicamentos = async () => {
+      try {
+        if (!isAuthenticated) return;
+        const data = await getMedicamentos();
+        if (data && Array.isArray(data)) {
+          setMedicamentosDisponibles(data);
+          console.log("Medicamentos cargados:", data);
+          
+          // Actualizar el medicamento inicial si hay medicamentos disponibles
+          if (data.length > 0 && medicamentos.length > 0) {
+            setMedicamentos(prev => 
+              prev.map((med, index) => 
+                index === 0 ? {
+                  ...med,
+                  idMedicamento: data[0].idMedicamento,
+                  nombre: data[0].nombre
+                } : med
+              )
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error al cargar medicamentos:", error);
+      }
+    };
+    
+    cargarMedicamentos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+
 
   const handleInputChange = (field: string, value: string) => {
     setDatosCita((prev) => ({
@@ -92,10 +138,31 @@ const CitaPaciente = () => {
   const handleMedicamentoChange = (
     id: number,
     field: string,
-    value: string | boolean
+    value: string | boolean | number
   ) => {
     setMedicamentos((prev) =>
-      prev.map((med) => (med.id === id ? { ...med, [field]: value } : med))
+      prev.map((med) => {
+        if (med.id === id) {
+          // Si es cambio de medicamento por ID
+          if (field === "idMedicamento") {
+            const selectedMed = medicamentosDisponibles.find(m => m.idMedicamento === Number(value));
+            if (selectedMed) {
+              return { 
+                ...med, 
+                idMedicamento: selectedMed.idMedicamento,
+                nombre: selectedMed.nombre // Actualizamos también el nombre para la UI
+              };
+            }
+          }
+          // Para el campo esParticular
+          if (field === "esParticular") {
+            return { ...med, esParticular: value as boolean };
+          }
+          // Para otros campos (posología)
+          return { ...med, [field]: value as string };
+        }
+        return med;
+      })
     );
   };
 
@@ -105,10 +172,10 @@ const CitaPaciente = () => {
       ...prev,
       {
         id: nuevoId,
+        idMedicamento: 0, // Valor inicial, se actualizará cuando seleccionen un medicamento
         nombre: "",
-        farmaciaDisponible: "",
         posologia: "",
-        particular: false,
+        esParticular: false,
       },
     ]);
   };
@@ -119,34 +186,125 @@ const CitaPaciente = () => {
     }
   };
 
-  const handleGuardarCita = () => {
-    // Aquí se guardarían los datos de la cita
-    const datosCompletos = {
-      paciente: pacienteData,
-      cita: citaData,
-      datosCita: datosCita,
-      medicamentos: medicamentos.filter((med) => med.nombre !== ""), // Solo medicamentos con nombre
+  // Usar los hooks para API
+  const { post: prescribirMedicamentos } = usePrescribeMedicines();
+  const { post: agregarResumen } = useAddAppointmentSummary();
+  
+  // Estado para controlar el guardado
+  const [guardando, setGuardando] = useState(false);
+
+  const handleGuardarCita = async () => {
+    // Verificar si los campos obligatorios están vacíos
+    if (datosCita.observaciones.trim() === "") {
+      alert("Por favor, ingrese un resumen de la cita.");
+      return;
+    }
+    
+    // Verificar si se seleccionó un diagnóstico
+    if (datosCita.diagnostico === "") {
+      alert("Por favor, seleccione un diagnóstico para la consulta.");
+      return;
+    }
+    
+    // Filtrar solo los medicamentos con ID válido y posología
+    const medicamentosValidos = medicamentos.filter(
+      (med) => med.idMedicamento > 0 && med.posologia.trim() !== ""
+    );
+    
+    // Verificar si hay medicamentos sin posología
+    const medicamentosSinPosologia = medicamentos.filter(
+      (med) => med.idMedicamento > 0 && med.posologia.trim() === ""
+    );
+    
+    if (medicamentosSinPosologia.length > 0) {
+      alert("Hay medicamentos seleccionados sin posología. Por favor complete todos los campos.");
+      return;
+    }
+    
+    // Formatear datos para la API
+    const prescripcionesData = {
+      prescripciones: medicamentosValidos.map(med => ({
+        idMedicamento: med.idMedicamento,
+        posologia: med.posologia,
+        esParticular: med.esParticular
+      }))
     };
-    console.log("Datos de la cita guardados:", datosCompletos);
-    alert("Cita guardada exitosamente");
+    
+    // Preparar datos para el resumen
+    const resumenData = {
+      resumen: datosCita.observaciones
+    };
+    
+    setGuardando(true);
+    let prescripcionesGuardadas = false;
+    let resumenGuardado = false;
+    
+    try {
+      // 1. Guardar prescripciones si hay medicamentos
+      if (medicamentosValidos.length > 0) {
+        console.log("Enviando prescripciones:", prescripcionesData);
+        const resultadoPrescripciones = await prescribirMedicamentos({
+          ...prescripcionesData,
+          endpoint: `appointments/${appointmentId}/prescriptions`
+        });
+
+        // const resultadoPrescripciones = {errorMutationMsg: true, errorJsonMsg: "a"}
+        
+        if (resultadoPrescripciones.errorMutationMsg) {
+          console.error("Error al guardar prescripciones:", resultadoPrescripciones);
+          alert("Error al guardar los medicamentos: " + resultadoPrescripciones.errorJsonMsg);
+        } else {
+          console.log("Prescripciones guardadas:", resultadoPrescripciones);
+          prescripcionesGuardadas = true;
+        }
+      } else {
+        console.log("No hay medicamentos para prescribir");
+        prescripcionesGuardadas = true; // Consideramos éxito si no hay medicamentos
+      }
+      
+      // 2. Guardar resumen de la cita
+      console.log("Enviando resumen:", resumenData);
+      const resultadoResumen = await agregarResumen(appointmentId, resumenData);
+      // const resultadoResumen = {errorMutationMsg: true, errorJsonMsg: "a"}
+      if (resultadoResumen.errorMutationMsg) {
+        console.error("Error al guardar el resumen:", resultadoResumen);
+        alert("Error al guardar el resumen de la cita: " + resultadoResumen.errorJsonMsg);
+      } else {
+        console.log("Resumen guardado:", resultadoResumen);
+        resumenGuardado = true;
+      }
+      
+      // Mostrar mensaje según los resultados
+      if (prescripcionesGuardadas && resumenGuardado) {
+        alert("Cita guardada exitosamente");
+      } else if (prescripcionesGuardadas) {
+        alert("Medicamentos guardados exitosamente, pero hubo un problema al guardar el resumen");
+      } else if (resumenGuardado) {
+        alert("Resumen guardado exitosamente, pero hubo un problema al guardar los medicamentos");
+      }
+    } catch (error) {
+      console.error("Error al guardar la cita:", error);
+      alert("Error al guardar la cita");
+    } finally {
+      setGuardando(false);
+    }
   };
 
   const handleActualizarHC = () => {
     // Redirigir a la vista de Historia Clínica
-    navigate(`/medic/historia-clinica/${pacienteData.id}`);
+    navigate(`/medic/ver-hc?patientId=${pacienteData.id}`);
   };
 
-  const handleFinalizarCita = () => {
-    handleGuardarCita();
-    navigate("/medic/agenda");
+  const handleFinalizarCita = async () => {
+    await handleGuardarCita();
+    // navigate("/medic/agenda");
   };
 
   return (
       <div className="main-content-section cita-container">
-        {/* Header de la cita */}
-        <div className="cita-header">
+        {/* Header de la cita */}          <div className="cita-header">
           <div className="cita-info">
-            <h2>Consulta Médica</h2>
+            <h2>Consulta Médica #{citaData.id}</h2>
             <div className="cita-details">
               <span>
                 {citaData.fecha} • {citaData.hora}
@@ -214,13 +372,14 @@ const CitaPaciente = () => {
             <div className="form-grid">
               {/* Diagnóstico */}
               <div className="form-group full-width">
-                <label>Diagnóstico</label>
+                <label>Diagnóstico <span className="required-field">*</span></label>
                 <select
                   value={datosCita.diagnostico}
                   onChange={(e) =>
                     handleInputChange("diagnostico", e.target.value)
                   }
                   className="form-select"
+                  required
                 >
                   <option value="">Seleccionar diagnóstico...</option>
                   {diagnosticosDisponibles.map((diagnostico) => (
@@ -231,30 +390,36 @@ const CitaPaciente = () => {
                 </select>
               </div>
 
-              {/* Observaciones */}
+              {/* Observaciones / Resumen */}
               <div className="form-group full-width">
-                <label>Observaciones</label>
+                <label>Resumen de la Consulta <span className="required-field">*</span></label>
                 <textarea
                   value={datosCita.observaciones}
                   onChange={(e) =>
                     handleInputChange("observaciones", e.target.value)
                   }
-                  placeholder="Observaciones adicionales durante la consulta..."
+                  placeholder="Ingrese un resumen de la consulta (obligatorio). Este texto se guardará como resumen oficial de la cita."
                   rows={4}
+                  required
                 />
+                <small className="field-hint">Este campo es obligatorio y se guardará como el resumen oficial de la cita.</small>
               </div>
 
               {/* Sección de Medicamentos */}
               <div className="medicamentos-section">
                 <div className="medicamentos-header">
                   <h4>Medicamentos Recetados</h4>
-                  <button
-                    type="button"
-                    className="btn-add-medicamento"
-                    onClick={agregarMedicamento}
-                  >
-                    + Agregar Medicamento
-                  </button>
+                  {loadingMedicamentos ? (
+                    <span className="loading-text">Cargando catálogo de medicamentos...</span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn-add-medicamento"
+                      onClick={agregarMedicamento}
+                    >
+                      + Agregar Medicamento
+                    </button>
+                  )}
                 </div>
 
                 <div className="medicamentos-list">
@@ -264,46 +429,32 @@ const CitaPaciente = () => {
                         <div className="form-group">
                           <label>Medicamento</label>
                           <select
-                            value={medicamento.nombre}
+                            value={medicamento.idMedicamento || ''}
                             onChange={(e) =>
                               handleMedicamentoChange(
                                 medicamento.id,
-                                "nombre",
-                                e.target.value
+                                "idMedicamento",
+                                e.target.value ? Number(e.target.value) : 0
                               )
                             }
                             className="form-select"
                           >
                             <option value="">Seleccionar medicamento...</option>
                             {medicamentosDisponibles.map((med) => (
-                              <option key={med} value={med}>
-                                {med}
+                              <option key={med.idMedicamento} value={med.idMedicamento}>
+                                {med.nombre} - {med.descripcion}
                               </option>
                             ))}
                           </select>
+                          {loadingMedicamentos && <span className="loading-text">Cargando medicamentos...</span>}
+                          {/* {medicamento.idMedicamento > 0 && (
+                            <small className="medication-info">
+                              {medicamentosDisponibles.find(m => m.idMedicamento === medicamento.idMedicamento)?.descripcion}
+                            </small>
+                          )} */}
                         </div>
 
-                        <div className="form-group">
-                          <label>Farmacia Disponible</label>
-                          <select
-                            value={medicamento.farmaciaDisponible}
-                            onChange={(e) =>
-                              handleMedicamentoChange(
-                                medicamento.id,
-                                "farmaciaDisponible",
-                                e.target.value
-                              )
-                            }
-                            className="form-select"
-                          >
-                            <option value="">Seleccionar farmacia...</option>
-                            {farmaciasDisponibles.map((farmacia) => (
-                              <option key={farmacia} value={farmacia}>
-                                {farmacia}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+
 
                         <div className="form-group">
                           <label>Posología</label>
@@ -325,11 +476,11 @@ const CitaPaciente = () => {
                           <label className="checkbox-label">
                             <input
                               type="checkbox"
-                              checked={medicamento.particular}
+                              checked={medicamento.esParticular}
                               onChange={(e) =>
                                 handleMedicamentoChange(
                                   medicamento.id,
-                                  "particular",
+                                  "esParticular",
                                   e.target.checked
                                 )
                               }
@@ -362,11 +513,19 @@ const CitaPaciente = () => {
 
         {/* Botones de acción */}
         <div className="cita-actions">
-          <button className="btn-action primary" onClick={handleActualizarHC}>
+          <button 
+            className="btn-action primary" 
+            onClick={handleActualizarHC}
+            disabled={guardando}
+          >
             📋 Actualizar Historia Clínica
           </button>
-          <button className="btn-action success" onClick={handleFinalizarCita}>
-            ✅ Finalizar Consulta
+          <button 
+            className="btn-action success" 
+            onClick={handleFinalizarCita}
+            disabled={guardando}
+          >
+            {guardando ? "Guardando..." : "✅ Finalizar Consulta"}
           </button>
         </div>
       </div>

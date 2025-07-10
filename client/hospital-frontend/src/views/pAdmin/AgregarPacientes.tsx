@@ -1,62 +1,67 @@
-import { useState } from 'react';
-import type { PatientFormData } from '../../types/patient';
-import './styles/agregarPacientes.scss';
+import { useState } from "react";
+import type { PatientFormData } from "../../types/patient";
+import { useCreatePatient } from "../../db/queries/admin";
+import "./styles/agregarPacientes.scss";
+
+type FormErrors = {
+  [K in keyof PatientFormData]?: string;
+};
 
 const AgregarPacientes = () => {
   const [formData, setFormData] = useState<PatientFormData>({
-    nombre: '',
-    apellidos: '',
-    dni: '',
-    fechaNacimiento: '',
-    telefono: '',
-    email: '',
-    direccion: '',
-    seguroMedico: '',
-    numeroSeguro: '',
-    alergias: '',
-    observacionesMedicas: ''
+    email: "",
+    password: "",
+    nombre: "",
+    direccion: "",
+    genero: "",
+    fechaNacimiento: "",
+    idUsuario: 0,
   });
 
-  const [errors, setErrors] = useState<Partial<PatientFormData>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const { post, postLoading, postError } = useCreatePatient();
 
-  const handleInputChange = (field: keyof PatientFormData, value: string) => {
-    setFormData(prev => ({
+  const handleInputChange = (
+    field: keyof PatientFormData,
+    value: string | number
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [field]: ''
+        [field]: undefined,
       }));
     }
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<PatientFormData> = {};
-    
-    if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
-    if (!formData.apellidos.trim()) newErrors.apellidos = 'Los apellidos son obligatorios';
-    if (!formData.dni.trim()) newErrors.dni = 'El DNI es obligatorio';
-    if (!formData.fechaNacimiento) newErrors.fechaNacimiento = 'La fecha de nacimiento es obligatoria';
-    if (!formData.telefono.trim()) newErrors.telefono = 'El teléfono es obligatorio';
-    
-    // Validate email format if provided
+    const newErrors: FormErrors = {};
+
+    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es obligatorio";
+    if (!formData.email.trim()) newErrors.email = "El email es obligatorio";
+    if (!formData.password.trim())
+      newErrors.password = "La contraseña es obligatoria";
+    if (!formData.fechaNacimiento)
+      newErrors.fechaNacimiento = "La fecha de nacimiento es obligatoria";
+    if (!formData.genero) newErrors.genero = "El género es obligatorio";
+    if (!formData.direccion.trim())
+      newErrors.direccion = "La dirección es obligatoria";
+    if (!formData.idUsuario || formData.idUsuario <= 0)
+      newErrors.idUsuario = "El ID de usuario es obligatorio";
+
+    // Validate email format
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Formato de email inválido';
+      newErrors.email = "Formato de email inválido";
     }
-    
-    // Validate DNI format (basic Spanish DNI validation)
-    if (formData.dni && !/^\d{8}[A-Za-z]$/.test(formData.dni)) {
-      newErrors.dni = 'Formato de DNI inválido (ej: 12345678A)';
-    }
-    
-    // Validate phone format
-    if (formData.telefono && !/^(\+34\s?)?[6-9]\d{8}$/.test(formData.telefono.replace(/\s/g, ''))) {
-      newErrors.telefono = 'Formato de teléfono inválido';
+
+    // Validate password length
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = "La contraseña debe tener al menos 8 caracteres";
     }
 
     setErrors(newErrors);
@@ -65,58 +70,44 @@ const AgregarPacientes = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
-    setIsSubmitting(true);
-    
     try {
-      // Here you would typically send the data to an API
-      console.log('Submitting patient data:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await post(formData);
+
       // Show success message and reset form
-      alert('Paciente agregado exitosamente');
+      alert("Paciente agregado exitosamente");
       setFormData({
-        nombre: '',
-        apellidos: '',
-        dni: '',
-        fechaNacimiento: '',
-        telefono: '',
-        email: '',
-        direccion: '',
-        seguroMedico: '',
-        numeroSeguro: '',
-        alergias: '',
-        observacionesMedicas: ''
+        email: "",
+        password: "",
+        nombre: "",
+        direccion: "",
+        genero: "",
+        fechaNacimiento: "",
+        idUsuario: 0,
       });
-      
     } catch (error) {
-      console.error('Error adding patient:', error);
-      alert('Error al agregar paciente. Por favor, intente nuevamente.');
-    } finally {
-      setIsSubmitting(false);
+      console.error("Error adding patient:", error);
     }
   };
 
   const handleCancel = () => {
-    if (window.confirm('¿Está seguro de que desea cancelar? Se perderán los datos ingresados.')) {
+    if (
+      window.confirm(
+        "¿Está seguro de que desea cancelar? Se perderán los datos ingresados."
+      )
+    ) {
       setFormData({
-        nombre: '',
-        apellidos: '',
-        dni: '',
-        fechaNacimiento: '',
-        telefono: '',
-        email: '',
-        direccion: '',
-        seguroMedico: '',
-        numeroSeguro: '',
-        alergias: '',
-        observacionesMedicas: ''
+        email: "",
+        password: "",
+        nombre: "",
+        direccion: "",
+        genero: "",
+        fechaNacimiento: "",
+        idUsuario: 0,
       });
       setErrors({});
     }
@@ -131,152 +122,142 @@ const AgregarPacientes = () => {
       </div>
 
       <div className="agregar-pacientes-content">
+        {postError && (
+          <div className="error-banner">
+            <p>Error al crear el paciente. Por favor, intente nuevamente.</p>
+          </div>
+        )}
         <div className="form-section">
           <form className="patient-form" onSubmit={handleSubmit}>
             <div className="form-grid">
               <div className="form-group">
                 <label>Nombre *</label>
-                <input 
-                  type="text" 
-                  className={`form-input ${errors.nombre ? 'error' : ''}`}
-                  placeholder="Nombre del paciente" 
+                <input
+                  type="text"
+                  className={`form-input ${errors.nombre ? "error" : ""}`}
+                  placeholder="Nombre del paciente"
                   value={formData.nombre}
-                  onChange={(e) => handleInputChange('nombre', e.target.value)}
+                  onChange={(e) => handleInputChange("nombre", e.target.value)}
                 />
-                {errors.nombre && <span className="error-message">{errors.nombre}</span>}
+                {errors.nombre && (
+                  <span className="error-message">{errors.nombre}</span>
+                )}
               </div>
-              
+
               <div className="form-group">
-                <label>Apellidos *</label>
-                <input 
-                  type="text" 
-                  className={`form-input ${errors.apellidos ? 'error' : ''}`}
-                  placeholder="Apellidos del paciente" 
-                  value={formData.apellidos}
-                  onChange={(e) => handleInputChange('apellidos', e.target.value)}
+                <label>Cedula (ID)*</label>
+                <input
+                  type="number"
+                  className={`form-input ${errors.idUsuario ? "error" : ""}`}
+                  placeholder="12345678"
+                  value={formData.idUsuario || ""}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "idUsuario",
+                      parseInt(e.target.value) || 0
+                    )
+                  }
                 />
-                {errors.apellidos && <span className="error-message">{errors.apellidos}</span>}
+                {errors.idUsuario && (
+                  <span className="error-message">{errors.idUsuario}</span>
+                )}
               </div>
-              
+
               <div className="form-group">
-                <label>DNI *</label>
-                <input 
-                  type="text" 
-                  className={`form-input ${errors.dni ? 'error' : ''}`}
-                  placeholder="12345678A" 
-                  value={formData.dni}
-                  onChange={(e) => handleInputChange('dni', e.target.value.toUpperCase())}
+                <label>Email *</label>
+                <input
+                  type="email"
+                  className={`form-input ${errors.email ? "error" : ""}`}
+                  placeholder="paciente@email.com"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                 />
-                {errors.dni && <span className="error-message">{errors.dni}</span>}
+                {errors.email && (
+                  <span className="error-message">{errors.email}</span>
+                )}
               </div>
-              
+
+              <div className="form-group">
+                <label>Contraseña *</label>
+                <input
+                  type="password"
+                  className={`form-input ${errors.password ? "error" : ""}`}
+                  placeholder="Contraseña"
+                  value={formData.password}
+                  onChange={(e) =>
+                    handleInputChange("password", e.target.value)
+                  }
+                />
+                {errors.password && (
+                  <span className="error-message">{errors.password}</span>
+                )}
+              </div>
+
               <div className="form-group">
                 <label>Fecha de nacimiento *</label>
-                <input 
-                  type="date" 
-                  className={`form-input ${errors.fechaNacimiento ? 'error' : ''}`}
+                <input
+                  type="date"
+                  className={`form-input ${errors.fechaNacimiento ? "error" : ""}`}
                   value={formData.fechaNacimiento}
-                  onChange={(e) => handleInputChange('fechaNacimiento', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("fechaNacimiento", e.target.value)
+                  }
                 />
-                {errors.fechaNacimiento && <span className="error-message">{errors.fechaNacimiento}</span>}
+                {errors.fechaNacimiento && (
+                  <span className="error-message">
+                    {errors.fechaNacimiento}
+                  </span>
+                )}
               </div>
-              
+
               <div className="form-group">
-                <label>Teléfono *</label>
-                <input 
-                  type="tel" 
-                  className={`form-input ${errors.telefono ? 'error' : ''}`}
-                  placeholder="+34 123 456 789" 
-                  value={formData.telefono}
-                  onChange={(e) => handleInputChange('telefono', e.target.value)}
-                />
-                {errors.telefono && <span className="error-message">{errors.telefono}</span>}
-              </div>
-              
-              <div className="form-group">
-                <label>Email</label>
-                <input 
-                  type="email" 
-                  className={`form-input ${errors.email ? 'error' : ''}`}
-                  placeholder="paciente@email.com" 
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                />
-                {errors.email && <span className="error-message">{errors.email}</span>}
-              </div>
-              
-              <div className="form-group full-width">
-                <label>Dirección</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder="Calle, número, ciudad..." 
-                  value={formData.direccion}
-                  onChange={(e) => handleInputChange('direccion', e.target.value)}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>Seguro médico</label>
-                <select 
-                  className="form-select"
-                  value={formData.seguroMedico}
-                  onChange={(e) => handleInputChange('seguroMedico', e.target.value)}
+                <label>Género *</label>
+                <select
+                  className={`form-select ${errors.genero ? "error" : ""}`}
+                  value={formData.genero}
+                  onChange={(e) => handleInputChange("genero", e.target.value)}
                 >
-                  <option value="">Seleccionar seguro</option>
-                  <option value="publico">Sistema Público</option>
-                  <option value="privado">Seguro Privado</option>
-                  <option value="mutua">Mutua</option>
+                  <option value="">Seleccionar género</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
                 </select>
+                {errors.genero && (
+                  <span className="error-message">{errors.genero}</span>
+                )}
               </div>
-              
-              <div className="form-group">
-                <label>Número de seguro</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder="Número de póliza/afiliación" 
-                  value={formData.numeroSeguro}
-                  onChange={(e) => handleInputChange('numeroSeguro', e.target.value)}
-                />
-              </div>
-              
+
               <div className="form-group full-width">
-                <label>Alergias conocidas</label>
-                <textarea 
-                  className="form-textarea"
-                  placeholder="Describir alergias conocidas o medicamentos que no puede tomar..."
-                  value={formData.alergias}
-                  onChange={(e) => handleInputChange('alergias', e.target.value)}
+                <label>Dirección *</label>
+                <input
+                  type="text"
+                  className={`form-input ${errors.direccion ? "error" : ""}`}
+                  placeholder="Calle, número, ciudad..."
+                  value={formData.direccion}
+                  onChange={(e) =>
+                    handleInputChange("direccion", e.target.value)
+                  }
                 />
-              </div>
-              
-              <div className="form-group full-width">
-                <label>Observaciones médicas</label>
-                <textarea 
-                  className="form-textarea"
-                  placeholder="Información médica relevante..."
-                  value={formData.observacionesMedicas}
-                  onChange={(e) => handleInputChange('observacionesMedicas', e.target.value)}
-                />
+                {errors.direccion && (
+                  <span className="error-message">{errors.direccion}</span>
+                )}
               </div>
             </div>
-            
+
             <div className="form-actions">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn-secondary"
                 onClick={handleCancel}
-                disabled={isSubmitting}
+                disabled={postLoading}
               >
                 Cancelar
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn-primary"
-                disabled={isSubmitting}
+                disabled={postLoading}
               >
-                {isSubmitting ? 'Agregando...' : 'Agregar Paciente'}
+                {postLoading ? "Agregando..." : "Agregar Paciente"}
               </button>
             </div>
           </form>

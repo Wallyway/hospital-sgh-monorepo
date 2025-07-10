@@ -1,11 +1,28 @@
-import { useState, useMemo } from 'react';
-import type { Patient } from '../../types/patient';
-import { mockPatients } from '../../types/patient';
+import { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+// contexts
+import { useAuth } from "@contexts/AuthContext";
+// queries
+import { useGetPatients } from "@db/queries/admin";
+// styles
 import './styles/consultarPacientes.scss';
 
+interface Patient {
+  idUsuario: string;
+  nombre: string;
+  email: string;
+  passwordHash: string;
+  genero: 'M' | 'F';
+  direccion: string;
+  fechaNacimiento: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const ConsultarPacientes = () => {
+  const { patients } = useConsultarPacientes();
   const [searchTerm, setSearchTerm] = useState('');
-  const [patients] = useState<Patient[]>(mockPatients);
+  const navigate = useNavigate();
 
   // Filter patients based on search term
   const filteredPatients = useMemo(() => {
@@ -14,48 +31,40 @@ const ConsultarPacientes = () => {
     const term = searchTerm.toLowerCase();
     return patients.filter(patient => 
       patient.nombre.toLowerCase().includes(term) ||
-      patient.dni.toLowerCase().includes(term) ||
-      patient.telefono.toLowerCase().includes(term) ||
-      patient.email.toLowerCase().includes(term)
+      patient.email.toLowerCase().includes(term) ||
+      patient.direccion.toLowerCase().includes(term)
     );
   }, [patients, searchTerm]);
 
   const handleSearch = () => {
-    // This could trigger an API call in a real application
     console.log('Searching for:', searchTerm);
   };
 
-  const handleViewPatient = (patientId: string) => {
-    console.log('View patient:', patientId);
-    // Navigate to patient details
-  };
-
   const handleEditPatient = (patientId: string) => {
-    console.log('Edit patient:', patientId);
-    // Navigate to edit patient form
+    // Navegar a la vista de modificar datos con el ID del paciente como parámetro de ruta
+    navigate(`/padmin/modificar-datos-pacientes/${patientId}`);
   };
 
-  const handleViewHistory = (patientId: string) => {
-    console.log('View history for patient:', patientId);
-    // Navigate to medical history
-  };
-
-  const getSeguroBadgeClass = (seguro: string) => {
-    switch (seguro) {
-      case 'publico': return 'publico';
-      case 'privado': return 'privado';
-      case 'mutua': return 'mutua';
-      default: return 'publico';
+  const calculateAge = (fechaNacimiento: string) => {
+    const birthDate = new Date(fechaNacimiento);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
+    
+    return age;
   };
 
-  const getSeguroDisplayName = (seguro: string) => {
-    switch (seguro) {
-      case 'publico': return 'Sistema Público';
-      case 'privado': return 'Seguro Privado';
-      case 'mutua': return 'Mutua';
-      default: return 'Sistema Público';
-    }
+  const formatUTCDate = (dateString: string) => {
+    const date = new Date(dateString);
+    // Usar getUTC methods para evitar problemas de zona horaria
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -70,7 +79,7 @@ const ConsultarPacientes = () => {
         <div className="search-section">
           <input 
             type="text" 
-            placeholder="Buscar paciente por nombre, DNI o teléfono..."
+            placeholder="Buscar paciente por nombre, email o dirección..."
             className="search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -83,55 +92,49 @@ const ConsultarPacientes = () => {
         
         <div className="patients-grid">
           {filteredPatients.length > 0 ? (
-            filteredPatients.map((patient) => (
-              <div key={patient.id} className="patient-card">
+            filteredPatients.map((patient: Patient) => (
+              <div key={patient.idUsuario} className="patient-card">
                 <div className="card-header">
                   <div className="patient-info">
                     <h3>{patient.nombre}</h3>
                     <span className="email">{patient.email}</span>
                   </div>
-                  <span className={`badge ${getSeguroBadgeClass(patient.seguroMedico)}`}>
-                    {getSeguroDisplayName(patient.seguroMedico)}
+                  <span className={`badge ${patient.genero === 'M' ? 'masculino' : 'femenino'}`}>
+                    {patient.genero === 'M' ? 'Masculino' : 'Femenino'}
                   </span>
                 </div>
                 <div className="card-body">
                   <div className="info-row">
-                    <span className="label">DNI:</span>
-                    <span className="value">{patient.dni}</span>
+                    <span className="label">ID Usuario:</span>
+                    <span className="value">{patient.idUsuario}</span>
                   </div>
                   <div className="info-row">
-                    <span className="label">Teléfono:</span>
-                    <span className="value">{patient.telefono}</span>
+                    <span className="label">Dirección:</span>
+                    <span className="value">{patient.direccion}</span>
                   </div>
                   <div className="info-row">
-                    <span className="label">Última visita:</span>
-                    <span className="value">{patient.ultimaVisita}</span>
+                    <span className="label">F. Nacimiento:</span>
+                    <span className="value">
+                      {formatUTCDate(patient.fechaNacimiento)}
+                    </span>
                   </div>
-                  {patient.edad && (
-                    <div className="info-row">
-                      <span className="label">Edad:</span>
-                      <span className="value">{patient.edad} años</span>
-                    </div>
-                  )}
+                  <div className="info-row">
+                    <span className="label">Edad:</span>
+                    <span className="value">{calculateAge(patient.fechaNacimiento)} años</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="label">Registrado:</span>
+                    <span className="value">
+                      {formatUTCDate(patient.createdAt)}
+                    </span>
+                  </div>
                 </div>
                 <div className="card-actions">
                   <button 
-                    className="btn-view"
-                    onClick={() => handleViewPatient(patient.id)}
-                  >
-                    Ver
-                  </button>
-                  <button 
                     className="btn-edit"
-                    onClick={() => handleEditPatient(patient.id)}
+                    onClick={() => handleEditPatient(patient.idUsuario)}
                   >
                     Editar
-                  </button>
-                  <button 
-                    className="btn-history"
-                    onClick={() => handleViewHistory(patient.id)}
-                  >
-                    Historial
                   </button>
                 </div>
               </div>
@@ -149,3 +152,28 @@ const ConsultarPacientes = () => {
 };
 
 export default ConsultarPacientes;
+
+const useConsultarPacientes = () => {
+  const { fetchData: getPatients } = useGetPatients();
+  const { isAuthenticated } = useAuth();
+
+  const [patients, setPatients] = useState<Patient[]>([]);
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      if (!isAuthenticated) return;
+
+      const patientsData = await getPatients();
+      if (patientsData?.fetchError) return;
+
+      if (patientsData && patientsData.length > 0) {
+        setPatients(patientsData);
+      }
+    };
+    fetchPatients();
+  }, [isAuthenticated]);
+
+  return {
+    patients,
+  };
+};

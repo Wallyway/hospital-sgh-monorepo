@@ -184,17 +184,41 @@
           outline: none;
           border-color: $primary-color;
           box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+        }          &::placeholder {
+            color: #adb5bd;
+          }
         }
 
-        &::placeholder {
-          color: #adb5bd;
+        textarea {
+          resize: vertical;
+          min-height: 60px;
         }
-      }
-
-      textarea {
-        resize: vertical;
-        min-height: 60px;
-      }
+        
+        .medication-info {
+          display: block;
+          color: #666;
+          margin-top: 5px;
+          font-style: italic;
+        }
+        
+        .loading-text {
+          font-style: italic;
+          color: #666;
+          margin-top: 5px;
+        }
+        
+        .required-field {
+          color: #e03243;
+          font-weight: bold;
+        }
+        
+        .field-hint {
+          display: block;
+          font-size: 0.85rem;
+          color: #666;
+          margin-top: 5px;
+          font-style: italic;
+        }
     }
 
     .form-select {
@@ -234,6 +258,12 @@
           font-size: 1.1rem;
           font-weight: 600;
         }
+        
+        .loading-text {
+          font-style: italic;
+          color: #666;
+          margin-left: 10px;
+        }
 
         .btn-add-medicamento {
           padding: 0.5rem 1rem;
@@ -249,6 +279,12 @@
           &:hover {
             background-color: $primary-color-darken;
             transform: translateY(-1px);
+          }
+          
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #999;
           }
         }
       }

@@ -383,6 +383,27 @@
     }
   }
 
+  // Loading and Error Messages
+  .loading-message {
+    padding: 0.75rem;
+    text-align: center;
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .error-message {
+    padding: 0.75rem;
+    text-align: center;
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
   // Responsive design
   @media (max-width: 768px) {
     padding: 1rem;
