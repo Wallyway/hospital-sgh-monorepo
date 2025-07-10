@@ -1,10 +1,22 @@
-import { Controller, Get, Post, Patch, Param, NotFoundException, Query, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Param,
+  NotFoundException,
+  Query,
+  Body,
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma.service';
 
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService, private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly employeesService: EmployeesService,
+    private readonly prisma: PrismaService,
+  ) { }
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -53,7 +65,10 @@ export class EmployeesController {
     @Query('date') date: string,
   ) {
     if (date) {
-      return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+      return this.employeesService.getAppointmentsByMedicAndDate(
+        Number(idMedico),
+        date,
+      );
     } else {
       // Si no hay fecha, obtener todas las citas del médico
       return this.employeesService.getAllAppointmentsByMedic(Number(idMedico));
@@ -71,6 +86,12 @@ export class EmployeesController {
   @Get('/citas')
   async getCitasByPatient(@Query('patient') patient: string) {
     return this.employeesService.getCitasByPatient(Number(patient));
+  }
+
+  // ENDPOINT para obtener todas las citas de un paciente por idPaciente (para microservicios)
+  @Get('/citas/by-paciente/:idPaciente')
+  async getCitasByPacienteId(@Param('idPaciente') idPaciente: string) {
+    return this.employeesService.getCitasByPatient(Number(idPaciente));
   }
 
   // NUEVO: Obtener cita específica por ID
@@ -138,9 +159,19 @@ export class EmployeesController {
   @Post('appointments/:id/prescriptions')
   async addPrescriptions(
     @Param('id') id: string,
-    @Body() body: { prescripciones: Array<{ idMedicamento: number; posologia: string; esParticular: boolean }> },
+    @Body()
+    body: {
+      prescripciones: Array<{
+        idMedicamento: number;
+        posologia: string;
+        esParticular: boolean;
+      }>;
+    },
   ) {
-    return this.employeesService.addPrescriptions(Number(id), body.prescripciones);
+    return this.employeesService.addPrescriptions(
+      Number(id),
+      body.prescripciones,
+    );
   }
 
   // ===== ENDPOINTS PARA FINALIZAR CITA =====

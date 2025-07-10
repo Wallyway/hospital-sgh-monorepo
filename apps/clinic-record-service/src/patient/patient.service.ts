@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { PrismaClient } from '../../generated/prisma/index.js';
+import axios from 'axios';
 
 @Injectable()
 export class PatientService {
@@ -62,6 +63,24 @@ export class PatientService {
     return roles;
   }
 
+  async getCitaSummariesByPacienteId(idPaciente: number): Promise<string[]> {
+    const CARDIOLOGY_SERVICE_URL = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+    try {
+      const response = await axios.get<Array<{ resumen: string }>>(
+        `${CARDIOLOGY_SERVICE_URL}/employees/citas/by-paciente/${idPaciente}`,
+      );
+      if (Array.isArray(response.data)) {
+        return response.data.map((cita) => cita.resumen).filter((r) => !!r);
+      }
+      return [];
+    } catch (error) {
+      this.logger.error(
+        `Error al obtener resúmenes de citas para paciente ${idPaciente}: ${error}`,
+      );
+      return [];
+    }
+  }
+
   async getMedicalRecordsByUserId(idUsuario: bigint | string) {
     // Busca todos los pacientes de este usuario
     const pacientes = await this.prisma.paciente.findMany({
@@ -72,11 +91,20 @@ export class PatientService {
     // Busca todas las historias clínicas asociadas a esos pacientes
     const historias = await this.prisma.historiaClinica.findMany({
       where: {
-        idPaciente: { in: pacientes.map(p => p.idPaciente) },
+        idPaciente: { in: pacientes.map((p) => p.idPaciente) },
       },
       orderBy: { FInicio: 'asc' },
     });
-    return historias;
+    // Para cada historia clínica, agrega los resúmenes de citas
+    const historiasConResumenes = await Promise.all(
+      historias.map(async (historia) => {
+        const resumenes = await this.getCitaSummariesByPacienteId(
+          historia.idPaciente,
+        );
+        return { ...historia, resumenes };
+      }),
+    );
+    return historiasConResumenes;
   }
 
   // NUEVO: Obtener paciente por idUsuario
