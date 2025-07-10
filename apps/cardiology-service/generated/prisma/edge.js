@@ -207,7 +207,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\jseba\\Documents\\Universidad\\2025-1\\BASES\\hospital-sgh-monorepo\\apps\\cardiology-service\\generated\\prisma",
+      "value": "C:\\Users\\USER\\Desktop\\bd2\\apps\\cardiology-service\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -221,11 +221,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\jseba\\Documents\\Universidad\\2025-1\\BASES\\hospital-sgh-monorepo\\apps\\cardiology-service\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\USER\\Desktop\\bd2\\apps\\cardiology-service\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
