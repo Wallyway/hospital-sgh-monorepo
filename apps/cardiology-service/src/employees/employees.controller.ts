@@ -117,4 +117,49 @@ export class EmployeesController {
       idUsuario: medic.empleado.idUsuario,
     };
   }
+
+  // ===== ENDPOINTS PARA DIAGNÓSTICOS =====
+
+  @Get('diagnoses')
+  async getDiagnoses() {
+    return this.employeesService.getDiagnoses();
+  }
+
+  @Post('appointments/:id/diagnoses')
+  async addDiagnoses(
+    @Param('id') id: string,
+    @Body() body: { diagnosticos: number[] },
+  ) {
+    return this.employeesService.addDiagnoses(Number(id), body.diagnosticos);
+  }
+
+  // ===== ENDPOINTS PARA PRESCRIPCIONES =====
+
+  @Post('appointments/:id/prescriptions')
+  async addPrescriptions(
+    @Param('id') id: string,
+    @Body() body: { prescripciones: Array<{ idMedicamento: number; posologia: string; esParticular: boolean }> },
+  ) {
+    return this.employeesService.addPrescriptions(Number(id), body.prescripciones);
+  }
+
+  // ===== ENDPOINTS PARA FINALIZAR CITA =====
+
+  @Post('appointments/:id/finish')
+  async finishAppointment(
+    @Param('id') id: string,
+    @Body() body: { resumen: string },
+  ) {
+    return this.employeesService.finishAppointment(Number(id), body.resumen);
+  }
+
+  // ===== ENDPOINTS PARA ADMINISTRADORES =====
+
+  @Patch('appointments/:id')
+  async updateAppointment(
+    @Param('id') id: string,
+    @Body() body: { idMedico?: number; fechaYHora?: string; estado?: string },
+  ) {
+    return this.employeesService.updateAppointment(Number(id), body);
+  }
 }

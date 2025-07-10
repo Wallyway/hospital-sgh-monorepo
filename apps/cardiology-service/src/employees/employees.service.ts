@@ -217,4 +217,187 @@ export class EmployeesService {
       data: updateData,
     });
   }
+
+  // ===== MÉTODOS PARA DIAGNÓSTICOS =====
+
+  async getDiagnoses() {
+    const diagnosticos = await this.prisma.diagnostico.findMany({
+      orderBy: {
+        nombre: 'asc',
+      },
+    });
+    return diagnosticos;
+  }
+
+  async addDiagnoses(idCita: number, diagnosticos: number[]) {
+    // Verificar que la cita existe
+    const cita = await this.prisma.cita.findUnique({
+      where: { idCita },
+    });
+    if (!cita) {
+      throw new BadRequestException('Cita no encontrada');
+    }
+
+    // Verificar que estamos en la franja horaria de la cita
+    // NOTA: Para deshabilitar esta validación durante pruebas, comenta la siguiente línea:
+    this.verifyAppointmentTimeWindow(cita.fechaYHora);
+
+    // Verificar que los diagnósticos existen
+    for (const idDiagnostico of diagnosticos) {
+      const diagnostico = await this.prisma.diagnostico.findUnique({
+        where: { idDiagnostico },
+      });
+      if (!diagnostico) {
+        throw new BadRequestException(`Diagnóstico con ID ${idDiagnostico} no encontrado`);
+      }
+    }
+
+    // Agregar diagnósticos a la cita
+    const diagnosticosCita = await Promise.all(
+      diagnosticos.map(idDiagnostico =>
+        this.prisma.medico_dictamina_diagnostico.create({
+          data: {
+            idCita,
+            idDiagnostico,
+            idMedico: cita.idMedico,
+          },
+        })
+      )
+    );
+
+    return diagnosticosCita;
+  }
+
+  // ===== MÉTODOS PARA PRESCRIPCIONES =====
+
+  async addPrescriptions(
+    idCita: number,
+    prescripciones: Array<{ idMedicamento: number; posologia: string; esParticular: boolean }>,
+  ) {
+    // Verificar que la cita existe
+    const cita = await this.prisma.cita.findUnique({
+      where: { idCita },
+    });
+    if (!cita) {
+      throw new BadRequestException('Cita no encontrada');
+    }
+
+    // Verificar que estamos en la franja horaria de la cita
+    // NOTA: Para deshabilitar esta validación durante pruebas, comenta la siguiente línea:
+    this.verifyAppointmentTimeWindow(cita.fechaYHora);
+
+    // Obtener el médico de la cita
+    const medico = await this.prisma.medico.findUnique({
+      where: { idMedico: cita.idMedico },
+    });
+    if (!medico) {
+      throw new BadRequestException('Médico no encontrado');
+    }
+
+    // Agregar prescripciones
+    const prescripcionesCreadas = await Promise.all(
+      prescripciones.map((prescripcion) =>
+        this.prisma.medico_Preescribe_Medicamento.create({
+          data: {
+            idMedico: cita.idMedico,
+            idMedicamento: prescripcion.idMedicamento,
+            idCita,
+            idPaciente: cita.idPaciente,
+            posologia: prescripcion.posologia,
+            particular: prescripcion.esParticular ? 'S' : 'N',
+          },
+        })
+      )
+    );
+
+    return prescripcionesCreadas;
+  }
+
+  // ===== MÉTODOS PARA FINALIZAR CITA =====
+
+  async finishAppointment(idCita: number, resumen: string) {
+    // Verificar que la cita existe
+    const cita = await this.prisma.cita.findUnique({
+      where: { idCita },
+    });
+    if (!cita) {
+      throw new BadRequestException('Cita no encontrada');
+    }
+
+    // Verificar que estamos en la franja horaria de la cita
+    // NOTA: Para deshabilitar esta validación durante pruebas, comenta la siguiente línea:
+    this.verifyAppointmentTimeWindow(cita.fechaYHora);
+
+    // Verificar que la cita está en estado 'R' (Reservada)
+    if (cita.estado !== 'R') {
+      throw new BadRequestException('Solo se pueden finalizar citas en estado reservada');
+    }
+
+    // Actualizar la cita con el resumen y cambiar estado a 'A' (Asistida)
+    const citaActualizada = await this.prisma.cita.update({
+      where: { idCita },
+      data: {
+        resumen,
+        estado: 'A',
+      },
+    });
+
+    return citaActualizada;
+  }
+
+  // ===== MÉTODOS PARA ADMINISTRADORES =====
+
+  async updateAppointment(idCita: number, updates: { idMedico?: number; fechaYHora?: string; estado?: string }) {
+    // Verificar que la cita existe
+    const cita = await this.prisma.cita.findUnique({
+      where: { idCita },
+    });
+    if (!cita) {
+      throw new BadRequestException('Cita no encontrada');
+    }
+
+    // Validar la fecha y hora si se está actualizando
+    if (updates.fechaYHora) {
+      this.validateTimeSlot(updates.fechaYHora);
+    }
+
+    // Validar el estado si se está actualizando
+    if (updates.estado && !['R', 'A', 'P', 'C'].includes(updates.estado)) {
+      throw new BadRequestException('Estado de cita inválido. Debe ser R, A, P o C');
+    }
+
+    // Actualizar la cita
+    const updateData: any = {};
+    if (updates.idMedico !== undefined) updateData.idMedico = updates.idMedico;
+    if (updates.fechaYHora !== undefined) updateData.fechaYHora = new Date(updates.fechaYHora);
+    if (updates.estado !== undefined) updateData.estado = updates.estado;
+
+    return this.prisma.cita.update({
+      where: { idCita },
+      data: updateData,
+    });
+  }
+
+  // ===== MÉTODOS AUXILIARES =====
+
+  private verifyAppointmentTimeWindow(fechaYHora: Date) {
+    const now = new Date();
+    const appointmentTime = new Date(fechaYHora);
+    const appointmentEnd = new Date(appointmentTime.getTime() + 30 * 60000); // +30 minutos
+
+    if (now < appointmentTime || now > appointmentEnd) {
+      throw new BadRequestException('Solo se pueden realizar acciones durante la franja horaria de la cita');
+    }
+  }
+
+  private validateTimeSlot(fechaYHora: string) {
+    const date = new Date(fechaYHora);
+    const minutes = date.getMinutes();
+
+    if (minutes !== 0 && minutes !== 30) {
+      throw new BadRequestException('Las citas solo pueden ser en franjas exactas: HH:00 o HH:30');
+    }
+  }
+
+
 }

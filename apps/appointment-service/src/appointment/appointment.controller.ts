@@ -9,6 +9,7 @@ import {
     Req,
     Res,
     HttpStatus,
+    Patch,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import * as jwt from 'jsonwebtoken';
@@ -153,6 +154,192 @@ export class AppointmentController {
             return res.status(HttpStatus.OK).json(result);
         } catch (error: any) {
             console.error('[AppointmentController] Error cancelling appointment:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
+
+    // ===== ENDPOINTS PARA MÉDICOS =====
+
+    @Get('diagnoses')
+    async getDiagnoses(@Req() req: any, @Res() res: any) {
+        console.log('[AppointmentController] GET /appointments/diagnoses');
+        try {
+            const result = await this.appointmentService.getDiagnoses();
+            console.log('[AppointmentController] Diagnoses retrieved successfully:', result);
+            return res.status(HttpStatus.OK).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error getting diagnoses:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
+
+    @Post(':id/diagnoses')
+    async addDiagnoses(
+        @Param('id') id: string,
+        @Body() body: { diagnosticos: number[] },
+        @Req() req: any,
+        @Res() res: any,
+    ) {
+        console.log('[AppointmentController] POST /appointments/:id/diagnoses - id:', id, 'body:', body);
+        // Extraer user de req.user o decodificar JWT
+        let user = req.user;
+        if (!user) {
+            // Extraer el token del header Authorization
+            const authHeader = req.headers['authorization'] || '';
+            const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+            let decoded: any = {};
+            if (token) {
+                try {
+                    decoded = jwt.decode(token);
+                } catch (e) {
+                    console.error('[AppointmentController] Error decoding JWT:', e);
+                }
+            }
+            user = {
+                idPaciente: decoded?.sub,
+                role: decoded?.role,
+                email: decoded?.email,
+            };
+        }
+        console.log('[AppointmentController] User for addDiagnoses:', user);
+        try {
+            const result = await this.appointmentService.addDiagnoses(Number(id), body.diagnosticos, user);
+            console.log('[AppointmentController] Diagnoses added successfully:', result);
+            return res.status(HttpStatus.CREATED).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error adding diagnoses:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
+
+    @Get('medications')
+    async getMedications(@Req() req: any, @Res() res: any) {
+        console.log('[AppointmentController] GET /appointments/medications');
+        try {
+            const result = await this.appointmentService.getMedications();
+            console.log('[AppointmentController] Medications retrieved successfully:', result);
+            return res.status(HttpStatus.OK).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error getting medications:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
+
+    @Post(':id/prescriptions')
+    async addPrescriptions(
+        @Param('id') id: string,
+        @Body() body: { prescripciones: Array<{ idMedicamento: number; posologia: string; esParticular: boolean }> },
+        @Req() req: any,
+        @Res() res: any,
+    ) {
+        console.log('[AppointmentController] POST /appointments/:id/prescriptions - id:', id, 'body:', body);
+        // Extraer user de req.user o decodificar JWT
+        let user = req.user;
+        if (!user) {
+            // Extraer el token del header Authorization
+            const authHeader = req.headers['authorization'] || '';
+            const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+            let decoded: any = {};
+            if (token) {
+                try {
+                    decoded = jwt.decode(token);
+                } catch (e) {
+                    console.error('[AppointmentController] Error decoding JWT:', e);
+                }
+            }
+            user = {
+                idPaciente: decoded?.sub,
+                role: decoded?.role,
+                email: decoded?.email,
+            };
+        }
+        console.log('[AppointmentController] User for addPrescriptions:', user);
+        try {
+            const result = await this.appointmentService.addPrescriptions(Number(id), body.prescripciones, user);
+            console.log('[AppointmentController] Prescriptions added successfully:', result);
+            return res.status(HttpStatus.CREATED).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error adding prescriptions:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
+
+    @Post(':id/finish')
+    async finishAppointment(
+        @Param('id') id: string,
+        @Body() body: { resumen: string },
+        @Req() req: any,
+        @Res() res: any,
+    ) {
+        console.log('[AppointmentController] POST /appointments/:id/finish - id:', id, 'body:', body);
+        // Extraer user de req.user o decodificar JWT
+        let user = req.user;
+        if (!user) {
+            // Extraer el token del header Authorization
+            const authHeader = req.headers['authorization'] || '';
+            const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+            let decoded: any = {};
+            if (token) {
+                try {
+                    decoded = jwt.decode(token);
+                } catch (e) {
+                    console.error('[AppointmentController] Error decoding JWT:', e);
+                }
+            }
+            user = {
+                idPaciente: decoded?.sub,
+                role: decoded?.role,
+                email: decoded?.email,
+            };
+        }
+        console.log('[AppointmentController] User for finishAppointment:', user);
+        try {
+            const result = await this.appointmentService.finishAppointment(Number(id), body.resumen, user);
+            console.log('[AppointmentController] Appointment finished successfully:', result);
+            return res.status(HttpStatus.OK).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error finishing appointment:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
+
+    // ===== ENDPOINTS PARA ADMINISTRADORES =====
+
+    @Patch(':id')
+    async updateAppointment(
+        @Param('id') id: string,
+        @Body() body: { idMedico?: number; fechaYHora?: string; estado?: string },
+        @Req() req: any,
+        @Res() res: any,
+    ) {
+        console.log('[AppointmentController] PATCH /appointments/:id - id:', id, 'body:', body);
+        // Extraer user de req.user o decodificar JWT
+        let user = req.user;
+        if (!user) {
+            // Extraer el token del header Authorization
+            const authHeader = req.headers['authorization'] || '';
+            const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+            let decoded: any = {};
+            if (token) {
+                try {
+                    decoded = jwt.decode(token);
+                } catch (e) {
+                    console.error('[AppointmentController] Error decoding JWT:', e);
+                }
+            }
+            user = {
+                idPaciente: decoded?.sub,
+                role: decoded?.role,
+                email: decoded?.email,
+            };
+        }
+        console.log('[AppointmentController] User for updateAppointment:', user);
+        try {
+            const result = await this.appointmentService.updateAppointment(Number(id), body, user);
+            console.log('[AppointmentController] Appointment updated successfully:', result);
+            return res.status(HttpStatus.OK).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error updating appointment:', error);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
         }
     }
