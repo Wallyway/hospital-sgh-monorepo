@@ -10,4 +10,4 @@ import { PatientController } from './patient/patient.controller';
   controllers: [AppController, PatientController],
   providers: [AppService, PatientService, QueueSubscriberService],
 })
-export class AppModule { }
+export class AppModule {}

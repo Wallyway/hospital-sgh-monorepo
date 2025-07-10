@@ -16,7 +16,7 @@ export class EmployeesController {
   constructor(
     private readonly employeesService: EmployeesService,
     private readonly prisma: PrismaService,
-  ) { }
+  ) {}
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -191,8 +191,28 @@ export class EmployeesController {
   @Patch('appointments/:id')
   async updateAppointment(
     @Param('id') id: string,
-    @Body() body: { idMedico?: number; fechaYHora?: string; estado?: string },
+    @Body()
+    body: {
+      idMedico?: number;
+      fechaYHora?: string;
+      estado?: string;
+      idPAdministrativo?: number;
+      accion?: string;
+    },
   ) {
     return this.employeesService.updateAppointment(Number(id), body);
+  }
+
+  // ===== ENDPOINTS PARA CONSULTAR GESTIONES ADMINISTRATIVAS =====
+
+  @Get('admin-appointment-history')
+  async getAdminAppointmentHistory(
+    @Query('idCita') idCita?: string,
+    @Query('idPAdministrativo') idPAdministrativo?: string,
+  ) {
+    return this.employeesService.getAdminAppointmentHistory(
+      idCita ? Number(idCita) : undefined,
+      idPAdministrativo ? Number(idPAdministrativo) : undefined,
+    );
   }
 }

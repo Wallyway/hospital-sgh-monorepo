@@ -21,7 +21,9 @@ export class PatientService {
       );
     }
     if (!idPAdministrativo || !baseDepartamento) {
-      throw new BadRequestException('Faltan datos para crear el paciente (idPAdministrativo o baseDepartamento)');
+      throw new BadRequestException(
+        'Faltan datos para crear el paciente (idPAdministrativo o baseDepartamento)',
+      );
     }
     // 1. Crear paciente SIN idHistoriaClinica
     const paciente = await this.prisma.paciente.create({
@@ -64,7 +66,8 @@ export class PatientService {
   }
 
   async getCitaSummariesByPacienteId(idPaciente: number): Promise<string[]> {
-    const CARDIOLOGY_SERVICE_URL = process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
+    const CARDIOLOGY_SERVICE_URL =
+      process.env.CARDIOLOGY_SERVICE_URL || 'http://localhost:3003';
     try {
       const response = await axios.get<Array<{ resumen: string }>>(
         `${CARDIOLOGY_SERVICE_URL}/employees/citas/by-paciente/${idPaciente}`,
