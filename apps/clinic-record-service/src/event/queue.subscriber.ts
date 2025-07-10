@@ -10,7 +10,7 @@ export class QueueSubscriberService implements OnModuleInit {
   private readonly logger = new Logger(QueueSubscriberService.name);
   private readonly queueName = process.env.QUEUE_NAME || 'hospital_events';
 
-  constructor(private patientService: PatientService) { }
+  constructor(private patientService: PatientService) {}
 
   onModuleInit() {
     QueueT.initialize(this.queueName, {
@@ -31,7 +31,9 @@ export class QueueSubscriberService implements OnModuleInit {
         payload: any;
       };
       const { eventType, payload } = parsed;
-      this.logger.log(`===> Procesando evento: ${eventType} para userId=${payload?.userId}`);
+      this.logger.log(
+        `===> Procesando evento: ${eventType} para userId=${payload?.userId}`,
+      );
       if (eventType === 'PatientSpecializationRequested') {
         await this.patientService.createPatientFromEvent(payload);
         this.logger.log(

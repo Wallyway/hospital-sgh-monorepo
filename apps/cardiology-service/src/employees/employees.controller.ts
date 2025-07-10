@@ -16,7 +16,7 @@ export class EmployeesController {
   constructor(
     private readonly employeesService: EmployeesService,
     private readonly prisma: PrismaService,
-  ) { }
+  ) {}
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -191,7 +191,8 @@ export class EmployeesController {
   @Patch('appointments/:id')
   async updateAppointment(
     @Param('id') id: string,
-    @Body() body: {
+    @Body()
+    body: {
       idMedico?: number;
       fechaYHora?: string;
       estado?: string;

@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async specializeEmployee(payload: any, eventType: string) {
     const { userId, idUser, role, ...rest } = payload;
@@ -321,8 +321,8 @@ export class EmployeesService {
             posologia: prescripcion.posologia,
             particular: prescripcion.esParticular ? 'S' : 'N',
           },
-        })
-      )
+        }),
+      ),
     );
 
     return prescripcionesCreadas;
@@ -396,7 +396,9 @@ export class EmployeesService {
 
     // Validar que se proporcione idPAdministrativo y accion
     if (!updates.idPAdministrativo) {
-      throw new BadRequestException('idPAdministrativo es requerido para actualizar citas');
+      throw new BadRequestException(
+        'idPAdministrativo es requerido para actualizar citas',
+      );
     }
 
     if (!updates.accion || !['A', 'C', 'R'].includes(updates.accion)) {
@@ -414,7 +416,8 @@ export class EmployeesService {
     // Actualizar la cita
     const updateData: any = {};
     if (updates.idMedico !== undefined) updateData.idMedico = updates.idMedico;
-    if (updates.fechaYHora !== undefined) updateData.fechaYHora = new Date(updates.fechaYHora);
+    if (updates.fechaYHora !== undefined)
+      updateData.fechaYHora = new Date(updates.fechaYHora);
     if (updates.estado !== undefined) updateData.estado = updates.estado;
 
     const citaActualizada = await this.prisma.cita.update({
@@ -442,7 +445,10 @@ export class EmployeesService {
 
   // ===== MÉTODOS PARA CONSULTAR GESTIONES ADMINISTRATIVAS =====
 
-  async getAdminAppointmentHistory(idCita?: number, idPAdministrativo?: number) {
+  async getAdminAppointmentHistory(
+    idCita?: number,
+    idPAdministrativo?: number,
+  ) {
     const whereClause: any = {};
 
     if (idCita) {
@@ -495,6 +501,4 @@ export class EmployeesService {
       );
     }
   }
-
-
 }

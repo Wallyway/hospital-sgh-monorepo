@@ -42,7 +42,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
