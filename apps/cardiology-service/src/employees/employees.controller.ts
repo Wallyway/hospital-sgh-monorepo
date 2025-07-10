@@ -63,11 +63,13 @@ export class EmployeesController {
   async getAppointmentsByMedicAndDate(
     @Param('idMedico') idMedico: string,
     @Query('date') date: string,
+    @Query('time') time?: string,
   ) {
     if (date) {
       return this.employeesService.getAppointmentsByMedicAndDate(
         Number(idMedico),
         date,
+        time,
       );
     } else {
       // Si no hay fecha, obtener todas las citas del médico

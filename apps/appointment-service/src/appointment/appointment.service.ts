@@ -50,7 +50,7 @@ export class AppointmentService {
 
         const availableMedics: any[] = [];
         for (const medic of medics) {
-            const citasUrl = `http://localhost:3003/employees/medics/${medic.idMedico}/appointments?date=${date}`;
+            const citasUrl = `http://localhost:3003/employees/medics/${medic.idMedico}/appointments?date=${date}&time=${time}`;
             console.log(`[AppointmentService] [getAvailableMedics] Consultando citas para médico ${medic.idMedico} en:`, citasUrl);
             let citas: any[] = [];
             try {
@@ -62,14 +62,16 @@ export class AppointmentService {
                 continue;
             }
 
+            // Normaliza la franja de inicio
             const [hour, minute] = time.split(':').map(Number);
-            const start = new Date(date);
-            start.setHours(hour, minute, 0, 0);
+            const start = new Date(`${date}T${time}:00.000Z`);
+            start.setSeconds(0, 0);
             const end = new Date(start.getTime() + 30 * 60000);
 
             const overlap = citas.some((cita) => {
                 const citaDate = new Date(cita.fechaYHora);
-                return citaDate >= start && citaDate < end;
+                citaDate.setSeconds(0, 0); // Normaliza segundos y milisegundos
+                return citaDate.getTime() >= start.getTime() && citaDate.getTime() < end.getTime();
             });
             if (!overlap) {
                 console.log(`[AppointmentService] [getAvailableMedics] Médico ${medic.idMedico} disponible en la franja.`);
@@ -114,6 +116,10 @@ export class AppointmentService {
         const idPaciente = paciente.idPaciente;
         console.log('[AppointmentService] [createAppointment] idPaciente real determinado:', idPaciente);
         const [date, time] = fechaYHora.split('T');
+        // Normaliza la fechaYHora a segundos y milisegundos en cero y UTC
+        const citaDate = new Date(fechaYHora);
+        citaDate.setSeconds(0, 0);
+        const fechaYHoraNormalizada = citaDate.toISOString();
         // 1. Consultar el médico para obtener su departamento
         const medic = await this.getMedicById(idMedico);
         if (!medic || !medic.idDepartamento) {
@@ -141,7 +147,7 @@ export class AppointmentService {
         const citaPayload = {
             idPaciente,
             idMedico,
-            fechaYHora,
+            fechaYHora: fechaYHoraNormalizada,
             estado: 'R',
             resumen: '',
         };
