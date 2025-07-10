@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./styles/citasPendientes.scss";
-import { useGetPatientAppointments } from "@/db/queries/patient";
+// contexts
+import { useAuth } from "@contexts/AuthContext";
+// queries
+import { useGetPatientAppointments, useCancelAppointment } from "@/db/queries/patient";
 
 // Definir los tipos de estado posibles
 type AppointmentStatus = "asistida" | "cancelada" | "perdida" | "reservada";
@@ -85,38 +88,54 @@ const DeptIcon = () => (
 const CitasPendientes = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const { fetchData, loading, error } = useGetPatientAppointments();
+  const { post: cancelAppointment, postLoading: cancelLoading, postError: cancelError } = useCancelAppointment();
+  const { isAuthenticated } = useAuth();
+
+  const loadAppointments = async () => {
+    try {
+      if (!isAuthenticated) return;
+      const apiAppointments = await fetchData();
+      if (apiAppointments && Array.isArray(apiAppointments)) {
+        const mappedAppointments = apiAppointments.map(mapApiAppointmentToLocal);
+        setAppointments(mappedAppointments);
+      } else if (apiAppointments && !apiAppointments.fetchError) {
+        // Si no es array pero tampoco es error, puede ser un objeto con las citas
+        const appointmentsArray = apiAppointments.data || apiAppointments.appointments || [];
+        if (Array.isArray(appointmentsArray)) {
+          const mappedAppointments = appointmentsArray.map(mapApiAppointmentToLocal);
+          setAppointments(mappedAppointments);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading appointments:", err);
+    }
+  };
 
   useEffect(() => {
-    const loadAppointments = async () => {
-      try {
-        const apiAppointments = await fetchData();
-        if (apiAppointments && Array.isArray(apiAppointments)) {
-          const mappedAppointments = apiAppointments.map(mapApiAppointmentToLocal);
-          setAppointments(mappedAppointments);
-        } else if (apiAppointments && !apiAppointments.fetchError) {
-          // Si no es array pero tampoco es error, puede ser un objeto con las citas
-          const appointmentsArray = apiAppointments.data || apiAppointments.appointments || [];
-          if (Array.isArray(appointmentsArray)) {
-            const mappedAppointments = appointmentsArray.map(mapApiAppointmentToLocal);
-            setAppointments(mappedAppointments);
-          }
-        }
-      } catch (err) {
-        console.error("Error loading appointments:", err);
-      }
-    };
-
     loadAppointments();
-  }, [fetchData]);
+  }, [fetchData, isAuthenticated]);
 
-  const handleCancel = (id: string) => {
-    setAppointments((prev) =>
-      prev.map((appt) =>
-        appt.id === id && appt.status === "reservada"
-          ? { ...appt, status: "cancelada" }
-          : appt
-      )
-    );
+  const handleCancel = async (id: string) => {
+    // Confirmación antes de cancelar
+    if (!window.confirm("¿Estás seguro de que deseas cancelar esta cita?")) {
+      return;
+    }
+
+    try {
+      // Extraer el ID numérico del formato "CIT-123"
+      const numericId = id.replace('CIT-', '');
+      
+      // Llamar a la API para cancelar la cita
+      await cancelAppointment(numericId);
+      
+      // Recargar las citas para obtener el estado actualizado
+      await loadAppointments();
+      
+      // Opcional: Mostrar mensaje de éxito
+      console.log("Cita cancelada exitosamente");
+    } catch (err) {
+      console.error("Error canceling appointment:", err);
+    }
   };
 
   if (loading) {
@@ -156,6 +175,11 @@ const CitasPendientes = () => {
       </div>
 
       <div className="appointments-container">
+        {cancelError && (
+          <div className="error-message" style={{ marginBottom: "1rem" }}>
+            Error al cancelar la cita: {cancelError}
+          </div>
+        )}
         {appointments.length === 0 ? (
           <div className="no-appointments-message">
             <p>No tienes citas programadas en este momento.</p>
@@ -184,8 +208,9 @@ const CitasPendientes = () => {
                     <button
                       className="btn-action btn-cancelar"
                       onClick={() => handleCancel(appointment.id)}
+                      disabled={cancelLoading}
                     >
-                      Cancelar
+                      {cancelLoading ? "Cancelando..." : "Cancelar"}
                     </button>
                   </div>
                 </div>

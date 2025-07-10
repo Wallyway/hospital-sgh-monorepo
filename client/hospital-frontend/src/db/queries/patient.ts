@@ -31,8 +31,22 @@ export const useCreateAppointment = () => {
 
 // citas del paciente
 export const useGetPatientAppointments = () => {
-  return useFetch(
-    "appointments",
-    "Error al obtener las citas del paciente"
-  );
+  return useFetch("appointments", "Error al obtener las citas del paciente");
+};
+
+// cancelar cita
+export const useCancelAppointment = () => {
+  const del = useMutation();
+
+  return {
+    post: (id: string) =>
+      del.mutate(
+        "DELETE",
+        `appointments/${id}`,
+        null,
+        "Error al cancelar la cita"
+      ),
+    postLoading: del.loading,
+    postError: del.error,
+  };
 };
