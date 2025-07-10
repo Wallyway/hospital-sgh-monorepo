@@ -557,6 +557,42 @@ export class AppointmentService {
             throw new Error('Solo los administradores pueden actualizar citas');
         }
 
+        // Obtener el idUsuario del token
+        const idUsuario = user?.idPaciente || user?.userId || user?.sub;
+        console.log('[AppointmentService] [updateAppointment] idUsuario determinado:', idUsuario);
+        if (!idUsuario) {
+            console.error('[AppointmentService] [updateAppointment] No se pudo determinar el idUsuario del usuario autenticado');
+            throw new Error('No se pudo determinar el idUsuario del usuario autenticado');
+        }
+
+        // Consultar el empleado administrativo por idUsuario
+        const empleadoUrl = `http://localhost:3003/employees/by-user/${idUsuario}`;
+        console.log('[AppointmentService] [updateAppointment] Consultando empleado en:', empleadoUrl);
+
+        let empleado;
+        try {
+            const empleadoResponse = await this.httpService.axiosRef.get(empleadoUrl);
+            empleado = empleadoResponse.data;
+            console.log('[AppointmentService] [updateAppointment] Empleado encontrado:', empleado);
+        } catch (error) {
+            console.error('[AppointmentService] [updateAppointment] Error consultando empleado:', error.message, error);
+            throw new Error('No se encontró el empleado autenticado');
+        }
+
+        // Consultar el PAdministrativo por idEmpleado
+        const pAdminUrl = `http://localhost:3003/employees/padministrativo/by-employee/${empleado.idEmpleado}`;
+        console.log('[AppointmentService] [updateAppointment] Consultando PAdministrativo en:', pAdminUrl);
+
+        let pAdministrativo;
+        try {
+            const pAdminResponse = await this.httpService.axiosRef.get(pAdminUrl);
+            pAdministrativo = pAdminResponse.data;
+            console.log('[AppointmentService] [updateAppointment] PAdministrativo encontrado:', pAdministrativo);
+        } catch (error) {
+            console.error('[AppointmentService] [updateAppointment] Error consultando PAdministrativo:', error.message, error);
+            throw new Error('No se encontró el personal administrativo autenticado');
+        }
+
         // Validar la fecha y hora si se está actualizando
         if (updates.fechaYHora) {
             this.validateTimeSlot(updates.fechaYHora);
@@ -567,15 +603,55 @@ export class AppointmentService {
             throw new Error('Estado de cita inválido. Debe ser R, A, P o C');
         }
 
+        // Determinar la acción basada en los cambios
+        let accion = 'A'; // Por defecto 'A' (Agregar/Actualizar)
+        if (updates.estado === 'C') {
+            accion = 'C'; // Cancelar
+        } else if (updates.estado === 'R') {
+            accion = 'R'; // Reprogramar
+        }
+
         const url = `http://localhost:3003/employees/appointments/${idCita}`;
+        const payload = {
+            ...updates,
+            idPAdministrativo: pAdministrativo.idPAdministrativo,
+            accion: accion
+        };
 
         try {
-            const response = await this.httpService.axiosRef.patch(url, updates);
+            const response = await this.httpService.axiosRef.patch(url, payload);
             console.log('[AppointmentService] [updateAppointment] Cita actualizada exitosamente:', response.data);
             return response.data;
         } catch (error) {
             console.error('[AppointmentService] [updateAppointment] Error:', error.message, error);
             throw new Error('No se pudo actualizar la cita: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    async getAdminAppointmentHistory(idCita?: number, idPAdministrativo?: number) {
+        console.log('[AppointmentService] [getAdminAppointmentHistory] Consultando historial administrativo');
+
+        const url = 'http://localhost:3003/employees/admin-appointment-history';
+        const params = new URLSearchParams();
+
+        if (idCita) {
+            params.append('idCita', idCita.toString());
+        }
+
+        if (idPAdministrativo) {
+            params.append('idPAdministrativo', idPAdministrativo.toString());
+        }
+
+        const fullUrl = params.toString() ? `${url}?${params.toString()}` : url;
+        console.log('[AppointmentService] [getAdminAppointmentHistory] URL:', fullUrl);
+
+        try {
+            const response = await this.httpService.axiosRef.get(fullUrl);
+            console.log('[AppointmentService] [getAdminAppointmentHistory] Historial obtenido:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [getAdminAppointmentHistory] Error:', error.message, error);
+            throw new Error('No se pudo obtener el historial administrativo: ' + (error?.response?.data?.message || error.message));
         }
     }
 

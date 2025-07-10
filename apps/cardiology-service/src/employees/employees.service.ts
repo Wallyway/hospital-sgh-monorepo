@@ -366,7 +366,13 @@ export class EmployeesService {
 
   async updateAppointment(
     idCita: number,
-    updates: { idMedico?: number; fechaYHora?: string; estado?: string },
+    updates: {
+      idMedico?: number;
+      fechaYHora?: string;
+      estado?: string;
+      idPAdministrativo?: number;
+      accion?: string;
+    },
   ) {
     // Verificar que la cita existe
     const cita = await this.prisma.cita.findUnique({
@@ -388,16 +394,81 @@ export class EmployeesService {
       );
     }
 
+    // Validar que se proporcione idPAdministrativo y accion
+    if (!updates.idPAdministrativo) {
+      throw new BadRequestException('idPAdministrativo es requerido para actualizar citas');
+    }
+
+    if (!updates.accion || !['A', 'C', 'R'].includes(updates.accion)) {
+      throw new BadRequestException('Acción inválida. Debe ser A, C o R');
+    }
+
+    // Verificar que el PAdministrativo existe
+    const pAdmin = await this.prisma.pAdministrativo.findUnique({
+      where: { idPAdministrativo: updates.idPAdministrativo },
+    });
+    if (!pAdmin) {
+      throw new BadRequestException('Personal administrativo no encontrado');
+    }
+
     // Actualizar la cita
     const updateData: any = {};
     if (updates.idMedico !== undefined) updateData.idMedico = updates.idMedico;
     if (updates.fechaYHora !== undefined) updateData.fechaYHora = new Date(updates.fechaYHora);
     if (updates.estado !== undefined) updateData.estado = updates.estado;
 
-    return this.prisma.cita.update({
+    const citaActualizada = await this.prisma.cita.update({
       where: { idCita },
       data: updateData,
     });
+
+    // Registrar la gestión administrativa en PAdmin_Gestiona_Cita
+    try {
+      await this.prisma.pAdmin_Gestiona_Cita.create({
+        data: {
+          idPAdministrativo: updates.idPAdministrativo,
+          idCita: idCita,
+          accion: updates.accion,
+          FAccion: new Date(),
+        },
+      });
+    } catch (error) {
+      // Si hay un error al registrar la gestión, loguear pero no fallar la actualización
+      console.error('Error al registrar gestión administrativa:', error);
+    }
+
+    return citaActualizada;
+  }
+
+  // ===== MÉTODOS PARA CONSULTAR GESTIONES ADMINISTRATIVAS =====
+
+  async getAdminAppointmentHistory(idCita?: number, idPAdministrativo?: number) {
+    const whereClause: any = {};
+
+    if (idCita) {
+      whereClause.idCita = idCita;
+    }
+
+    if (idPAdministrativo) {
+      whereClause.idPAdministrativo = idPAdministrativo;
+    }
+
+    const historial = await this.prisma.pAdmin_Gestiona_Cita.findMany({
+      where: whereClause,
+      include: {
+        pAdministrativo: {
+          include: {
+            empleado: true,
+          },
+        },
+        cita: true,
+      },
+      orderBy: {
+        FAccion: 'desc',
+      },
+    });
+
+    return historial;
   }
 
   // ===== MÉTODOS AUXILIARES =====

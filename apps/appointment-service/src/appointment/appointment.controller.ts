@@ -343,4 +343,54 @@ export class AppointmentController {
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
         }
     }
+
+    // ===== ENDPOINTS PARA CONSULTAR GESTIONES ADMINISTRATIVAS =====
+
+    @Get('admin-history')
+    async getAdminAppointmentHistory(
+        @Req() req: any,
+        @Res() res: any,
+        @Query('idCita') idCita?: string,
+        @Query('idPAdministrativo') idPAdministrativo?: string,
+    ) {
+        console.log('[AppointmentController] GET /appointments/admin-history - idCita:', idCita, 'idPAdministrativo:', idPAdministrativo);
+
+        // Extraer user de req.user o decodificar JWT
+        let user = req.user;
+        if (!user) {
+            // Extraer el token del header Authorization
+            const authHeader = req.headers['authorization'] || '';
+            const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+            let decoded: any = {};
+            if (token) {
+                try {
+                    decoded = jwt.decode(token);
+                } catch (e) {
+                    console.error('[AppointmentController] Error decoding JWT:', e);
+                }
+            }
+            user = {
+                idPaciente: decoded?.sub,
+                role: decoded?.role,
+                email: decoded?.email,
+            };
+        }
+
+        // Verificar que el usuario es un administrador
+        if (user?.role !== 'ADMIN') {
+            return res.status(HttpStatus.FORBIDDEN).json({ message: 'Solo los administradores pueden consultar el historial administrativo' });
+        }
+
+        try {
+            const result = await this.appointmentService.getAdminAppointmentHistory(
+                idCita ? Number(idCita) : undefined,
+                idPAdministrativo ? Number(idPAdministrativo) : undefined
+            );
+            console.log('[AppointmentController] Admin appointment history retrieved successfully:', result);
+            return res.status(HttpStatus.OK).json(result);
+        } catch (error: any) {
+            console.error('[AppointmentController] Error getting admin appointment history:', error);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || error });
+        }
+    }
 }
