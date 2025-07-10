@@ -42,16 +42,14 @@ const mapApiStatusToLocal = (apiStatus: "R" | "C" | "P" | "A"): AppointmentStatu
 
 // Función para convertir datos de API a formato local
 const mapApiAppointmentToLocal = (apiAppointment: ApiAppointment): Appointment => {
-  const dateTime = new Date(apiAppointment.fechaYHora);
+  // Extraer la fecha y hora directamente del string ISO sin conversión de zona horaria
+  const [datePart, timePart] = apiAppointment.fechaYHora.split('T');
+  const timeWithoutSeconds = timePart.substring(0, 5); // Tomar solo HH:MM
   
   return {
     id: `CIT-${apiAppointment.idCita}`,
-    date: dateTime.toISOString().split('T')[0],
-    time: dateTime.toLocaleTimeString('es-ES', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      hour12: false 
-    }),
+    date: datePart,
+    time: timeWithoutSeconds,
     description: apiAppointment.resumen || "Consulta General",
     departamento: "Cardiología",
     status: mapApiStatusToLocal(apiAppointment.estado)

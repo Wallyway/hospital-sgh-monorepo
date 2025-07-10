@@ -275,20 +275,12 @@ const useAgendar = () => {
     }
 
     try {
-      // Crear fecha manteniendo el día seleccionado - ajuste específico para tu zona horaria
+      // Crear fecha manteniendo el día y hora seleccionados exactamente como los ingresó el usuario
       const [year, month, day] = selectedDate.split('-');
       const [hours, minutes, seconds = '00'] = selectedTime.split(':');
       
-      // Convertir hora local a UTC: restar 19 horas para que 21:00 → 02:00 del mismo día
-      let adjustedHours = parseInt(hours) - 19;
-      
-      // Si las horas son negativas, ajustar sumando 24
-      if (adjustedHours < 0) {
-        adjustedHours = adjustedHours + 24;
-      }
-      
-      // Formatear la fecha y hora manualmente manteniendo el día original
-      const dateTimeString = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${adjustedHours.toString().padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}.000Z`;
+      // Formatear la fecha y hora exactamente como fue ingresada por el usuario
+      const dateTimeString = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}.000Z`;
 
       const appointmentData = {
         idMedico: parseInt(selectedDoctor),
@@ -296,7 +288,7 @@ const useAgendar = () => {
       };
 
       console.log("Fecha original:", selectedDate, selectedTime);
-      console.log("Fecha/hora con -5 horas (UTC):", dateTimeString);
+      console.log("Fecha/hora enviada:", dateTimeString);
       console.log("Creando cita con datos:", appointmentData);
 
       const result = await post(appointmentData);

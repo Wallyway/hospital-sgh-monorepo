@@ -43,12 +43,13 @@ const MedicAgenda = () => {
           };
           const { status, text } = statusMap[appointment.estado as keyof typeof statusMap] || { status: "pending", text: "Pendiente" };
 
+          // Extraer la hora directamente del string ISO sin conversión de zona horaria
+          const [, timePart] = appointment.fechaYHora.split('T');
+          const timeWithoutSeconds = timePart.substring(0, 5); // Tomar solo HH:MM
+          
           return {
             id: appointment.idCita,
-            time: new Date(appointment.fechaYHora).toLocaleTimeString("es-ES", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
+            time: timeWithoutSeconds,
             duration: "30 min", // This data is not available in the response
             patientName: `Paciente: #${appointment.idPaciente}`,
             patientId: appointment.idPaciente.toString(),
@@ -78,7 +79,7 @@ const MedicAgenda = () => {
             })}
           </div>
         </div>
-        <Calendar24 
+        {/* <Calendar24 
           date={selectedDate} 
           onDateChange={(date) => {
             if (date) {
@@ -86,7 +87,7 @@ const MedicAgenda = () => {
             }
           }} 
           showTime={false}
-        />
+        /> */}
       </div>
 
       <div className="appointments-container">
