@@ -133,7 +133,7 @@ const MedicAgenda = () => {
                     className="btn-action secondary"
                     onClick={() =>
                       navigate(
-                        `/medic/cita_paciente?patientId=${appointment.patientId}&appointmentId=${appointment.id}`
+                        `/medic/cita_paciente?patientId=${appointment.patientId}&appointmentId=${appointment.id}&date=${selectedDate.toLocaleDateString("es-ES")}&time=${appointment.time}&type=${encodeURIComponent(appointment.appointmentType)}`
                       )
                     }
                   >
