@@ -42,7 +42,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private rolesService: RolesService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Generar super usuario temporal (solo desarrollo)' })
   @ApiResponse({
@@ -894,5 +894,16 @@ export class AuthController {
       throw new NotFoundException('Paciente no encontrado');
     }
     return updated;
+  }
+
+  @Get('users/:idUsuario')
+  async getUserById(@Param('idUsuario') idUsuario: string) {
+    const user = await this.usersService.user({ idUsuario: BigInt(idUsuario) });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return {
+      idUsuario: user.idUsuario.toString(),
+      nombre: user.nombre,
+      email: user.email,
+    };
   }
 }

@@ -74,8 +74,19 @@ export class AppointmentService {
                 return citaDate.getTime() >= start.getTime() && citaDate.getTime() < end.getTime();
             });
             if (!overlap) {
+                // Obtener el nombre del médico usando el idUsuario
+                let nombre = undefined;
+                try {
+                    const idUsuario = medic.empleado?.idUsuario || medic.idUsuario;
+                    if (idUsuario) {
+                        const usuarioResp = await this.httpService.axiosRef.get(`http://localhost:3001/auth/users/${idUsuario}`);
+                        nombre = usuarioResp.data?.nombre;
+                    }
+                } catch (error) {
+                    console.error(`[AppointmentService] [getAvailableMedics] Error obteniendo nombre para idUsuario ${medic.empleado?.idUsuario || medic.idUsuario}:`, error.message, error);
+                }
+                availableMedics.push({ ...medic, nombre });
                 console.log(`[AppointmentService] [getAvailableMedics] Médico ${medic.idMedico} disponible en la franja.`);
-                availableMedics.push(medic);
             } else {
                 console.log(`[AppointmentService] [getAvailableMedics] Médico ${medic.idMedico} NO disponible en la franja.`);
             }
@@ -377,11 +388,22 @@ export class AppointmentService {
                         const pacienteResponse = await this.httpService.axiosRef.get(pacienteUrl);
                         const paciente = pacienteResponse.data;
 
+                        let nombre = undefined;
+                        try {
+                            if (paciente && paciente.idUsuario) {
+                                const usuarioResp = await this.httpService.axiosRef.get(`http://localhost:3001/auth/users/${paciente.idUsuario}`);
+                                nombre = usuarioResp.data?.nombre;
+                            }
+                        } catch (error) {
+                            console.error(`[AppointmentService] [getMedicAppointments] Error obteniendo nombre para idUsuario ${paciente?.idUsuario}:`, error.message, error);
+                        }
+
                         return {
                             ...cita,
                             paciente: paciente ? {
                                 idPaciente: paciente.idPaciente,
-                                nombre: paciente.nombre,
+                                idUsuario: paciente.idUsuario,
+                                nombre: nombre,
                                 apellido: paciente.apellido,
                                 fechaNacimiento: paciente.fechaNacimiento
                             } : null
