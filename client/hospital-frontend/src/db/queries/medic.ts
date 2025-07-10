@@ -22,3 +22,8 @@ export const useRequestEquipment = () => {
     postError: post.error,
   };
 };
+
+// listar citas de pacientes
+export const useGetPatientAppointments = () => {
+  return useFetch("appointments", "Error al obtener las citas del paciente");
+};

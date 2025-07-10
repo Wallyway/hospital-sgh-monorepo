@@ -25,7 +25,7 @@ export function Calendar24({
   date, 
   onDateChange, 
   showTime = true, 
-  time = "10:30:00", 
+  time = "10:30", 
   onTimeChange 
 }: Calendar24Props) {
   const [open, setOpen] = React.useState(false);
@@ -68,7 +68,7 @@ export function Calendar24({
           <Input
             type="time"
             id="time-picker"
-            step="1"
+            step="60"
             value={time}
             onChange={(e) => onTimeChange?.(e.target.value)}
             className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"

@@ -1,92 +1,68 @@
 import { Calendar24 } from "@components/ui/Calendar24";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// contexts
+import { useAuth } from "@contexts/AuthContext";
+// queries
+import { useGetPatientAppointments } from "@db/queries/medic";
 
 import "./styles/agenda.scss"; // Import styles for the agenda
 
+interface Appointment {
+  id: number;
+  time: string;
+  duration: string;
+  patientName: string;
+  patientId: string;
+  appointmentType: string;
+  status: "completed" | "confirmed" | "pending" | "cancelled";
+  statusText: string;
+}
+
 const MedicAgenda = () => {
+  const { isAuthenticated } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const navigate = useNavigate();
-  // Lista de citas
-  const appointments = [
-    {
-      id: 1,
-      time: "08:00",
-      duration: "30 min",
-      patientName: "Pedro Jiménez",
-      patientId: "98765",
-      patientAge: 55,
-      appointmentType: "Control Rutinario",
-      status: "completed",
-      statusText: "Completada",
-    },
-    {
-      id: 2,
-      time: "09:00",
-      duration: "30 min",
-      patientName: "María González",
-      patientId: "12345",
-      patientAge: 35,
-      appointmentType: "Consulta General",
-      status: "confirmed",
-      statusText: "Confirmada",
-    },
-    {
-      id: 3,
-      time: "10:30",
-      duration: "45 min",
-      patientName: "Carlos Mendoza",
-      patientId: "67890",
-      patientAge: 42,
-      appointmentType: "Control Postoperatorio",
-      status: "pending",
-      statusText: "Pendiente",
-    },
-    {
-      id: 4,
-      time: "12:00",
-      duration: "30 min",
-      patientName: "Luis Martínez",
-      patientId: "11111",
-      patientAge: 28,
-      appointmentType: "Primera Consulta",
-      status: "confirmed",
-      statusText: "Confirmada",
-    },
-    {
-      id: 5,
-      time: "14:00",
-      duration: "30 min",
-      patientName: "Ana Rodríguez",
-      patientId: "54321",
-      patientAge: 28,
-      appointmentType: "Primera Consulta",
-      status: "confirmed",
-      statusText: "Confirmada",
-    },
-    {
-      id: 6,
-      time: "15:30",
-      duration: "45 min",
-      patientName: "Roberto Silva",
-      patientId: "22222",
-      patientAge: 65,
-      appointmentType: "Control Diabetes",
-      status: "pending",
-      statusText: "Pendiente",
-    },
-    {
-      id: 7,
-      time: "16:15",
-      duration: "30 min",
-      patientName: "Carmen López",
-      patientId: "33333",
-      patientAge: 45,
-      appointmentType: "Consulta General",
-      status: "confirmed",
-      statusText: "Confirmada",
-    },
-  ];
+  const { fetchData: getAppointments, loading } = useGetPatientAppointments();
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if(!isAuthenticated) return;
+
+      const data = await getAppointments();
+      console.log("Fetched appointments:", data);
+      if (data) {
+        const transformedAppointments = data.map((appointment: any) => {
+          const statusMap = {
+            R: { status: "confirmed", text: "Reservada" },
+            C: { status: "cancelled", text: "Cancelada" },
+            P: { status: "pending", text: "Perdida" },
+            A: { status: "completed", text: "Asistida" },
+          };
+          const { status, text } = statusMap[appointment.estado as keyof typeof statusMap] || { status: "pending", text: "Pendiente" };
+
+          return {
+            id: appointment.idCita,
+            time: new Date(appointment.fechaYHora).toLocaleTimeString("es-ES", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            duration: "30 min", // This data is not available in the response
+            patientName: `Paciente: #${appointment.idPaciente}`,
+            patientId: appointment.idPaciente.toString(),
+            appointmentType: appointment.resumen || "Consulta General",
+            status: status,
+            statusText: text,
+          };
+        });
+        setAppointments(transformedAppointments);
+      }
+    };
+
+    fetchAppointments();
+  }, [selectedDate, getAppointments, isAuthenticated]);
 
   return (
     <div className="main-content-section agenda-section-container">
@@ -114,46 +90,59 @@ const MedicAgenda = () => {
       </div>
 
       <div className="appointments-container">
-        {appointments.map((appointment) => (
-          <div
-            key={appointment.id}
-            className={`appointment-card ${appointment.status === "completed" ? "completed" : ""}`}
-          >
-            <div className="appointment-time">
-              <span className="time">{appointment.time}</span>
-              <span className="duration">{appointment.duration}</span>
-            </div>
-            <div className="appointment-details">
-              <h4>{appointment.patientName}</h4>
-              <p className="patient-info">
-                ID: {appointment.patientId} • Edad: {appointment.patientAge}{" "}
-                años
-              </p>
-              <p className="appointment-type">{appointment.appointmentType}</p>
-            </div>
-            <div className="appointment-status">
-              <span className={`status ${appointment.status}`}>
-                {appointment.statusText}
-              </span>
-            </div>
-            <div className="appointment-actions">
-              <button 
-                className="btn-action primary"
-                onClick={() => navigate(`/medic/ver-hc?patientId=${appointment.patientId}`)}
-              >
-                {appointment.status === "completed" ? "Ver Notas" : "Ver HC"}
-              </button>
-              {appointment.status !== "completed" && (
-                <button 
-                  className="btn-action secondary"
-                  onClick={() => navigate(`/medic/cita_paciente?patientId=${appointment.patientId}&appointmentId=${appointment.id}`)}
+        {loading ? (
+          <p>Cargando citas...</p>
+        ) : (
+          appointments.map((appointment) => (
+            <div
+              key={appointment.id}
+              className={`appointment-card ${
+                appointment.status === "completed" ? "completed" : ""
+              }`}
+            >
+              <div className="appointment-time">
+                <span className="time">{appointment.time}</span>
+                <span className="duration">{appointment.duration}</span>
+              </div>
+              <div className="appointment-details">
+                <h4>{appointment.patientName}</h4>
+                <p className="patient-info">
+                  ID Paciente: {appointment.patientId}
+                </p>
+                <p className="appointment-type">{appointment.appointmentType}</p>
+              </div>
+              <div className="appointment-status">
+                <span className={`status ${appointment.status}`}>
+                  {appointment.statusText}
+                </span>
+              </div>
+              <div className="appointment-actions">
+                <button
+                  className="btn-action primary"
+                  onClick={() =>
+                    navigate(
+                      `/medic/ver-hc?patientId=${appointment.patientId}`
+                    )
+                  }
                 >
-                  Iniciar
+                  {appointment.status === "completed" ? "Ver Notas" : "Ver HC"}
                 </button>
-              )}
+                {appointment.status !== "completed" && (
+                  <button
+                    className="btn-action secondary"
+                    onClick={() =>
+                      navigate(
+                        `/medic/cita_paciente?patientId=${appointment.patientId}&appointmentId=${appointment.id}`
+                      )
+                    }
+                  >
+                    Iniciar
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

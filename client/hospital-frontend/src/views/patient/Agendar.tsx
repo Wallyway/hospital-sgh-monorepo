@@ -226,7 +226,9 @@ const useAgendar = () => {
 
       try {
         const queryParams = `appointments/available-medics?specialty=${selectedSpecialty}&date=${selectedDate}&time=${selectedTime}`;
+        console.log(queryParams);
         const data = await fetchMedics(queryParams);
+        console.log(data);
         setAvailableMedics(data || []);
       } catch (err) {
         console.error("Error loading available medics:", err);
