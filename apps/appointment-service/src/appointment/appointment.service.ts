@@ -50,7 +50,7 @@ export class AppointmentService {
 
         const availableMedics: any[] = [];
         for (const medic of medics) {
-            const citasUrl = `http://localhost:3003/employees/medics/${medic.idMedico}/appointments?date=${date}`;
+            const citasUrl = `http://localhost:3003/employees/medics/${medic.idMedico}/appointments?date=${date}&time=${time}`;
             console.log(`[AppointmentService] [getAvailableMedics] Consultando citas para médico ${medic.idMedico} en:`, citasUrl);
             let citas: any[] = [];
             try {
@@ -62,14 +62,16 @@ export class AppointmentService {
                 continue;
             }
 
+            // Normaliza la franja de inicio
             const [hour, minute] = time.split(':').map(Number);
-            const start = new Date(date);
-            start.setHours(hour, minute, 0, 0);
+            const start = new Date(`${date}T${time}:00.000Z`);
+            start.setSeconds(0, 0);
             const end = new Date(start.getTime() + 30 * 60000);
 
             const overlap = citas.some((cita) => {
                 const citaDate = new Date(cita.fechaYHora);
-                return citaDate >= start && citaDate < end;
+                citaDate.setSeconds(0, 0); // Normaliza segundos y milisegundos
+                return citaDate.getTime() >= start.getTime() && citaDate.getTime() < end.getTime();
             });
             if (!overlap) {
                 console.log(`[AppointmentService] [getAvailableMedics] Médico ${medic.idMedico} disponible en la franja.`);
@@ -114,6 +116,10 @@ export class AppointmentService {
         const idPaciente = paciente.idPaciente;
         console.log('[AppointmentService] [createAppointment] idPaciente real determinado:', idPaciente);
         const [date, time] = fechaYHora.split('T');
+        // Normaliza la fechaYHora a segundos y milisegundos en cero y UTC
+        const citaDate = new Date(fechaYHora);
+        citaDate.setSeconds(0, 0);
+        const fechaYHoraNormalizada = citaDate.toISOString();
         // 1. Consultar el médico para obtener su departamento
         const medic = await this.getMedicById(idMedico);
         if (!medic || !medic.idDepartamento) {
@@ -141,7 +147,7 @@ export class AppointmentService {
         const citaPayload = {
             idPaciente,
             idMedico,
-            fechaYHora,
+            fechaYHora: fechaYHoraNormalizada,
             estado: 'R',
             resumen: '',
         };
@@ -395,6 +401,232 @@ export class AppointmentService {
         } catch (error) {
             console.error('[AppointmentService] [getMedicAppointments] Error consultando citas:', error.message, error);
             throw new Error('No se pudieron obtener las citas: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    // ===== MÉTODOS PARA MÉDICOS =====
+
+    async getDiagnoses() {
+        console.log('[AppointmentService] [getDiagnoses] Consultando diagnósticos');
+        const url = 'http://localhost:3003/employees/diagnoses';
+        try {
+            const response = await this.httpService.axiosRef.get(url);
+            console.log('[AppointmentService] [getDiagnoses] Diagnósticos obtenidos:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [getDiagnoses] Error:', error.message, error);
+            throw new Error('No se pudieron obtener los diagnósticos: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    async addDiagnoses(idCita: number, diagnosticos: number[], user: any) {
+        console.log('[AppointmentService] [addDiagnoses] Agregando diagnósticos a cita:', idCita, 'diagnósticos:', diagnosticos);
+
+        // Verificar que el usuario es un médico
+        if (user?.role !== 'MEDIC') {
+            throw new Error('Solo los médicos pueden agregar diagnósticos');
+        }
+
+        // Verificar que la cita existe y pertenece al médico
+        const cita = await this.verifyMedicAppointment(idCita, user);
+
+        // Verificar que estamos en la franja horaria de la cita
+        // NOTA: Para deshabilitar esta validación durante pruebas, comenta la siguiente línea:
+        this.verifyAppointmentTimeWindow(cita.fechaYHora);
+
+        const url = `http://localhost:3003/employees/appointments/${idCita}/diagnoses`;
+        const payload = { diagnosticos };
+
+        try {
+            const response = await this.httpService.axiosRef.post(url, payload);
+            console.log('[AppointmentService] [addDiagnoses] Diagnósticos agregados exitosamente:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [addDiagnoses] Error:', error.message, error);
+            throw new Error('No se pudieron agregar los diagnósticos: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    async getMedications() {
+        console.log('[AppointmentService] [getMedications] Consultando medicamentos desde farmacy-service');
+        const url = 'http://localhost:3007/medications'; // farmacy-service
+        try {
+            const response = await this.httpService.axiosRef.get(url);
+            console.log('[AppointmentService] [getMedications] Medicamentos obtenidos:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [getMedications] Error:', error.message, error);
+            throw new Error('No se pudieron obtener los medicamentos: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    async addPrescriptions(
+        idCita: number,
+        prescripciones: Array<{ idMedicamento: number; posologia: string; esParticular: boolean }>,
+        user: any
+    ) {
+        console.log('[AppointmentService] [addPrescriptions] Agregando prescripciones a cita:', idCita, 'prescripciones:', prescripciones);
+
+        // Verificar que el usuario es un médico
+        if (user?.role !== 'MEDIC') {
+            throw new Error('Solo los médicos pueden agregar prescripciones');
+        }
+
+        // Verificar que la cita existe y pertenece al médico
+        const cita = await this.verifyMedicAppointment(idCita, user);
+
+        // Verificar que estamos en la franja horaria de la cita
+        // NOTA: Para deshabilitar esta validación durante pruebas, comenta la siguiente línea:
+        this.verifyAppointmentTimeWindow(cita.fechaYHora);
+
+        const url = `http://localhost:3003/employees/appointments/${idCita}/prescriptions`;
+        const payload = { prescripciones };
+
+        try {
+            const response = await this.httpService.axiosRef.post(url, payload);
+            console.log('[AppointmentService] [addPrescriptions] Prescripciones agregadas exitosamente:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [addPrescriptions] Error:', error.message, error);
+            throw new Error('No se pudieron agregar las prescripciones: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    async finishAppointment(idCita: number, resumen: string, user: any) {
+        console.log('[AppointmentService] [finishAppointment] Finalizando cita:', idCita, 'resumen:', resumen);
+
+        // Verificar que el usuario es un médico
+        if (user?.role !== 'MEDIC') {
+            throw new Error('Solo los médicos pueden finalizar citas');
+        }
+
+        // Verificar que la cita existe y pertenece al médico
+        const cita = await this.verifyMedicAppointment(idCita, user);
+
+        // Verificar que estamos en la franja horaria de la cita
+        // NOTA: Para deshabilitar esta validación durante pruebas, comenta la siguiente línea:
+        this.verifyAppointmentTimeWindow(cita.fechaYHora);
+
+        // Verificar que la cita está en estado 'R' (Reservada)
+        if (cita.estado !== 'R') {
+            throw new Error('Solo se pueden finalizar citas en estado reservada');
+        }
+
+        const url = `http://localhost:3003/employees/appointments/${idCita}/finish`;
+        const payload = { resumen };
+
+        try {
+            const response = await this.httpService.axiosRef.post(url, payload);
+            console.log('[AppointmentService] [finishAppointment] Cita finalizada exitosamente:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [finishAppointment] Error:', error.message, error);
+            throw new Error('No se pudo finalizar la cita: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    // ===== MÉTODOS PARA ADMINISTRADORES =====
+
+    async updateAppointment(idCita: number, updates: { idMedico?: number; fechaYHora?: string; estado?: string }, user: any) {
+        console.log('[AppointmentService] [updateAppointment] Actualizando cita:', idCita, 'updates:', updates);
+
+        // Verificar que el usuario es un administrador
+        if (user?.role !== 'ADMIN') {
+            throw new Error('Solo los administradores pueden actualizar citas');
+        }
+
+        // Validar la fecha y hora si se está actualizando
+        if (updates.fechaYHora) {
+            this.validateTimeSlot(updates.fechaYHora);
+        }
+
+        // Validar el estado si se está actualizando
+        if (updates.estado && !['R', 'A', 'P', 'C'].includes(updates.estado)) {
+            throw new Error('Estado de cita inválido. Debe ser R, A, P o C');
+        }
+
+        const url = `http://localhost:3003/employees/appointments/${idCita}`;
+
+        try {
+            const response = await this.httpService.axiosRef.patch(url, updates);
+            console.log('[AppointmentService] [updateAppointment] Cita actualizada exitosamente:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('[AppointmentService] [updateAppointment] Error:', error.message, error);
+            throw new Error('No se pudo actualizar la cita: ' + (error?.response?.data?.message || error.message));
+        }
+    }
+
+    // ===== MÉTODOS AUXILIARES =====
+
+    private async verifyMedicAppointment(idCita: number, user: any) {
+        // Obtener el idUsuario del token
+        const idUsuario = user?.idPaciente || user?.userId || user?.sub;
+        if (!idUsuario) {
+            throw new Error('No se pudo determinar el usuario autenticado');
+        }
+
+        // Consultar el médico por idUsuario para obtener su idEmpleado
+        const medicUrl = `http://localhost:3003/employees/by-user/${idUsuario}`;
+        let medic;
+        try {
+            const response = await this.httpService.axiosRef.get(medicUrl);
+            medic = response.data;
+        } catch (error) {
+            throw new Error('No se encontró el médico autenticado');
+        }
+
+        // Obtener el idMedico del empleado
+        const medicosUrl = `http://localhost:3003/employees/medics?department=${medic.idDepartamento}`;
+        let medicos;
+        try {
+            const medicosResponse = await this.httpService.axiosRef.get(medicosUrl);
+            medicos = medicosResponse.data;
+        } catch (error) {
+            throw new Error('No se pudieron obtener los médicos del departamento');
+        }
+
+        // Encontrar el médico que corresponda al empleado autenticado
+        const medicoAutenticado = medicos.find((m: any) => m.idEmpleado === medic.idEmpleado);
+        if (!medicoAutenticado) {
+            throw new Error('No se encontró el médico autenticado en el departamento');
+        }
+
+        // Verificar que la cita existe y pertenece al médico
+        const citaUrl = `http://localhost:3003/employees/citas/${idCita}`;
+        let cita;
+        try {
+            const response = await this.httpService.axiosRef.get(citaUrl);
+            cita = response.data;
+        } catch (error) {
+            throw new Error('No se encontró la cita especificada');
+        }
+
+        if (cita.idMedico !== medicoAutenticado.idMedico) {
+            throw new Error('La cita no pertenece al médico autenticado');
+        }
+
+        return cita;
+    }
+
+    private verifyAppointmentTimeWindow(fechaYHora: string) {
+        const now = new Date();
+        const appointmentTime = new Date(fechaYHora);
+        const timeDiff = Math.abs(appointmentTime.getTime() - now.getTime()) / (1000 * 60); // diferencia en minutos
+
+        // Solo permitir operaciones durante la franja de 30 minutos de la cita
+        if (timeDiff > 30) {
+            throw new Error('Solo se pueden realizar operaciones durante la franja horaria de la cita (30 minutos)');
+        }
+    }
+
+    private validateTimeSlot(fechaYHora: string) {
+        const date = new Date(fechaYHora);
+        const minutes = date.getMinutes();
+
+        // Solo permitir franjas exactas: HH:00 o HH:30
+        if (minutes !== 0 && minutes !== 30) {
+            throw new Error('Los horarios de citas deben ser en franjas de 30 minutos exactos (HH:00 o HH:30)');
         }
     }
 }

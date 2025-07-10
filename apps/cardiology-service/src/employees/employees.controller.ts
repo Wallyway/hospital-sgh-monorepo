@@ -1,10 +1,22 @@
-import { Controller, Get, Post, Patch, Param, NotFoundException, Query, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Param,
+  NotFoundException,
+  Query,
+  Body,
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma.service';
 
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService, private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly employeesService: EmployeesService,
+    private readonly prisma: PrismaService,
+  ) { }
 
   @Get('roles/:idUsuario')
   async getUserRoles(@Param('idUsuario') idUsuario: string) {
@@ -51,9 +63,14 @@ export class EmployeesController {
   async getAppointmentsByMedicAndDate(
     @Param('idMedico') idMedico: string,
     @Query('date') date: string,
+    @Query('time') time?: string,
   ) {
     if (date) {
-      return this.employeesService.getAppointmentsByMedicAndDate(Number(idMedico), date);
+      return this.employeesService.getAppointmentsByMedicAndDate(
+        Number(idMedico),
+        date,
+        time,
+      );
     } else {
       // Si no hay fecha, obtener todas las citas del médico
       return this.employeesService.getAllAppointmentsByMedic(Number(idMedico));
@@ -71,6 +88,12 @@ export class EmployeesController {
   @Get('/citas')
   async getCitasByPatient(@Query('patient') patient: string) {
     return this.employeesService.getCitasByPatient(Number(patient));
+  }
+
+  // ENDPOINT para obtener todas las citas de un paciente por idPaciente (para microservicios)
+  @Get('/citas/by-paciente/:idPaciente')
+  async getCitasByPacienteId(@Param('idPaciente') idPaciente: string) {
+    return this.employeesService.getCitasByPatient(Number(idPaciente));
   }
 
   // NUEVO: Obtener cita específica por ID
@@ -116,5 +139,60 @@ export class EmployeesController {
       idEmpleado: medic.idEmpleado,
       idUsuario: medic.empleado.idUsuario,
     };
+  }
+
+  // ===== ENDPOINTS PARA DIAGNÓSTICOS =====
+
+  @Get('diagnoses')
+  async getDiagnoses() {
+    return this.employeesService.getDiagnoses();
+  }
+
+  @Post('appointments/:id/diagnoses')
+  async addDiagnoses(
+    @Param('id') id: string,
+    @Body() body: { diagnosticos: number[] },
+  ) {
+    return this.employeesService.addDiagnoses(Number(id), body.diagnosticos);
+  }
+
+  // ===== ENDPOINTS PARA PRESCRIPCIONES =====
+
+  @Post('appointments/:id/prescriptions')
+  async addPrescriptions(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      prescripciones: Array<{
+        idMedicamento: number;
+        posologia: string;
+        esParticular: boolean;
+      }>;
+    },
+  ) {
+    return this.employeesService.addPrescriptions(
+      Number(id),
+      body.prescripciones,
+    );
+  }
+
+  // ===== ENDPOINTS PARA FINALIZAR CITA =====
+
+  @Post('appointments/:id/finish')
+  async finishAppointment(
+    @Param('id') id: string,
+    @Body() body: { resumen: string },
+  ) {
+    return this.employeesService.finishAppointment(Number(id), body.resumen);
+  }
+
+  // ===== ENDPOINTS PARA ADMINISTRADORES =====
+
+  @Patch('appointments/:id')
+  async updateAppointment(
+    @Param('id') id: string,
+    @Body() body: { idMedico?: number; fechaYHora?: string; estado?: string },
+  ) {
+    return this.employeesService.updateAppointment(Number(id), body);
   }
 }

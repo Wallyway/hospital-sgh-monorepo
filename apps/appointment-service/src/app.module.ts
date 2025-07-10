@@ -10,4 +10,4 @@ import { AppointmentService } from './appointment/appointment.service';
   controllers: [AppController, AppointmentController],
   providers: [AppService, AppointmentService],
 })
-export class AppModule {}
+export class AppModule { }

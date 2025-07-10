@@ -1,0 +1,52 @@
+// Esquema Prisma para farmacy-service basado en aws.sql
+// Solo tablas y relaciones, sin triggers ni funciones
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Farmacia {
+  idFarmacia Int               @id @default(autoincrement())
+  nombre     String            @unique
+  direccion  String            @unique
+  posee      FarmaciaPosee[]
+  entregas   FarmaciaEntrega[]
+}
+
+model Medicamento {
+  idMedicamento Int               @id @default(autoincrement())
+  nombre        String            @unique
+  descripcion   String
+  posee         FarmaciaPosee[]
+  entregas      FarmaciaEntrega[]
+}
+
+model FarmaciaPosee {
+  idFarmacia    Int
+  idMedicamento Int
+  cantidad      Int @default(0)
+
+  farmacia    Farmacia    @relation(fields: [idFarmacia], references: [idFarmacia])
+  medicamento Medicamento @relation(fields: [idMedicamento], references: [idMedicamento])
+
+  @@id([idFarmacia, idMedicamento])
+}
+
+model FarmaciaEntrega {
+  idPaciente    Int
+  idFarmacia    Int
+  idMedicamento Int
+  FEntrega      DateTime @default(now())
+  Cantidad      Int
+
+  farmacia    Farmacia    @relation(fields: [idFarmacia], references: [idFarmacia])
+  medicamento Medicamento @relation(fields: [idMedicamento], references: [idMedicamento])
+
+  @@id([idPaciente, idFarmacia, idMedicamento, FEntrega])
+}
